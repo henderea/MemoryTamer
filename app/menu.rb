@@ -9,7 +9,16 @@ class MainMenu
     menuItem :services_item, 'Services', preset: :services
 
     menuItem :status_free, 'Free memory now'
-    menuItem :status_preferences, 'Preferences'
+    menuItem :status_preferences, 'Preferences', submenu: :prefs
+    menuItem :preferences_refresh, 'Reload preferences'
+    menuItem :notification_display, 'Currently using: Growl'
+    menuItem :notification_change, 'Use Notification Center'
+    menuItem :memory_display, 'Memory threshold: 1024 MB'
+    menuItem :memory_change, 'Change memory threshold'
+    menuItem :pressure_display, 'Freeing pressure: warn'
+    menuItem :pressure_change, 'Change freeing pressure'
+    menuItem :method_display, 'Freeing method: memory pressure'
+    menuItem :method_change, 'Use plain allocation method'
     menuItem :status_quit, 'Quit', preset: :quit
   end
 
@@ -29,6 +38,22 @@ class MainMenu
       status_preferences
       ___
       status_quit
+    }
+
+    menu(:prefs, 'Preferences') {
+      preferences_refresh
+      ___
+      notification_display
+      notification_change
+      ___
+      memory_display
+      memory_change
+      ___
+      pressure_display
+      pressure_change
+      ___
+      method_display
+      method_change
     }
   end
 
