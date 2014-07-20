@@ -1,10 +1,12 @@
 class AppDelegate
   attr_accessor :free_display_title
 
+  # noinspection RubyUnusedLocalVariable
   def applicationDidFinishLaunching(notification)
     @freeing   = false
-    @mavericks = `which memory_pressure`.include?('memory_pressure')
-    @has_nc    = true
+    system('which memory_pressure')
+    @mavericks = $?.success?
+    @has_nc    = (NSClassFromString('NSUserNotificationCenter')!=nil)
     load_prefs
     MainMenu.build!
     MainMenu[:statusbar].subscribe(:status_free) { |_, _|
@@ -16,6 +18,10 @@ class AppDelegate
     MainMenu[:prefs].subscribe(:preferences_refresh) { |_, _|
       NSLog 'Reloading preferences'
       load_prefs
+      set_notification_display
+      set_mem_display
+      set_pressure_display
+      set_method_display
     }
     MainMenu[:prefs].subscribe(:notification_change) { |_, _|
       @settings[:growl] = !@settings[:growl]
@@ -23,11 +29,13 @@ class AppDelegate
       set_notification_display
     }.canExecuteBlock { |_| @has_nc }
     MainMenu[:prefs].subscribe(:memory_change) { |_, _|
-      nm = get_input('Please enter the memory threshold in MB (non-negative integer only)', "#{@settings[:mem]}")
+      nm = get_input("Please enter the memory threshold in MB (0 - #{get_total_memory / 1024**2})", "#{@settings[:mem]}") { |str| (str =~ /^\d*$/) }
       begin
         nmi = nm.to_i
         if nmi < 0
           alert('The memory threshold must be non-negative!')
+        elsif nmi > get_total_memory / 1024**2
+          alert('You can\'t specify a value above your total ram')
         else
           @settings[:mem] = nmi
           save_prefs
@@ -43,14 +51,23 @@ class AppDelegate
         @settings[:pressure] = np
         save_prefs
         set_pressure_display
+      else
+        alert("Invalid option '#{np}'!")
       end
+    }.canExecuteBlock { |_| @mavericks }
+    MainMenu[:prefs].subscribe(:method_change) { |_, _|
+      @settings[:method_pressure] = !@settings[:method_pressure]
+      save_prefs
+      set_method_display
     }.canExecuteBlock { |_| @mavericks }
     set_notification_display
     set_mem_display
     set_pressure_display
-    NSUserNotificationCenter.defaultUserNotificationCenter.setDelegate(self)
+    set_method_display
+    NSUserNotificationCenter.defaultUserNotificationCenter.setDelegate(self) if @has_nc
+    GrowlApplicationBridge.setGrowlDelegate(self)
     @statusItem = MainMenu[:statusbar].statusItem
-    NSLog "Starting up with memory = #{dfm}; pressure = #{@options[:pressure]}"
+    NSLog "Starting up with memory = #{dfm}; pressure = #{@settings[:pressure]}"
     Thread.start {
       @last_free = NSDate.date - 120
       loop do
@@ -75,7 +92,12 @@ class AppDelegate
 
   def set_pressure_display
     MainMenu[:prefs].items[:pressure_display][:title] = "Freeing pressure: #{@settings[:pressure]}"
-    MainMenu[:prefs].items[:pressure_change][:title] = @mavericks ? 'Change freeing pressure' : 'Requires Mavericks 10.9'
+    MainMenu[:prefs].items[:pressure_change][:title]  = @mavericks ? 'Change freeing pressure' : 'Requires Mavericks 10.9 or higher'
+  end
+
+  def set_method_display
+    MainMenu[:prefs].items[:method_display][:title] = "Freeing method: #{@settings[:method_pressure] ? 'memory pressure' : 'plain allocation'}"
+    MainMenu[:prefs].items[:method_change][:title]  = @mavericks ? "Use #{!@settings[:method_pressure] ? 'memory pressure' : 'plain allocation'} method" : 'Requires Mavericks 10.9 or higher to change'
   end
 
   def load_prefs
@@ -87,8 +109,10 @@ class AppDelegate
         tmp                         = YAML::load(fc)
         @settings[:mem]             = tmp[:mem] if tmp[:mem] && tmp[:mem].is_a?(Numeric)
         @settings[:pressure]        = tmp[:pressure] if tmp[:pressure] && %w(normal warn critical).include?(tmp[:pressure])
-        @settings[:growl]           = tmp[:growl]
-        @settings[:method_pressure] = tmp[:method_pressure]
+        @settings[:growl]           = tmp[:growl] && tmp[:growl] != 0
+        @settings[:method_pressure] = tmp[:method_pressure] && tmp[:method_pressure] != 0
+      else
+        save_prefs
       end
     rescue
       # ignored
@@ -108,10 +132,10 @@ class AppDelegate
 
   def free_mem_default(cfm)
     @freeing = true
-    notify 'Beginning memory freeing'
-    free_mem(@options[:pressure])
+    notify 'Beginning memory freeing', 'Start Freeing'
+    free_mem(@settings[:pressure])
     nfm = get_free_mem
-    notify "Finished freeing #{format_bytes(nfm - cfm)}"
+    notify "Finished freeing #{format_bytes(nfm - cfm)}", 'Finish Freeing'
     NSLog "Freed #{format_bytes(nfm - cfm, true)}"
     @freeing   = false
     @last_free = NSDate.date
@@ -140,11 +164,15 @@ class AppDelegate
     `/usr/sbin/sysctl kern.memorystatus_vm_pressure_level`.chomp.to_i
   end
 
+  def get_total_memory
+    `/usr/sbin/sysctl hw.memsize`.chomp.to_i
+  end
+
   def free_mem(pressure)
-    if @mavericks
+    if @settings[:method_pressure]
       cmp = get_memory_pressure
       if cmp >= 4
-        notify 'Memory Pressure too high! Running not a good idea.'
+        notify 'Memory Pressure too high! Running not a good idea.', 'Error'
         return
       end
       dmp      = pressure == 'normal' ? 1 : (pressure == 'warn' ? 2 : 4)
@@ -180,6 +208,13 @@ class AppDelegate
         input = NSComboBox.alloc.initWithFrame(NSMakeRect(0, 0, 200, 24))
         input.addItemsWithObjectValues(options)
         input.selectItemWithObjectValue(default_value)
+      when :number
+        input             = NSTextField.alloc.initWithFrame(NSMakeRect(0, 0, 200, 24))
+        input.stringValue = "#{default_value}"
+        formatter = NSNumberFormatter.alloc.init
+        formatter.allowsFloats = false
+        formatter.minimum = 0
+        formatter.maximum = get_total_memory / 1024**2
       else
         input             = NSTextField.alloc.initWithFrame(NSMakeRect(0, 0, 200, 24))
         input.stringValue = default_value
@@ -207,12 +242,23 @@ class AppDelegate
     alert.runModal
   end
 
-  def notify(msg)
-    NSLog "Notification: #{msg}"
-    notification                 = NSUserNotification.alloc.init
-    notification.title           = 'MemoryTamer'
-    notification.informativeText = msg
-    notification.soundName       = NSUserNotificationDefaultSoundName
-    NSUserNotificationCenter.defaultUserNotificationCenter.scheduleNotification(notification)
+  def notify(msg, nn)
+    NSLog "Notification (#{nn}): #{msg}"
+    if @settings[:growl]
+      GrowlApplicationBridge.notifyWithTitle(
+          'MemoryTamer',
+          description:      msg,
+          notificationName: nn,
+          iconData:         nil,
+          priority:         0,
+          isSticky:         true,
+          clickContext:     nil)
+    else
+      notification                 = NSUserNotification.alloc.init
+      notification.title           = 'MemoryTamer'
+      notification.informativeText = msg
+      notification.soundName       = NSUserNotificationDefaultSoundName
+      NSUserNotificationCenter.defaultUserNotificationCenter.scheduleNotification(notification)
+    end
   end
 end

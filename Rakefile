@@ -18,4 +18,5 @@ Motion::Project::App.setup do |app|
   app.info_plist['NSUIElement']      = 1
   app.deployment_target              = '10.7'
   app.codesign_certificate           = 'Developer ID Application: Eric Henderson (SKWXXEM822)'
+  app.embedded_frameworks << 'vendor/Growl.framework'
 end
