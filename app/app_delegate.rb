@@ -3,7 +3,7 @@ class AppDelegate
 
   # noinspection RubyUnusedLocalVariable
   def applicationDidFinishLaunching(notification)
-    @freeing   = false
+    @freeing = false
     system('which memory_pressure')
     @mavericks = $?.success?
     @has_nc    = (NSClassFromString('NSUserNotificationCenter')!=nil)
@@ -30,29 +30,33 @@ class AppDelegate
     }.canExecuteBlock { |_| @has_nc }
     MainMenu[:prefs].subscribe(:memory_change) { |_, _|
       nm = get_input("Please enter the memory threshold in MB (0 - #{get_total_memory / 1024**2})", "#{@settings[:mem]}") { |str| (str =~ /^\d*$/) }
-      begin
-        nmi = nm.to_i
-        if nmi < 0
-          alert('The memory threshold must be non-negative!')
-        elsif nmi > get_total_memory / 1024**2
-          alert('You can\'t specify a value above your total ram')
-        else
-          @settings[:mem] = nmi
-          save_prefs
-          set_mem_display
+      if nm
+        begin
+          nmi = nm.to_i
+          if nmi < 0
+            alert('The memory threshold must be non-negative!')
+          elsif nmi > get_total_memory / 1024**2
+            alert('You can\'t specify a value above your total ram')
+          else
+            @settings[:mem] = nmi
+            save_prefs
+            set_mem_display
+          end
+        rescue
+          alert('The memory threshold must be an integer!')
         end
-      rescue
-        alert('The memory threshold must be an integer!')
       end
     }
     MainMenu[:prefs].subscribe(:pressure_change) { |_, _|
       np = get_input('Please select the freeing pressure', @settings[:pressure], :select, %w(normal warn critical))
-      if %w(normal warn critical).include?(np)
-        @settings[:pressure] = np
-        save_prefs
-        set_pressure_display
-      else
-        alert("Invalid option '#{np}'!")
+      if np
+        if %w(normal warn critical).include?(np)
+          @settings[:pressure] = np
+          save_prefs
+          set_pressure_display
+        else
+          alert("Invalid option '#{np}'!")
+        end
       end
     }.canExecuteBlock { |_| @mavericks }
     MainMenu[:prefs].subscribe(:method_change) { |_, _|
@@ -160,12 +164,18 @@ class AppDelegate
     page_size*pages_free + (include_inactive ? page_size*pages_inactive : 0)
   end
 
+  def sysctl_get(name)
+    v = `/usr/sbin/sysctl '#{name}'`.chomp
+    v = v[(name.length + 2)..-1] if v.start_with?("#{name}: ")
+    v
+  end
+
   def get_memory_pressure
-    `/usr/sbin/sysctl kern.memorystatus_vm_pressure_level`.chomp.to_i
+    sysctl_get('kern.memorystatus_vm_pressure_level').to_i
   end
 
   def get_total_memory
-    `/usr/sbin/sysctl hw.memsize`.chomp.to_i
+    sysctl_get('hw.memsize').to_i
   end
 
   def free_mem(pressure)
@@ -209,12 +219,12 @@ class AppDelegate
         input.addItemsWithObjectValues(options)
         input.selectItemWithObjectValue(default_value)
       when :number
-        input             = NSTextField.alloc.initWithFrame(NSMakeRect(0, 0, 200, 24))
-        input.stringValue = "#{default_value}"
-        formatter = NSNumberFormatter.alloc.init
+        input                  = NSTextField.alloc.initWithFrame(NSMakeRect(0, 0, 200, 24))
+        input.stringValue      = "#{default_value}"
+        formatter              = NSNumberFormatter.alloc.init
         formatter.allowsFloats = false
-        formatter.minimum = 0
-        formatter.maximum = get_total_memory / 1024**2
+        formatter.minimum      = 0
+        formatter.maximum      = get_total_memory / 1024**2
       else
         input             = NSTextField.alloc.initWithFrame(NSMakeRect(0, 0, 200, 24))
         input.stringValue = default_value
