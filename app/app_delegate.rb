@@ -267,7 +267,7 @@ class AppDelegate
       notification                 = NSUserNotification.alloc.init
       notification.title           = 'MemoryTamer'
       notification.informativeText = msg
-      notification.soundName       = NSUserNotificationDefaultSoundName
+      notification.soundName       = nil#NSUserNotificationDefaultSoundName
       NSUserNotificationCenter.defaultUserNotificationCenter.scheduleNotification(notification)
     end
   end

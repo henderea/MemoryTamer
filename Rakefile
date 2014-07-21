@@ -13,7 +13,7 @@ Motion::Project::App.setup do |app|
   app.icon                           = 'Icon.icns'
   app.info_plist['CFBundleIconFile'] = 'Icon.icns'
   app.name                           = 'MemoryTamer'
-  app.version                        = '0.4.1'
+  app.version                        = '0.4.2'
   app.identifier                     = 'us.myepg.MemoryTamer'
   app.info_plist['NSUIElement']      = 1
   app.deployment_target              = '10.7'
