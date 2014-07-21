@@ -13,10 +13,12 @@ Motion::Project::App.setup do |app|
   app.icon                           = 'Icon.icns'
   app.info_plist['CFBundleIconFile'] = 'Icon.icns'
   app.name                           = 'MemoryTamer'
-  app.version                        = '0.5'
+  app.version                        = '0.6'
+  app.short_version                  = '0.6'
   app.identifier                     = 'us.myepg.MemoryTamer'
   app.info_plist['NSUIElement']      = 1
   app.deployment_target              = '10.7'
   app.codesign_certificate           = 'Developer ID Application: Eric Henderson (SKWXXEM822)'
   app.embedded_frameworks << 'vendor/Growl.framework'
+  app.embedded_frameworks << 'vendor/Sparkle.framework'
 end

@@ -3,6 +3,7 @@ class AppDelegate
 
   # noinspection RubyUnusedLocalVariable
   def applicationDidFinishLaunching(notification)
+    SUUpdater.sharedUpdater
     @freeing = false
     system('which memory_pressure')
     @mavericks = $?.success?
@@ -270,23 +271,24 @@ class AppDelegate
   end
 
   def check_for_updates
-    version = NSBundle.mainBundle.infoDictionary['CFBundleVersion']
-    BW::HTTP.get('https://api.github.com/repos/henderea/memorytamer/tags') do |response|
-      if response.ok?
-        json = BW::JSON.parse(response.body.to_str)
-        nv = json[0]['name']
-        if nv > version
-          alert("New version available: #{nv}; current version: #{version}")
-          NSWorkspace.sharedWorkspace.openURL(NSURL.URLWithString('https://github.com/henderea/MemoryTamer/blob/master/README.md'))
-        end
-        nv > version
-      elsif response.status_code.to_s =~ /40\d/
-        alert('Login failed')
-        true
-      else
-        alert(response.error_message)
-        true
-      end
-    end
+    # version = NSBundle.mainBundle.infoDictionary['CFBundleVersion']
+    # BW::HTTP.get('https://api.github.com/repos/henderea/memorytamer/tags') do |response|
+    #   if response.ok?
+    #     json = BW::JSON.parse(response.body.to_str)
+    #     nv = json[0]['name']
+    #     if nv > version
+    #       alert("New version available: #{nv}; current version: #{version}")
+    #       NSWorkspace.sharedWorkspace.openURL(NSURL.URLWithString('https://github.com/henderea/MemoryTamer/blob/master/README.md'))
+    #     end
+    #     nv > version
+    #   elsif response.status_code.to_s =~ /40\d/
+    #     alert('Login failed')
+    #     true
+    #   else
+    #     alert(response.error_message)
+    #     true
+    #   end
+    # end
+    SUUpdater.sharedUpdater.checkForUpdates
   end
 end
