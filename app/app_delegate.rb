@@ -15,6 +15,9 @@ class AppDelegate
     MainMenu[:statusbar].subscribe(:status_quit) { |_, _|
       NSApp.terminate
     }
+    MainMenu[:statusbar].subscribe(:status_update) { |_, _|
+      alert('No new version found') unless check_for_updates
+    }
     MainMenu[:prefs].subscribe(:preferences_refresh) { |_, _|
       NSLog 'Reloading preferences'
       load_prefs
@@ -24,12 +27,11 @@ class AppDelegate
       set_method_display
     }
     MainMenu[:prefs].subscribe(:notification_change) { |_, _|
-      @settings[:growl] = !@settings[:growl]
-      save_prefs
+      App::Persistence['growl'] = !App::Persistence['growl']
       set_notification_display
     }.canExecuteBlock { |_| @has_nc }
     MainMenu[:prefs].subscribe(:memory_change) { |_, _|
-      nm = get_input("Please enter the memory threshold in MB (0 - #{get_total_memory / 1024**2})", "#{@settings[:mem]}") { |str| (str =~ /^\d*$/) }
+      nm = get_input("Please enter the memory threshold in MB (0 - #{get_total_memory / 1024**2})", "#{App::Persistence['mem']}") { |str| (str =~ /^\d*$/) }
       if nm
         begin
           nmi = nm.to_i
@@ -38,8 +40,7 @@ class AppDelegate
           elsif nmi > get_total_memory / 1024**2
             alert('You can\'t specify a value above your total ram')
           else
-            @settings[:mem] = nmi
-            save_prefs
+            App::Persistence['mem'] = nmi
             set_mem_display
           end
         rescue
@@ -48,11 +49,10 @@ class AppDelegate
       end
     }
     MainMenu[:prefs].subscribe(:pressure_change) { |_, _|
-      np = get_input('Please select the freeing pressure', @settings[:pressure], :select, %w(normal warn critical))
+      np = get_input('Please select the freeing pressure', App::Persistence['pressure'], :select, %w(normal warn critical))
       if np
         if %w(normal warn critical).include?(np)
-          @settings[:pressure] = np
-          save_prefs
+          App::Persistence['pressure'] = np
           set_pressure_display
         else
           alert("Invalid option '#{np}'!")
@@ -60,8 +60,7 @@ class AppDelegate
       end
     }.canExecuteBlock { |_| @mavericks }
     MainMenu[:prefs].subscribe(:method_change) { |_, _|
-      @settings[:method_pressure] = !@settings[:method_pressure]
-      save_prefs
+      App::Persistence['method_pressure'] = !App::Persistence['method_pressure']
       set_method_display
     }.canExecuteBlock { |_| @mavericks }
     set_notification_display
@@ -71,7 +70,7 @@ class AppDelegate
     NSUserNotificationCenter.defaultUserNotificationCenter.setDelegate(self) if @has_nc
     GrowlApplicationBridge.setGrowlDelegate(self)
     @statusItem = MainMenu[:statusbar].statusItem
-    NSLog "Starting up with memory = #{dfm}; pressure = #{@settings[:pressure]}"
+    NSLog "Starting up with memory = #{dfm}; pressure = #{App::Persistence['pressure']}"
     Thread.start {
       @last_free = NSDate.date - 120
       loop do
@@ -86,58 +85,56 @@ class AppDelegate
   end
 
   def set_notification_display
-    MainMenu[:prefs].items[:notification_display][:title] = "Currently Using #{@settings[:growl] ? 'Growl' : 'Notification Center'}"
-    MainMenu[:prefs].items[:notification_change][:title]  = "Use #{!@settings[:growl] ? 'Growl' : 'Notification Center'}"
+    MainMenu[:prefs].items[:notification_display][:title] = "Currently Using #{App::Persistence['growl'] ? 'Growl' : 'Notification Center'}"
+    MainMenu[:prefs].items[:notification_change][:title]  = "Use #{!App::Persistence['growl'] ? 'Growl' : 'Notification Center'}"
   end
 
   def set_mem_display
-    MainMenu[:prefs].items[:memory_display][:title] = "Memory threshold: #{@settings[:mem]} MB"
+    MainMenu[:prefs].items[:memory_display][:title] = "Memory threshold: #{App::Persistence['mem']} MB"
   end
 
   def set_pressure_display
-    MainMenu[:prefs].items[:pressure_display][:title] = "Freeing pressure: #{@settings[:pressure]}"
+    MainMenu[:prefs].items[:pressure_display][:title] = "Freeing pressure: #{App::Persistence['pressure']}"
     MainMenu[:prefs].items[:pressure_change][:title]  = @mavericks ? 'Change freeing pressure' : 'Requires Mavericks 10.9 or higher'
   end
 
   def set_method_display
-    MainMenu[:prefs].items[:method_display][:title] = "Freeing method: #{@settings[:method_pressure] ? 'memory pressure' : 'plain allocation'}"
-    MainMenu[:prefs].items[:method_change][:title]  = @mavericks ? "Use #{!@settings[:method_pressure] ? 'memory pressure' : 'plain allocation'} method" : 'Requires Mavericks 10.9 or higher to change'
+    MainMenu[:prefs].items[:method_display][:title] = "Freeing method: #{App::Persistence['method_pressure'] ? 'memory pressure' : 'plain allocation'}"
+    MainMenu[:prefs].items[:method_change][:title]  = @mavericks ? "Use #{!App::Persistence['method_pressure'] ? 'memory pressure' : 'plain allocation'} method" : 'Requires Mavericks 10.9 or higher to change'
   end
 
   def load_prefs
     pth       = File.expand_path('~/mtprefs.yaml')
-    @settings = { mem: 1024, pressure: 'warn', growl: false, method_pressure: true }
-    begin
-      if File.exist?(pth)
-        fc                          = IO.read(pth).chomp
-        tmp                         = YAML::load(fc)
-        @settings[:mem]             = tmp[:mem] if tmp[:mem] && tmp[:mem].is_a?(Numeric)
-        @settings[:pressure]        = tmp[:pressure] if tmp[:pressure] && %w(normal warn critical).include?(tmp[:pressure])
-        @settings[:growl]           = tmp[:growl] && tmp[:growl] != 0
-        @settings[:method_pressure] = tmp[:method_pressure] && tmp[:method_pressure] != 0
-      else
-        save_prefs
+    if App::Persistence['pressure'].nil?
+      App::Persistence['mem'] = 1024
+      App::Persistence['pressure'] = 'warn'
+      App::Persistence['growl'] = false
+      App::Persistence['method_pressure'] = true
+      begin
+        if File.exist?(pth)
+          fc                          = IO.read(pth).chomp
+          tmp                         = YAML::load(fc)
+          App::Persistence['mem']             = tmp[:mem] if tmp[:mem] && tmp[:mem].is_a?(Numeric)
+          App::Persistence['pressure']        = tmp[:pressure] if tmp[:pressure] && %w(normal warn critical).include?(tmp[:pressure])
+          App::Persistence['growl']           = tmp[:growl] && tmp[:growl] != 0
+          App::Persistence['method_pressure'] = tmp[:method_pressure] && tmp[:method_pressure] != 0
+        end
+      rescue
+        # ignored
       end
-    rescue
-      # ignored
     end
-    @settings[:growl]           = @settings[:growl] || !@has_nc
-    @settings[:method_pressure] = @settings[:method_pressure] && @mavericks
-  end
-
-  def save_prefs
-    pth = File.expand_path('~/mtprefs.yaml')
-    File.open(pth, mode_string='w+') { |io| io.puts(@settings.to_yaml) }
+    App::Persistence['growl']           = App::Persistence['growl'] || !@has_nc
+    App::Persistence['method_pressure'] = App::Persistence['method_pressure'] && @mavericks
   end
 
   def dfm
-    @settings[:mem] * 1024**2
+    App::Persistence['mem'] * 1024**2
   end
 
   def free_mem_default(cfm)
     @freeing = true
     notify 'Beginning memory freeing', 'Start Freeing'
-    free_mem(@settings[:pressure])
+    free_mem(App::Persistence['pressure'])
     nfm = get_free_mem
     notify "Finished freeing #{format_bytes(nfm - cfm)}", 'Finish Freeing'
     NSLog "Freed #{format_bytes(nfm - cfm, true)}"
@@ -179,7 +176,7 @@ class AppDelegate
   end
 
   def free_mem(pressure)
-    if @settings[:method_pressure]
+    if App::Persistence['method_pressure']
       cmp = get_memory_pressure
       if cmp >= 4
         notify 'Memory Pressure too high! Running not a good idea.', 'Error'
@@ -254,7 +251,7 @@ class AppDelegate
 
   def notify(msg, nn)
     NSLog "Notification (#{nn}): #{msg}"
-    if @settings[:growl]
+    if App::Persistence['growl']
       GrowlApplicationBridge.notifyWithTitle(
           'MemoryTamer',
           description:      msg,
@@ -267,8 +264,29 @@ class AppDelegate
       notification                 = NSUserNotification.alloc.init
       notification.title           = 'MemoryTamer'
       notification.informativeText = msg
-      notification.soundName       = nil#NSUserNotificationDefaultSoundName
+      notification.soundName       = nil #NSUserNotificationDefaultSoundName
       NSUserNotificationCenter.defaultUserNotificationCenter.scheduleNotification(notification)
+    end
+  end
+
+  def check_for_updates
+    version = NSBundle.mainBundle.infoDictionary['CFBundleVersion']
+    BW::HTTP.get('https://api.github.com/repos/henderea/memorytamer/tags') do |response|
+      if response.ok?
+        json = BW::JSON.parse(response.body.to_str)
+        nv = json[0]['name']
+        if nv > version
+          alert("New version available: #{nv}; current version: #{version}")
+          NSWorkspace.sharedWorkspace.openURL(NSURL.URLWithString('https://github.com/henderea/MemoryTamer/blob/master/README.md'))
+        end
+        nv > version
+      elsif response.status_code.to_s =~ /40\d/
+        alert('Login failed')
+        true
+      else
+        alert(response.error_message)
+        true
+      end
     end
   end
 end

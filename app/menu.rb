@@ -19,6 +19,7 @@ class MainMenu
     menuItem :pressure_change, 'Change freeing pressure'
     menuItem :method_display, 'Freeing method: memory pressure'
     menuItem :method_change, 'Use plain allocation method'
+    menuItem :status_update, 'Check for Updates'
     menuItem :status_quit, 'Quit', preset: :quit
   end
 
@@ -36,6 +37,8 @@ class MainMenu
       status_free
       ___
       status_preferences
+      ___
+      status_update
       ___
       status_quit
     }
