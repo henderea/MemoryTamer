@@ -8,7 +8,7 @@
         <item>
             <title>Version 0.6.2</title>
             <sparkle:releaseNotesLink>
-                https://github.com/henderea/MemoryTamer/releases/tag/0.6.2
+                http://releases.io/henderea/MemoryTamer/0.6.2
             </sparkle:releaseNotesLink>
             <pubDate>Tue, 22 Jul 2014 11:40:00 -0400</pubDate>
             <enclosure url="https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.6.2/MemoryTamer-0.6.2.zip" sparkle:version="0.6.2" length="3941932" type="application/octet-stream" />
@@ -17,7 +17,7 @@
         <item>
             <title>Version 0.6.1</title>
             <sparkle:releaseNotesLink>
-                https://github.com/henderea/MemoryTamer/releases/tag/0.6.1
+                http://releases.io/henderea/MemoryTamer/0.6.1
             </sparkle:releaseNotesLink>
             <pubDate>Tue, 22 Jul 2014 11:15:00 -0400</pubDate>
             <enclosure url="https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.6.1/MemoryTamer-0.6.1.zip" sparkle:version="0.6.1" length="3938862" type="application/octet-stream" />
@@ -26,7 +26,7 @@
         <item>
             <title>Version 0.6</title>
             <sparkle:releaseNotesLink>
-                https://github.com/henderea/MemoryTamer/releases/tag/0.6
+                http://releases.io/henderea/MemoryTamer/0.6
             </sparkle:releaseNotesLink>
             <pubDate>Tue, 22 Jul 2014 10:55:00 -0400</pubDate>
             <enclosure url="https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.6/MemoryTamer-0.6.zip" sparkle:version="0.6" length="3939838" type="application/octet-stream" />
@@ -35,7 +35,7 @@
         <item>
             <title>Version 0.5</title>
             <sparkle:releaseNotesLink>
-                https://github.com/henderea/MemoryTamer/releases/tag/0.5
+                http://releases.io/henderea/MemoryTamer/0.5
             </sparkle:releaseNotesLink>
             <pubDate>Mon, 21 Jul 2014 11:06:00 -0400</pubDate>
             <enclosure url="https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.5/MemoryTamer-0.5.zip" sparkle:version="0.5" length="2878381" type="application/octet-stream" />
@@ -44,7 +44,7 @@
         <item>
             <title>Version 0.4.2</title>
             <sparkle:releaseNotesLink>
-                https://github.com/henderea/MemoryTamer/releases/tag/0.4.2
+                http://releases.io/henderea/MemoryTamer/0.4.2
             </sparkle:releaseNotesLink>
             <pubDate>Mon, 21 Jul 2014 8:30:00 -0400</pubDate>
             <enclosure url="https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.4.2/MemoryTamer-0.4.2.zip" sparkle:version="0.4.2" length="2363464" type="application/octet-stream" />
@@ -53,7 +53,7 @@
         <item>
             <title>Version 0.4.1</title>
             <sparkle:releaseNotesLink>
-                https://github.com/henderea/MemoryTamer/releases/tag/0.4.1
+                http://releases.io/henderea/MemoryTamer/0.4.1
             </sparkle:releaseNotesLink>
             <pubDate>Sun, 20 Jul 2014 13:15:00 -0400</pubDate>
             <enclosure url="https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.4.1/MemoryTamer-0.4.1.zip" sparkle:version="0.4.1" length="2363907" type="application/octet-stream" />
@@ -62,7 +62,7 @@
         <item>
             <title>Version 0.4</title>
             <sparkle:releaseNotesLink>
-                https://github.com/henderea/MemoryTamer/releases/tag/0.4
+                http://releases.io/henderea/MemoryTamer/0.4
             </sparkle:releaseNotesLink>
             <pubDate>Sun, 20 Jul 2014 11:27:00 -0400</pubDate>
             <enclosure url="https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.4/MemoryTamer-0.4.zip" sparkle:version="0.4" length="2362448" type="application/octet-stream" />
@@ -71,7 +71,7 @@
         <item>
             <title>Version 0.3</title>
             <sparkle:releaseNotesLink>
-                https://github.com/henderea/MemoryTamer/releases/tag/0.3
+                http://releases.io/henderea/MemoryTamer/0.3
             </sparkle:releaseNotesLink>
             <pubDate>Thu, 17 Jul 2014 16:03:00 -0400</pubDate>
             <enclosure url="https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.3/MemoryTamer-0.3.zip" sparkle:version="0.3" length="1730111" type="application/octet-stream" />
