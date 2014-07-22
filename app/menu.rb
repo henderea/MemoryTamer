@@ -19,6 +19,8 @@ class MainMenu
     menuItem :pressure_change, 'Change freeing pressure'
     menuItem :method_display, 'Freeing method: memory pressure'
     menuItem :method_change, 'Use plain allocation method'
+    menuItem :escalate_display, 'Auto-escalate: off'
+    menuItem :escalate_change, 'Enable auto-escalate'
     menuItem :status_update, 'Check for Updates'
     menuItem :status_quit, 'Quit', preset: :quit
   end
@@ -57,6 +59,9 @@ class MainMenu
       ___
       method_display
       method_change
+      ___
+      escalate_display
+      escalate_change
     }
   end
 
