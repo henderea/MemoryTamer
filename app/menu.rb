@@ -21,6 +21,8 @@ class MainMenu
     menuItem :method_change, 'Use plain allocation method'
     menuItem :escalate_display, 'Auto-escalate: off'
     menuItem :escalate_change, 'Enable auto-escalate'
+    menuItem :show_display, 'Show free memory: on'
+    menuItem :show_change, 'Hide free memory'
     menuItem :status_update, 'Check for Updates'
     menuItem :status_quit, 'Quit', preset: :quit
   end
@@ -62,6 +64,9 @@ class MainMenu
       ___
       escalate_display
       escalate_change
+      ___
+      show_display
+      show_change
     }
   end
 

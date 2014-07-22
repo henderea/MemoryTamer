@@ -27,6 +27,7 @@ class AppDelegate
       set_pressure_display
       set_method_display
       set_escalate_display
+      set_show_display
     }
     MainMenu[:prefs].subscribe(:notification_change) { |_, _|
       App::Persistence['growl'] = !App::Persistence['growl']
@@ -69,11 +70,16 @@ class AppDelegate
       App::Persistence['auto_escalate'] = !App::Persistence['auto_escalate']
       set_escalate_display
     }.canExecuteBlock { |_| @mavericks }
+    MainMenu[:prefs].subscribe(:show_change) { |_, _|
+      App::Persistence['show_mem'] = !App::Persistence['show_mem']
+      set_show_display
+    }
     set_notification_display
     set_mem_display
     set_pressure_display
     set_method_display
     set_escalate_display
+    set_show_display
     NSUserNotificationCenter.defaultUserNotificationCenter.setDelegate(self) if @has_nc
     GrowlApplicationBridge.setGrowlDelegate(self)
     @statusItem = MainMenu[:statusbar].statusItem
@@ -82,7 +88,7 @@ class AppDelegate
       @last_free = NSDate.date - 30
       loop do
         cfm = get_free_mem
-        @statusItem.setTitle(format_bytes(cfm))
+        @statusItem.setTitle(App::Persistence['show_mem'] ? format_bytes(cfm) : '')
         if cfm <= dfm && (NSDate.date - @last_free) >= 60 && !@freeing
           Thread.start { free_mem_default(cfm) }
         end
@@ -113,6 +119,11 @@ class AppDelegate
   def set_escalate_display
     MainMenu[:prefs].items[:escalate_display][:title] = "Auto-escalate: #{App::Persistence['auto_escalate'] ? 'on' : 'off'}"
     MainMenu[:prefs].items[:escalate_change][:title]  = @mavericks ? "#{!App::Persistence['auto_escalate'] ? 'Enable' : 'Disable'} auto-escalate" : 'Requires Mavericks 10.9 or higher'
+    end
+
+  def set_show_display
+    MainMenu[:prefs].items[:show_display][:title] = "Show free memory: #{App::Persistence['show_mem'] ? 'on' : 'off'}"
+    MainMenu[:prefs].items[:show_change][:title]  = "#{!App::Persistence['show_mem'] ? 'Show' : 'Hide'} free memory"
   end
 
   def load_prefs
@@ -137,6 +148,7 @@ class AppDelegate
     end
     App::Persistence['growl']           = App::Persistence['growl'] || !@has_nc
     App::Persistence['method_pressure'] = App::Persistence['method_pressure'] && @mavericks
+    App::Persistence['show_mem'] = true if App::Persistence['show_mem'].nil?
   end
 
   def dfm
