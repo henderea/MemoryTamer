@@ -15,6 +15,7 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v0.5:** add the ability to check for updates (currently not automatic)
 * **v0.5.1:** add a setting to control the freeing pressure auto-escalate functionality and make MemoryTamer wait at least 30 seconds after launching before it tries to free memory
 * **v0.6:** Change update checking to Sparkle update checker
+* **v0.6.1:** show Sparkle checking for updates dialog when check for updates menu item is selected
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.3> (Mavericks-only)
@@ -24,3 +25,4 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v0.5:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.5>
 * **v0.5.1:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.5.1>
 * **v0.6:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.6>
+* **v0.6.1:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.6.1>

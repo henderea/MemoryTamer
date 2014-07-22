@@ -16,8 +16,8 @@ class AppDelegate
     MainMenu[:statusbar].subscribe(:status_quit) { |_, _|
       NSApp.terminate
     }
-    MainMenu[:statusbar].subscribe(:status_update) { |_, _|
-      alert('No new version found') unless check_for_updates
+    MainMenu[:statusbar].subscribe(:status_update) { |_, sender|
+      SUUpdater.sharedUpdater.checkForUpdates(sender)
     }
     MainMenu[:prefs].subscribe(:preferences_refresh) { |_, _|
       NSLog 'Reloading preferences'
@@ -284,27 +284,5 @@ class AppDelegate
       notification.soundName       = nil #NSUserNotificationDefaultSoundName
       NSUserNotificationCenter.defaultUserNotificationCenter.scheduleNotification(notification)
     end
-  end
-
-  def check_for_updates
-    # version = NSBundle.mainBundle.infoDictionary['CFBundleVersion']
-    # BW::HTTP.get('https://api.github.com/repos/henderea/memorytamer/tags') do |response|
-    #   if response.ok?
-    #     json = BW::JSON.parse(response.body.to_str)
-    #     nv = json[0]['name']
-    #     if nv > version
-    #       alert("New version available: #{nv}; current version: #{version}")
-    #       NSWorkspace.sharedWorkspace.openURL(NSURL.URLWithString('https://github.com/henderea/MemoryTamer/blob/master/README.md'))
-    #     end
-    #     nv > version
-    #   elsif response.status_code.to_s =~ /40\d/
-    #     alert('Login failed')
-    #     true
-    #   else
-    #     alert(response.error_message)
-    #     true
-    #   end
-    # end
-    SUUpdater.sharedUpdater.checkForUpdates
   end
 end
