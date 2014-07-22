@@ -10,6 +10,7 @@ class AppDelegate
     @has_nc    = (NSClassFromString('NSUserNotificationCenter')!=nil)
     load_prefs
     MainMenu.build!
+    @statusItem = MainMenu[:statusbar].statusItem
     MainMenu[:statusbar].subscribe(:status_free) { |_, _|
       Thread.start { free_mem_default(get_free_mem) }
     }.canExecuteBlock { |_| !@freeing }
@@ -22,12 +23,7 @@ class AppDelegate
     MainMenu[:prefs].subscribe(:preferences_refresh) { |_, _|
       NSLog 'Reloading preferences'
       load_prefs
-      set_notification_display
-      set_mem_display
-      set_pressure_display
-      set_method_display
-      set_escalate_display
-      set_show_display
+      set_all_displays
     }
     MainMenu[:prefs].subscribe(:notification_change) { |_, _|
       App::Persistence['growl'] = !App::Persistence['growl']
@@ -66,35 +62,45 @@ class AppDelegate
       App::Persistence['method_pressure'] = !App::Persistence['method_pressure']
       set_method_display
     }.canExecuteBlock { |_| @mavericks }
-    MainMenu[:prefs].subscribe(:escalate_change) { |_, _|
-      App::Persistence['auto_escalate'] = !App::Persistence['auto_escalate']
+    MainMenu[:prefs].subscribe(:escalate_display) { |command, sender|
+      App::Persistence['auto_escalate'] = command.parent[:state] == NSOffState
+      # App::Persistence['auto_escalate'] = !App::Persistence['auto_escalate']
       set_escalate_display
     }.canExecuteBlock { |_| @mavericks }
-    MainMenu[:prefs].subscribe(:show_change) { |_, _|
-      App::Persistence['show_mem'] = !App::Persistence['show_mem']
+    MainMenu[:prefs].subscribe(:show_display) { |command, sender|
+      App::Persistence['show_mem'] = command.parent[:state] == NSOffState
+      # App::Persistence['show_mem'] = !App::Persistence['show_mem']
       set_show_display
     }
-    set_notification_display
-    set_mem_display
-    set_pressure_display
-    set_method_display
-    set_escalate_display
-    set_show_display
+    MainMenu[:prefs].subscribe(:update_display) { |command, sender|
+      App::Persistence['update_while'] = command.parent[:state] == NSOffState
+      set_update_display
+    }
+    set_all_displays
     NSUserNotificationCenter.defaultUserNotificationCenter.setDelegate(self) if @has_nc
     GrowlApplicationBridge.setGrowlDelegate(self)
-    @statusItem = MainMenu[:statusbar].statusItem
     NSLog "Starting up with memory = #{dfm}; pressure = #{App::Persistence['pressure']}"
     Thread.start {
       @last_free = NSDate.date - 30
       loop do
         cfm = get_free_mem
-        @statusItem.setTitle(App::Persistence['show_mem'] ? format_bytes(cfm) : '')
+        @statusItem.setTitle(App::Persistence['show_mem'] ? format_bytes(cfm) : '') if App::Persistence['update_while'] || !@freeing
         if cfm <= dfm && (NSDate.date - @last_free) >= 60 && !@freeing
           Thread.start { free_mem_default(cfm) }
         end
         sleep(2)
       end
     }
+  end
+
+  def set_all_displays
+    set_notification_display
+    set_mem_display
+    set_pressure_display
+    set_method_display
+    set_escalate_display
+    set_show_display
+    set_update_display
   end
 
   def set_notification_display
@@ -117,13 +123,20 @@ class AppDelegate
   end
 
   def set_escalate_display
-    MainMenu[:prefs].items[:escalate_display][:title] = "Auto-escalate: #{App::Persistence['auto_escalate'] ? 'on' : 'off'}"
-    MainMenu[:prefs].items[:escalate_change][:title]  = @mavericks ? "#{!App::Persistence['auto_escalate'] ? 'Enable' : 'Disable'} auto-escalate" : 'Requires Mavericks 10.9 or higher'
+    # MainMenu[:prefs].items[:escalate_display][:title] = "Auto-escalate: #{App::Persistence['auto_escalate'] ? 'on' : 'off'}"
+    # MainMenu[:prefs].items[:escalate_change][:title]  = @mavericks ? "#{!App::Persistence['auto_escalate'] ? 'Enable' : 'Disable'} auto-escalate" : 'Requires Mavericks 10.9 or higher'
+    MainMenu[:prefs].items[:escalate_display][:state] = App::Persistence['auto_escalate'] ? NSOnState : NSOffState
     end
 
   def set_show_display
-    MainMenu[:prefs].items[:show_display][:title] = "Show free memory: #{App::Persistence['show_mem'] ? 'on' : 'off'}"
-    MainMenu[:prefs].items[:show_change][:title]  = "#{!App::Persistence['show_mem'] ? 'Show' : 'Hide'} free memory"
+    # MainMenu[:prefs].items[:show_display][:title] = "Show free memory: #{App::Persistence['show_mem'] ? 'on' : 'off'}"
+    # MainMenu[:prefs].items[:show_change][:title]  = "#{!App::Persistence['show_mem'] ? 'Show' : 'Hide'} free memory"
+    MainMenu[:prefs].items[:show_display][:state] = App::Persistence['show_mem'] ? NSOnState : NSOffState
+    @statusItem.setTitle(App::Persistence['show_mem'] ? format_bytes(get_free_mem) : '')
+  end
+
+  def set_update_display
+    MainMenu[:prefs].items[:update_display][:state] = App::Persistence['update_while'] ? NSOnState : NSOffState
   end
 
   def load_prefs
@@ -149,6 +162,7 @@ class AppDelegate
     App::Persistence['growl']           = App::Persistence['growl'] || !@has_nc
     App::Persistence['method_pressure'] = App::Persistence['method_pressure'] && @mavericks
     App::Persistence['show_mem'] = true if App::Persistence['show_mem'].nil?
+    App::Persistence['update_while'] = true if App::Persistence['update_while'].nil?
   end
 
   def dfm
