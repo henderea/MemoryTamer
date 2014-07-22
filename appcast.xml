@@ -6,34 +6,58 @@
         <description>Most recent changes with links to updates.</description>
         <language>en</language>
         <item>
+            <title>Version 0.5.1</title>
+            <sparkle:releaseNotesLink>
+                https://github.com/henderea/MemoryTamer/releases/tag/0.5.1
+            </sparkle:releaseNotesLink>
+            <pubDate>Tue, 22 Jul 2014 8:49:00 -0400</pubDate>
+            <enclosure url="https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.5.1/MemoryTamer-0.5.1.zip" sparkle:version="0.5.1" length="2883251" type="application/octet-stream" />
+            <sparkle:minimumSystemVersion>10.7</sparkle:minimumSystemVersion>
+        </item>
+        <item>
             <title>Version 0.5</title>
             <sparkle:releaseNotesLink>
                 https://github.com/henderea/MemoryTamer/releases/tag/0.5
             </sparkle:releaseNotesLink>
-            <pubDate>Wed, 09 Jan 2006 19:20:11 +0000</pubDate>
-            <enclosure url="http://you.com/app/Your%20Great%20App%202.0.zip" sparkle:version="2.0" length="1623481" type="application/octet-stream" sparkle:dsaSignature="BAFJW4B6B1K1JyW30nbkBwainOzrN6EQuAh" />
+            <pubDate>Mon, 21 Jul 2014 11:06:00 -0400</pubDate>
+            <enclosure url="https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.5/MemoryTamer-0.5.zip" sparkle:version="0.5" length="2878381" type="application/octet-stream" />
             <sparkle:minimumSystemVersion>10.7</sparkle:minimumSystemVersion>
         </item>
-
         <item>
-            <title>Version 1.5 (8 bugs fixed; 2 new features)</title>
+            <title>Version 0.4.2</title>
             <sparkle:releaseNotesLink>
-                http://you.com/app/1.5.html
+                https://github.com/henderea/MemoryTamer/releases/tag/0.4.2
             </sparkle:releaseNotesLink>
-            <pubDate>Wed, 01 Jan 2006 12:20:11 +0000</pubDate>
-            <enclosure url="http://you.com/app/Your%20Great%20App%201.5.zip" sparkle:version="1.5" length="1472893" type="application/octet-stream" sparkle:dsaSignature="234818feCa1JyW30nbkBwainOzrN6EQuAh" />
+            <pubDate>Mon, 21 Jul 2014 8:30:00 -0400</pubDate>
+            <enclosure url="https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.4.2/MemoryTamer-0.4.2.zip" sparkle:version="0.4.2" length="2363464" type="application/octet-stream" />
             <sparkle:minimumSystemVersion>10.7</sparkle:minimumSystemVersion>
         </item>
-
-        <!-- Now here's an example of a version with a weird internal version number (like an SVN revision) but a human-readable external one. -->
         <item>
-            <title>Version 1.4 (5 bugs fixed; 2 new features)</title>
+            <title>Version 0.4.1</title>
             <sparkle:releaseNotesLink>
-                http://you.com/app/1.4.html
+                https://github.com/henderea/MemoryTamer/releases/tag/0.4.1
             </sparkle:releaseNotesLink>
-            <pubDate>Wed, 25 Dec 2005 12:20:11 +0000</pubDate>
-            <enclosure url="http://you.com/app/Your%20Great%20App%201.4.zip" sparkle:version="241" sparkle:shortVersionString="1.4" sparkle:dsaSignature="MC0CFBfeCa1JyW30nbkBwainOzrN6EQuAh=" length="1472349" type="application/octet-stream" />
+            <pubDate>Sun, 20 Jul 2014 13:15:00 -0400</pubDate>
+            <enclosure url="https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.4.1/MemoryTamer-0.4.1.zip" sparkle:version="0.4.1" length="2363907" type="application/octet-stream" />
             <sparkle:minimumSystemVersion>10.7</sparkle:minimumSystemVersion>
+        </item>
+        <item>
+            <title>Version 0.4</title>
+            <sparkle:releaseNotesLink>
+                https://github.com/henderea/MemoryTamer/releases/tag/0.4
+            </sparkle:releaseNotesLink>
+            <pubDate>Sun, 20 Jul 2014 11:27:00 -0400</pubDate>
+            <enclosure url="https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.4/MemoryTamer-0.4.zip" sparkle:version="0.4" length="2362448" type="application/octet-stream" />
+            <sparkle:minimumSystemVersion>10.8</sparkle:minimumSystemVersion>
+        </item>
+        <item>
+            <title>Version 0.3</title>
+            <sparkle:releaseNotesLink>
+                https://github.com/henderea/MemoryTamer/releases/tag/0.3
+            </sparkle:releaseNotesLink>
+            <pubDate>Thu, 17 Jul 2014 16:03:00 -0400</pubDate>
+            <enclosure url="https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.3/MemoryTamer-0.3.zip" sparkle:version="0.3" length="1730111" type="application/octet-stream" />
+            <sparkle:minimumSystemVersion>10.9</sparkle:minimumSystemVersion>
         </item>
     </channel>
 </rss>

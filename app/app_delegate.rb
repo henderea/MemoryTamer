@@ -26,6 +26,7 @@ class AppDelegate
       set_mem_display
       set_pressure_display
       set_method_display
+      set_escalate_display
     }
     MainMenu[:prefs].subscribe(:notification_change) { |_, _|
       App::Persistence['growl'] = !App::Persistence['growl']
