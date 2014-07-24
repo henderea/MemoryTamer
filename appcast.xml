@@ -6,6 +6,15 @@
         <description>Most recent changes with links to updates.</description>
         <language>en</language>
         <item>
+            <title>Version 0.7.1</title>
+            <sparkle:releaseNotesLink>
+                http://releases.io/henderea/MemoryTamer/0.7.1
+            </sparkle:releaseNotesLink>
+            <pubDate>Thu, 24 Jul 2014 10:55:00 -0400</pubDate>
+            <enclosure url="https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.7.1/MemoryTamer-0.7.1.zip" sparkle:version="0.7" length="3943535" type="application/octet-stream" />
+            <sparkle:minimumSystemVersion>10.7</sparkle:minimumSystemVersion>
+        </item>
+        <item>
             <title>Version 0.7</title>
             <sparkle:releaseNotesLink>
                 http://releases.io/henderea/MemoryTamer/0.7

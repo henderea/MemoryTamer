@@ -64,12 +64,10 @@ class AppDelegate
     }.canExecuteBlock { |_| @mavericks }
     MainMenu[:prefs].subscribe(:escalate_display) { |command, sender|
       App::Persistence['auto_escalate'] = command.parent[:state] == NSOffState
-      # App::Persistence['auto_escalate'] = !App::Persistence['auto_escalate']
       set_escalate_display
     }.canExecuteBlock { |_| @mavericks }
     MainMenu[:prefs].subscribe(:show_display) { |command, sender|
       App::Persistence['show_mem'] = command.parent[:state] == NSOffState
-      # App::Persistence['show_mem'] = !App::Persistence['show_mem']
       set_show_display
     }
     MainMenu[:prefs].subscribe(:update_display) { |command, sender|
@@ -123,14 +121,10 @@ class AppDelegate
   end
 
   def set_escalate_display
-    # MainMenu[:prefs].items[:escalate_display][:title] = "Auto-escalate: #{App::Persistence['auto_escalate'] ? 'on' : 'off'}"
-    # MainMenu[:prefs].items[:escalate_change][:title]  = @mavericks ? "#{!App::Persistence['auto_escalate'] ? 'Enable' : 'Disable'} auto-escalate" : 'Requires Mavericks 10.9 or higher'
     MainMenu[:prefs].items[:escalate_display][:state] = App::Persistence['auto_escalate'] ? NSOnState : NSOffState
     end
 
   def set_show_display
-    # MainMenu[:prefs].items[:show_display][:title] = "Show free memory: #{App::Persistence['show_mem'] ? 'on' : 'off'}"
-    # MainMenu[:prefs].items[:show_change][:title]  = "#{!App::Persistence['show_mem'] ? 'Show' : 'Hide'} free memory"
     MainMenu[:prefs].items[:show_display][:state] = App::Persistence['show_mem'] ? NSOnState : NSOffState
     @statusItem.setTitle(App::Persistence['show_mem'] ? format_bytes(get_free_mem) : '')
   end
@@ -188,22 +182,15 @@ class AppDelegate
   end
 
   def get_free_mem(include_inactive = false)
-    vm_stat = `vm_stat`
-
-    vm_stat = vm_stat.split("\n")
-
-    page_size = vm_stat[0].match(/(\d+) bytes/)[1].to_i
-
-    pages_free     = vm_stat[1].match(/(\d+)/)[1].to_i
-    pages_inactive = vm_stat[3].match(/(\d+)/)[1].to_i
+    page_size = WeakRef.new(`vm_stat | grep 'page size' | awk '{ print $8 }'`).chomp!.to_i
+    pages_free = WeakRef.new(`vm_stat | grep 'Pages free' | awk '{ print $3 }'`).chomp![0...-1].to_i
+    pages_inactive = WeakRef.new(`vm_stat | grep 'Pages inactive' | awk '{ print $3 }'`).chomp![0...-1].to_i
 
     page_size*pages_free + (include_inactive ? page_size*pages_inactive : 0)
   end
 
   def sysctl_get(name)
-    v = `/usr/sbin/sysctl '#{name}'`.chomp
-    v = v[(name.length + 2)..-1] if v.start_with?("#{name}: ")
-    v
+    `/usr/sbin/sysctl '#{name}' | awk '{ print $2 }'`.chomp!
   end
 
   def get_memory_pressure
