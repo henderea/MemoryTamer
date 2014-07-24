@@ -3,8 +3,6 @@ MemoryTamer
 
 A RubyMotion application for keeping memory usage in check.  Shows up in the menu bar and shows current free ram (refreshed every 2 seconds).
 
-**Note:** I got the name idea from App Tamer (<http://www.stclairsoft.com/AppTamer/>), but I don't plan to sell this or distribute it widely, so hopefully the naming won't be an issue.
-
 **Note:** The plain allocation method uses the C code from <http://forums.macrumors.com/showpost.php?p=8941184&postcount=54>
 
 ###Release notes
