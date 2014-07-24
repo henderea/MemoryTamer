@@ -3,6 +3,19 @@ class AppDelegate
 
   # noinspection RubyUnusedLocalVariable
   def applicationDidFinishLaunching(notification)
+    paddle = Paddle.sharedInstance
+    paddle.setProductId('993')
+    paddle.setVendorId('1657')
+    paddle.setApiKey('ff308e08f807298d8a76a7a3db1ee12b')
+    paddle.startLicensing({
+                              KPADCurrentPrice => '1.99',
+                              KPADDevName => 'Eric Henderson',
+                              KPADCurrency => 'USD',
+                              KPADImage => 'https://raw.githubusercontent.com/henderea/MemoryTamer/master/resources/Icon.png',
+                              KPADProductName => 'MemoryTamer',
+                              KPADTrialDuration => '7',
+                              KPADTrialText => 'Thanks for downloading a trial of MemoryTamer! We hope you enjoy it.',
+                              KPADProductImage => 'Icon.png'}, timeTrial: true, withWindow: nil)
     SUUpdater.sharedUpdater
     @freeing = false
     system('which memory_pressure')

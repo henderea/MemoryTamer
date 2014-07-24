@@ -1,6 +1,8 @@
 MemoryTamer
 ===========
 
+As of version 0.7.2, Memory Tamer is now a paid app.  Please visit <https://pay.paddle.com/checkout/492767> to get a license.
+
 A RubyMotion application for keeping memory usage in check.  Shows up in the menu bar and shows current free ram (refreshed every 2 seconds).
 
 **Note:** The plain allocation method uses the C code from <http://forums.macrumors.com/showpost.php?p=8941184&postcount=54>
@@ -17,6 +19,7 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v0.6.2:** add an option for hiding free memory in the menu bar
 * **v0.7:** add an option to disable updating the free memory display while freeing memory; also change some preference items to checkbox items
 * **v0.7.1:** hopefully decrease the amount of memory leaking
+* **v0.7.2:** change to a paid app
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.3> (Mavericks-only)
@@ -30,3 +33,4 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v0.6.2:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.6.2>
 * **v0.7:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.7>
 * **v0.7.1:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.7.1>
+* **v0.7.2:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.7.2>
