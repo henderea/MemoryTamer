@@ -244,7 +244,7 @@ class AppDelegate
 
   def free_mem_old
     mtf = get_free_mem(true)
-    NSLog mtf
+    NSLog "#{mtf}"
     ep = NSBundle.mainBundle.pathForResource('inactive', ofType: '')
     op = `'#{ep}' '#{mtf}'`
     NSLog op

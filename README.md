@@ -21,6 +21,7 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v0.7.1:** hopefully decrease the amount of memory leaking
 * **v0.7.2:** change to a paid app
 * **v0.7.3:** add registration submenu
+* **v0.7.4:** fix a bug in the plain allocation freeing method
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.3> (Mavericks-only)
@@ -35,3 +36,5 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v0.7:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.7>
 * **v0.7.1:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.7.1>
 * **v0.7.2:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.7.2>
+* **v0.7.3:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.7.3>
+* **v0.7.4:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.7.4>
