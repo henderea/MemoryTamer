@@ -4,5 +4,3 @@ gem 'rake'
 # Add your dependencies here:
 gem 'everyday-menu', '>= 1.3.4'
 gem 'bubble-wrap', require: 'bubble-wrap/core'
-gem 'bubble-wrap-http'
-gem 'motion-yaml'

@@ -16,6 +16,7 @@ class AppDelegate
                               KPADTrialDuration => '7',
                               KPADTrialText => 'Thanks for downloading a trial of MemoryTamer! We hope you enjoy it.',
                               KPADProductImage => 'Icon.png'}, timeTrial: true, withWindow: nil)
+    NSNotificationCenter.defaultCenter.addObserver(self, selector: :set_license_display, name: KPADActivated, object: nil)
     SUUpdater.sharedUpdater
     @freeing = false
     system('which memory_pressure')
@@ -32,6 +33,9 @@ class AppDelegate
     }
     MainMenu[:statusbar].subscribe(:status_update) { |_, sender|
       SUUpdater.sharedUpdater.checkForUpdates(sender)
+    }
+    MainMenu[:license].subscribe(:license_change) { |_, _|
+      Paddle.sharedInstance.showLicencing
     }
     MainMenu[:prefs].subscribe(:preferences_refresh) { |_, _|
       NSLog 'Reloading preferences'
@@ -112,6 +116,7 @@ class AppDelegate
     set_escalate_display
     set_show_display
     set_update_display
+    set_license_display
   end
 
   def set_notification_display
@@ -146,30 +151,24 @@ class AppDelegate
     MainMenu[:prefs].items[:update_display][:state] = App::Persistence['update_while'] ? NSOnState : NSOffState
   end
 
+  def set_license_display(note = nil)
+    Thread.start {
+      paddle = Paddle.sharedInstance
+      MainMenu[:license].items[:license_display][:title] = paddle.productActivated ? paddle.activatedEmail : 'Not Registered'
+      MainMenu[:license].items[:license_change][:title] = paddle.productActivated ? 'View Registration' : 'Buy / Register'
+    }
+  end
+
   def load_prefs
-    pth       = File.expand_path('~/mtprefs.yaml')
-    if App::Persistence['pressure'].nil?
-      App::Persistence['mem'] = 1024
-      App::Persistence['pressure'] = 'warn'
-      App::Persistence['growl'] = false
-      App::Persistence['method_pressure'] = true
-      begin
-        if File.exist?(pth)
-          fc                          = IO.read(pth).chomp
-          tmp                         = YAML::load(fc)
-          App::Persistence['mem']             = tmp[:mem] if tmp[:mem] && tmp[:mem].is_a?(Numeric)
-          App::Persistence['pressure']        = tmp[:pressure] if tmp[:pressure] && %w(normal warn critical).include?(tmp[:pressure])
-          App::Persistence['growl']           = tmp[:growl] && tmp[:growl] != 0
-          App::Persistence['method_pressure'] = tmp[:method_pressure] && tmp[:method_pressure] != 0
-        end
-      rescue
-        # ignored
-      end
-    end
-    App::Persistence['growl']           = App::Persistence['growl'] || !@has_nc
-    App::Persistence['method_pressure'] = App::Persistence['method_pressure'] && @mavericks
+    App::Persistence['mem'] = 1024 if App::Persistence['mem'].nil?
+    App::Persistence['pressure'] = 'warn' if App::Persistence['pressure'].nil?
+    App::Persistence['growl'] = false if App::Persistence['growl'].nil?
+    App::Persistence['method_pressure'] = true if App::Persistence['method_pressure'].nil?
     App::Persistence['show_mem'] = true if App::Persistence['show_mem'].nil?
     App::Persistence['update_while'] = true if App::Persistence['update_while'].nil?
+
+    App::Persistence['growl']           = App::Persistence['growl'] || !@has_nc
+    App::Persistence['method_pressure'] = App::Persistence['method_pressure'] && @mavericks
   end
 
   def dfm

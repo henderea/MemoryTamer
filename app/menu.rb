@@ -22,6 +22,9 @@ class MainMenu
     menuItem :escalate_display, 'Auto-escalate', state: NSOffState
     menuItem :show_display, 'Show free memory', state: NSOnState
     menuItem :update_display, 'Update while freeing', state: NSOnState
+    menuItem :status_license, 'Registration', submenu: :license
+    menuItem :license_display, 'Not Registered'
+    menuItem :license_change, 'Buy / Register'
     menuItem :status_update, 'Check for Updates'
     menuItem :status_quit, 'Quit', preset: :quit
   end
@@ -40,6 +43,8 @@ class MainMenu
       status_free
       ___
       status_preferences
+      ___
+      status_license
       ___
       status_update
       ___
@@ -66,6 +71,11 @@ class MainMenu
       show_display
       ___
       update_display
+    }
+
+    menu(:license, 'Registration') {
+      license_display
+      license_change
     }
   end
 
