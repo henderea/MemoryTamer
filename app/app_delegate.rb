@@ -91,7 +91,11 @@ class AppDelegate
       App::Persistence['update_while'] = command.parent[:state] == NSOffState
       set_update_display
     }
+    MainMenu[:support].subscribe(:support_ticket) { |_, _|
+      open_link('https://github.com/henderea/MemoryTamer/issues/new')
+    }
     set_all_displays
+    MainMenu[:statusbar].items[:status_version][:title] = "Current Version: #{NSBundle.mainBundle.infoDictionary['CFBundleVersion']}"
     NSUserNotificationCenter.defaultUserNotificationCenter.setDelegate(self) if @has_nc
     GrowlApplicationBridge.setGrowlDelegate(self)
     NSLog "Starting up with memory = #{dfm}; pressure = #{App::Persistence['pressure']}"
@@ -309,5 +313,9 @@ class AppDelegate
       notification.soundName       = nil #NSUserNotificationDefaultSoundName
       NSUserNotificationCenter.defaultUserNotificationCenter.scheduleNotification(notification)
     end
+  end
+
+  def open_link(link)
+    NSWorkspace.sharedWorkspace.openURL(NSURL.URLWithString(link));
   end
 end

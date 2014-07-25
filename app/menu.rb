@@ -9,6 +9,10 @@ class MainMenu
     menuItem :services_item, 'Services', preset: :services
 
     menuItem :status_free, 'Free memory now'
+    menuItem :status_update, 'Check for Updates'
+    menuItem :status_version, 'Current Version: 0.0'
+    menuItem :status_quit, 'Quit', preset: :quit
+
     menuItem :status_preferences, 'Preferences', submenu: :prefs
     menuItem :preferences_refresh, 'Reload preferences'
     menuItem :notification_display, 'Currently using: Growl'
@@ -22,11 +26,13 @@ class MainMenu
     menuItem :escalate_display, 'Auto-escalate', state: NSOffState
     menuItem :show_display, 'Show free memory', state: NSOnState
     menuItem :update_display, 'Update while freeing', state: NSOnState
+
     menuItem :status_license, 'Registration', submenu: :license
     menuItem :license_display, 'Not Registered'
     menuItem :license_change, 'Buy / Register'
-    menuItem :status_update, 'Check for Updates'
-    menuItem :status_quit, 'Quit', preset: :quit
+
+    menuItem :status_support, 'Support', submenu: :support
+    menuItem :support_ticket, 'Submit bug or feature request'
   end
 
   def self.def_menus
@@ -46,7 +52,10 @@ class MainMenu
       ___
       status_license
       ___
+      status_support
+      ___
       status_update
+      status_version
       ___
       status_quit
     }
@@ -76,6 +85,10 @@ class MainMenu
     menu(:license, 'Registration') {
       license_display
       license_change
+    }
+
+    menu(:support, 'Support') {
+      support_ticket
     }
   end
 
