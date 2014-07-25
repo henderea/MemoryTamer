@@ -25,18 +25,18 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v0.7.5:** show version in menu and add a link to file a ticket
 
 ###Versions (code-signed with developer ID):
-* **v0.3:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.3> (Mavericks-only)
-* **v0.4:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.4> (<del>should work back to Lion</del> doesn't work on pre-ML)
-* **v0.4.1:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.4.1>
-* **v0.4.2:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.4.2> (actually tested and working on Lion)
-* **v0.5:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.5>
-* **v0.5.1:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.5.1>
-* **v0.6:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.6>
-* **v0.6.1:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.6.1>
-* **v0.6.2:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.6.2>
-* **v0.7:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.7>
-* **v0.7.1:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.7.1>
-* **v0.7.2:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.7.2>
-* **v0.7.3:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.7.3>
-* **v0.7.4:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.7.4>
-* **v0.7.5:** <https://myepg-ds.s3.amazonaws.com/MemoryTamer-0.7.5>
+* **v0.3:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.3.zip> (Mavericks-only)
+* **v0.4:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.4.zip> (<del>should work back to Lion</del> doesn't work on pre-ML)
+* **v0.4.1:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.4.1.zip>
+* **v0.4.2:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.4.2.zip> (actually tested and working on Lion)
+* **v0.5:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.5.zip>
+* **v0.5.1:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.5.1.zip>
+* **v0.6:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.6.zip>
+* **v0.6.1:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.6.1.zip>
+* **v0.6.2:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.6.2.zip>
+* **v0.7:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.7.zip>
+* **v0.7.1:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.7.1.zip>
+* **v0.7.2:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.7.2.zip>
+* **v0.7.3:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.7.3.zip>
+* **v0.7.4:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.7.4.zip>
+* **v0.7.5:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.7.5.zip>
