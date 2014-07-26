@@ -94,6 +94,9 @@ class AppDelegate
     MainMenu[:support].subscribe(:support_ticket) { |_, _|
       open_link('https://github.com/henderea/MemoryTamer/issues/new')
     }
+    MainMenu[:support].subscribe(:support_usage) { |_, _|
+      open_link('https://github.com/henderea/MemoryTamer/blob/master/USING.md')
+    }
     set_all_displays
     MainMenu[:statusbar].items[:status_version][:title] = "Current Version: #{NSBundle.mainBundle.infoDictionary['CFBundleVersion']}"
     NSUserNotificationCenter.defaultUserNotificationCenter.setDelegate(self) if @has_nc

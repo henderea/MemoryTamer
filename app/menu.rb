@@ -33,6 +33,7 @@ class MainMenu
 
     menuItem :status_support, 'Support', submenu: :support
     menuItem :support_ticket, 'Submit bug or feature request'
+    menuItem :support_usage, 'Using MemoryTamer'
   end
 
   def self.def_menus
@@ -89,6 +90,7 @@ class MainMenu
 
     menu(:support, 'Support') {
       support_ticket
+      support_usage
     }
   end
 

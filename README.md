@@ -24,6 +24,7 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v0.7.4:** fix a bug in the plain allocation freeing method
 * **v0.7.5:** show version in menu and add a link to file a ticket
 * **v0.7.6:** update icon
+* **v0.7.7:** add "Using MemoryTamer" to the Support menu
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.3.zip> (Mavericks-only)
@@ -42,3 +43,4 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v0.7.4:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.7.4.zip>
 * **v0.7.5:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.7.5.zip>
 * **v0.7.6:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-0.7.6.zip>
+* **v0.7.7:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-0.7.7.zip>

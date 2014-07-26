@@ -6,6 +6,15 @@
         <description>Most recent changes with links to updates.</description>
         <language>en</language>
         <item>
+            <title>Version 0.7.7</title>
+            <sparkle:releaseNotesLink>
+                http://releases.io/henderea/MemoryTamer/0.7.7?heading=true
+            </sparkle:releaseNotesLink>
+            <pubDate>Sat, 26 Jul 2014 14:00:00 -0400</pubDate>
+            <enclosure url="http://memorytamer.s3.amazonaws.com/MemoryTamer-0.7.7.zip" sparkle:version="0.7.7" length="4554041" type="application/octet-stream" />
+            <sparkle:minimumSystemVersion>10.7</sparkle:minimumSystemVersion>
+        </item>
+        <item>
             <title>Version 0.7.6</title>
             <sparkle:releaseNotesLink>
                 http://releases.io/henderea/MemoryTamer/0.7.6?heading=true
