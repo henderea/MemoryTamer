@@ -53,7 +53,7 @@ The "plain allocation" freeing method is available on all supported versions of 
 This option is the next item in the Preferences menu, after Freeing Method.  It controls whether or not the freeing pressure will be automatically increased when pressure is already at the target level. It is unchecked by default. It only applies to the "memory pressure" freeing method.
 
 ###Show Free Memory
-This option is the next item in the Preferences menu, after Freeing Method.  It controls whether or not the current amount of free memory is shown in the menu bar next to the icon.  It is checked by default.  The value shown in the menu bar is updated every 2 seconds.
+This option is the next item in the Preferences menu, after Auto-escalate.  It controls whether or not the current amount of free memory is shown in the menu bar next to the icon.  It is checked by default.  The value shown in the menu bar is updated every 2 seconds.
 
 ###Update While Freeing
 This option is the next item in the Preferences menu, after Show Free Memory.  It controls whether or not the current amount of free memory is updated while the freeing process is running.  It is checked by default.  This should not have a noticeable impact on performance either way, but if, for example, you want to see what level the memory was at when it started freeing, you could uncheck this and be able to look at that value while it is freeing.
