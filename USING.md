@@ -49,6 +49,9 @@ The "memory pressure" freeing method is the default, but is only available on OS
 
 The "plain allocation" freeing method is available on all supported versions of OS X and is the only available method on Lion (10.7) and Mountain Lion (10.8).  This will target a certain amount of memory to eat up instead of targeting a specific pressure level.  This method can be faster but can also cause your computer to slow down while it is running.
 
+###Auto-escalate
+This option is the next item in the Preferences menu, after Freeing Method.  It controls whether or not the freeing pressure will be automatically increased when pressure is already at the target level. It is unchecked by default. It only applies to the "memory pressure" freeing method.
+
 ###Show Free Memory
 This option is the next item in the Preferences menu, after Freeing Method.  It controls whether or not the current amount of free memory is shown in the menu bar next to the icon.  It is checked by default.  The value shown in the menu bar is updated every 2 seconds.
 
