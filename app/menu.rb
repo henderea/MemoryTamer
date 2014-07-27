@@ -14,11 +14,12 @@ class MainMenu
     menuItem :status_quit, 'Quit', preset: :quit
 
     menuItem :status_preferences, 'Preferences', submenu: :prefs
-    menuItem :preferences_refresh, 'Reload preferences'
     menuItem :notification_display, 'Currently using: Growl'
     menuItem :notification_change, 'Use Notification Center'
     menuItem :memory_display, 'Memory threshold: 1024 MB'
     menuItem :memory_change, 'Change memory threshold'
+    menuItem :trim_display, 'Memory trim threshold: 2048 MB'
+    menuItem :trim_change, 'Change memory trim threshold'
     menuItem :pressure_display, 'Freeing pressure: warn'
     menuItem :pressure_change, 'Change freeing pressure'
     menuItem :method_display, 'Freeing method: memory pressure'
@@ -62,13 +63,14 @@ class MainMenu
     }
 
     menu(:prefs, 'Preferences') {
-      preferences_refresh
-      ___
       notification_display
       notification_change
       ___
       memory_display
       memory_change
+      ___
+      trim_display
+      trim_change
       ___
       pressure_display
       pressure_change

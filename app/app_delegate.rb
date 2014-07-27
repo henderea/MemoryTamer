@@ -37,35 +37,22 @@ class AppDelegate
     MainMenu[:license].subscribe(:license_change) { |_, _|
       Paddle.sharedInstance.showLicencing
     }
-    MainMenu[:prefs].subscribe(:preferences_refresh) { |_, _|
-      NSLog 'Reloading preferences'
-      load_prefs
-      set_all_displays
-    }
     MainMenu[:prefs].subscribe(:notification_change) { |_, _|
       App::Persistence['growl'] = !App::Persistence['growl']
       set_notification_display
     }.canExecuteBlock { |_| @has_nc }
     MainMenu[:prefs].subscribe(:memory_change) { |_, _|
-      nm = get_input("Please enter the memory threshold in MB (0 - #{get_total_memory / 1024**2})", "#{App::Persistence['mem']}") { |str| (str =~ /^\d*$/) }
-      if nm
-        begin
-          nmi = nm.to_i
-          if nmi < 0
-            alert('The memory threshold must be non-negative!')
-          elsif nmi > get_total_memory / 1024**2
-            alert('You can\'t specify a value above your total ram')
-          else
-            App::Persistence['mem'] = nmi
-            set_mem_display
-          end
-        rescue
-          alert('The memory threshold must be an integer!')
-        end
-      end
+      nm                      = get_input('Please enter the memory threshold in MB', "#{App::Persistence['mem']}", :int, min: 0, max: (get_total_memory / 1024**2))
+      App::Persistence['mem'] = nm if nm
+      set_mem_display
+    }
+    MainMenu[:prefs].subscribe(:trim_change) { |_, _|
+      nm                      = get_input('Please enter the memory trim threshold in MB', "#{App::Persistence['trim_mem']}", :int, min: 0, max: (get_total_memory / 1024**2))
+      App::Persistence['trim_mem'] = nm if nm
+      set_trim_display
     }
     MainMenu[:prefs].subscribe(:pressure_change) { |_, _|
-      np = get_input('Please select the freeing pressure', App::Persistence['pressure'], :select, %w(normal warn critical))
+      np = get_input('Please select the freeing pressure', App::Persistence['pressure'], :select, values: %w(normal warn critical))
       if np
         if %w(normal warn critical).include?(np)
           App::Persistence['pressure'] = np
@@ -109,6 +96,8 @@ class AppDelegate
         @statusItem.setTitle(App::Persistence['show_mem'] ? format_bytes(cfm) : '') if App::Persistence['update_while'] || !@freeing
         if cfm <= dfm && (NSDate.date - @last_free) >= 60 && !@freeing
           Thread.start { free_mem_default(cfm) }
+        elsif cfm <= dtm && (NSDate.date - @last_free) >= 60 && !@freeing
+          Thread.start { trim_mem(cfm) }
         end
         sleep(2)
       end
@@ -118,6 +107,7 @@ class AppDelegate
   def set_all_displays
     set_notification_display
     set_mem_display
+    set_trim_display
     set_pressure_display
     set_method_display
     set_escalate_display
@@ -133,6 +123,10 @@ class AppDelegate
 
   def set_mem_display
     MainMenu[:prefs].items[:memory_display][:title] = "Memory threshold: #{App::Persistence['mem']} MB"
+    end
+
+  def set_trim_display
+    MainMenu[:prefs].items[:trim_display][:title] = "Memory trim threshold: #{App::Persistence['trim_mem']} MB"
   end
 
   def set_pressure_display
@@ -147,7 +141,7 @@ class AppDelegate
 
   def set_escalate_display
     MainMenu[:prefs].items[:escalate_display][:state] = App::Persistence['auto_escalate'] ? NSOnState : NSOffState
-    end
+  end
 
   def set_show_display
     MainMenu[:prefs].items[:show_display][:state] = App::Persistence['show_mem'] ? NSOnState : NSOffState
@@ -168,6 +162,7 @@ class AppDelegate
 
   def load_prefs
     App::Persistence['mem'] = 1024 if App::Persistence['mem'].nil?
+    App::Persistence['trim_mem'] = 0 if App::Persistence['trim_mem'].nil?
     App::Persistence['pressure'] = 'warn' if App::Persistence['pressure'].nil?
     App::Persistence['growl'] = false if App::Persistence['growl'].nil?
     App::Persistence['method_pressure'] = true if App::Persistence['method_pressure'].nil?
@@ -180,6 +175,10 @@ class AppDelegate
 
   def dfm
     App::Persistence['mem'] * 1024**2
+    end
+
+  def dtm
+    App::Persistence['trim_mem'] * 1024**2
   end
 
   def free_mem_default(cfm)
@@ -193,6 +192,17 @@ class AppDelegate
     @last_free = NSDate.date
   end
 
+  def trim_mem(cfm)
+    @freeing = true
+    notify 'Beginning memory trimming', 'Start Freeing'
+    free_mem_old(0.5)
+    nfm = get_free_mem
+    notify "Finished trimming #{format_bytes(nfm - cfm)}", 'Finish Freeing'
+    NSLog "Freed #{format_bytes(nfm - cfm, true)}"
+    @freeing   = false
+    @last_free = NSDate.date - 30
+  end
+
   def format_bytes(bytes, show_raw = false)
     return "#{bytes} B" if bytes <= 1
     lg   = (Math.log(bytes)/Math.log(1024)).floor.to_f
@@ -200,12 +210,12 @@ class AppDelegate
     "#{'%.2f' % (bytes.to_f / 1024.0**lg)} #{unit}#{show_raw ? " (#{bytes} B)" : ''}"
   end
 
-  def get_free_mem(include_inactive = false)
+  def get_free_mem(inactive_multiplier = 0)
     page_size = WeakRef.new(`vm_stat | grep 'page size' | awk '{ print $8 }'`).chomp!.to_i
     pages_free = WeakRef.new(`vm_stat | grep 'Pages free' | awk '{ print $3 }'`).chomp![0...-1].to_i
     pages_inactive = WeakRef.new(`vm_stat | grep 'Pages inactive' | awk '{ print $3 }'`).chomp![0...-1].to_i
 
-    page_size*pages_free + (include_inactive ? page_size*pages_inactive : 0)
+    page_size*pages_free + page_size*pages_inactive*inactive_multiplier
   end
 
   def sysctl_get(name)
@@ -227,7 +237,7 @@ class AppDelegate
         notify 'Memory Pressure too high! Running not a good idea.', 'Error'
         return
       end
-      dmp      = pressure == 'normal' ? 1 : (pressure == 'warn' ? 2 : 4)
+      dmp = pressure == 'normal' ? 1 : (pressure == 'warn' ? 2 : 4)
       if cmp >= dmp && App::Persistence['auto_escalate']
         np = cmp == 1 ? 'warn' : 'critical'
         NSLog "escalating freeing pressure from #{pressure} to #{np}"
@@ -249,28 +259,40 @@ class AppDelegate
     end
   end
 
-  def free_mem_old
-    mtf = get_free_mem(true)
+  def free_mem_old(inactive_multiplier = 1)
+    mtf = get_free_mem(inactive_multiplier)
     NSLog "#{mtf}"
     ep = NSBundle.mainBundle.pathForResource('inactive', ofType: '')
     op = `'#{ep}' '#{mtf}'`
     NSLog op
   end
 
-  def get_input(message, default_value, type = :text, options = [])
-    alert = NSAlert.alertWithMessageText(message, defaultButton: 'OK', alternateButton: 'Cancel', otherButton: nil, informativeTextWithFormat: '')
+  def make_range(min, max)
+    if min && max
+      " (#{min}-#{max})"
+    elsif min
+      " (min #{min})"
+    elsif max
+      " (max #{max})"
+    else
+      ''
+    end
+  end
+
+  def get_input(message, default_value, type = :text, options = {})
+    alert = NSAlert.alertWithMessageText(type == :int ? "#{message}#{make_range(options[:min], options[:max])}" : message, defaultButton: 'OK', alternateButton: 'Cancel', otherButton: nil, informativeTextWithFormat: '')
     case type
       when :select
-        input = NSComboBox.alloc.initWithFrame(NSMakeRect(0, 0, 200, 24))
-        input.addItemsWithObjectValues(options)
-        input.selectItemWithObjectValue(default_value)
-      when :number
+        input = NSPopUpButton.alloc.initWithFrame(NSMakeRect(0, 0, 200, 24))
+        input.addItemsWithTitles(options[:values])
+        input.selectItemWithTitle(default_value)
+      when :int
         input                  = NSTextField.alloc.initWithFrame(NSMakeRect(0, 0, 200, 24))
         input.stringValue      = "#{default_value}"
         formatter              = NSNumberFormatter.alloc.init
         formatter.allowsFloats = false
-        formatter.minimum      = 0
-        formatter.maximum      = get_total_memory / 1024**2
+        formatter.minimum      = options[:min]
+        formatter.maximum      = options[:max]
       else
         input             = NSTextField.alloc.initWithFrame(NSMakeRect(0, 0, 200, 24))
         input.stringValue = default_value
@@ -281,7 +303,30 @@ class AppDelegate
       input.validateEditing
       case type
         when :select
-          input.objectValueOfSelectedItem
+          v = input.titleOfSelectedItem
+          if options[:values].include?(v)
+            v
+          else
+            alert("Invalid option #{v}!")
+            nil
+          end
+        when :int
+          v = input.stringValue
+          begin
+            vi = v.to_i
+            if options[:min] && vi < options[:min]
+              alert("Value must be >= #{options[:min]}")
+              nil
+            elsif vi > options[:max]
+              alert("Value must be < #{options[:max]}")
+              nil
+            else
+              vi
+            end
+          rescue
+            alert('Value must be an integer!')
+            nil
+          end
         else
           input.stringValue
       end

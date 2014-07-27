@@ -26,6 +26,7 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v0.7.6:** update icon
 * **v0.7.7:** add "Using MemoryTamer" to the Support menu
 * **v0.7.8:** add retina status icon
+* **v0.8:** add memory quick-trimming functionality and remove the old "reload preferences" menu item
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.3.zip> (Mavericks-only)
@@ -46,3 +47,4 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v0.7.6:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-0.7.6.zip>
 * **v0.7.7:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-0.7.7.zip>
 * **v0.7.8:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-0.7.8.zip>
+* **v0.8:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-0.8.zip>

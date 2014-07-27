@@ -4,10 +4,8 @@
 
 ##Explanation of Preferences
 
-**NOTE:** "Reload Preferences" will attempt to reload settings from the preferences storage.  This will not normally be of any use because preferences are loaded on startup and the preferences storage is updated with each preference change.
-
 ###Notifications
-This option is the pair of menu items that appear directly below the "Reload Preferences" item.  It controls which notification system you are using.
+This option is the pair of menu items that appear at the top of the Preferences menu.  It controls which notification system you are using.
 
 If you are on OS X 10.7 Lion, it will be set to Growl and not allow changing.  If you are on OS X 10.8 Mountain Lion or above, it will default to Notification Center with the option to switch to Growl.
 
@@ -27,8 +25,15 @@ The memory threshold can be hard to get right.  I would suggest that you try fre
 
 Another tip is to pay attention to how quickly the free memory drops after you free it up.  It would probably be a good idea to avoid using a threshold that it gets back down to quickly.
 
+###Memory Trim Threshold
+Version 0.8 introduced Memory Trimming.  The settings for this have been placed directly under Memory Threshold.  This setting controls at what amount of free memory MemoryTamer will do a quick "trim" of the memory.
+
+This uses the plain allocation method (see Freeing Method) tool, but will also run when the method is set to memory pressure.  This will not try to free up as much memory as a full freeing, but it should be faster than a typical freeing and should cause less slowness than a full plain allocation freeing.
+
+The default value for this setting is 0 (disabled), but if you do use it, you should set the value above your full memory freeing threshold.  A suggestion might be to make it 1.5 or 2 times the amount, but it will probably take some experimentation to figure a good value out.
+
 ###Freeing Pressure
-This option is the next pair of items in the Preferences menu, after Memory Threshold.  It controls how aggressive it will be when freeing.
+This option is the next pair of items in the Preferences menu, after Memory Trim Threshold.  It controls how aggressive it will be when freeing.
 
 **NOTE:** this option is only available on OS X 10.9 Mavericks and up, and only applies to the "memory pressure" freeing method
 
