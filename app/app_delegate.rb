@@ -78,6 +78,10 @@ class AppDelegate
       App::Persistence['update_while'] = command.parent[:state] == NSOffState
       set_update_display
     }
+    MainMenu[:prefs].subscribe(:sticky_display) { |command, sender|
+      App::Persistence['sticky'] = command.parent[:state] == NSOffState
+      set_sticky_display
+    }
     MainMenu[:support].subscribe(:support_ticket) { |_, _|
       open_link('https://github.com/henderea/MemoryTamer/issues/new')
     }
@@ -113,6 +117,7 @@ class AppDelegate
     set_escalate_display
     set_show_display
     set_update_display
+    set_sticky_display
     set_license_display
   end
 
@@ -152,22 +157,27 @@ class AppDelegate
     MainMenu[:prefs].items[:update_display][:state] = App::Persistence['update_while'] ? NSOnState : NSOffState
   end
 
+  def set_sticky_display
+    MainMenu[:prefs].items[:sticky_display][:state] = App::Persistence['sticky'] ? NSOnState : NSOffState
+  end
+
   def set_license_display(note = nil)
     Thread.start {
       paddle = Paddle.sharedInstance
       MainMenu[:license].items[:license_display][:title] = paddle.productActivated ? paddle.activatedEmail : 'Not Registered'
-      MainMenu[:license].items[:license_change][:title] = paddle.productActivated ? 'View Registration' : 'Buy / Register'
+      MainMenu[:license].items[:license_change][:title]  = paddle.productActivated ? 'View Registration' : 'Buy / Register'
     }
   end
 
   def load_prefs
-    App::Persistence['mem'] = 1024 if App::Persistence['mem'].nil?
-    App::Persistence['trim_mem'] = 0 if App::Persistence['trim_mem'].nil?
-    App::Persistence['pressure'] = 'warn' if App::Persistence['pressure'].nil?
-    App::Persistence['growl'] = false if App::Persistence['growl'].nil?
+    App::Persistence['mem']             = 1024 if App::Persistence['mem'].nil?
+    App::Persistence['trim_mem']        = 0 if App::Persistence['trim_mem'].nil?
+    App::Persistence['pressure']        = 'warn' if App::Persistence['pressure'].nil?
+    App::Persistence['growl']           = false if App::Persistence['growl'].nil?
     App::Persistence['method_pressure'] = true if App::Persistence['method_pressure'].nil?
-    App::Persistence['show_mem'] = true if App::Persistence['show_mem'].nil?
-    App::Persistence['update_while'] = true if App::Persistence['update_while'].nil?
+    App::Persistence['show_mem']        = true if App::Persistence['show_mem'].nil?
+    App::Persistence['update_while']    = true if App::Persistence['update_while'].nil?
+    App::Persistence['sticky']          = false if App::Persistence['sticky'].nil?
 
     App::Persistence['growl']           = App::Persistence['growl'] || !@has_nc
     App::Persistence['method_pressure'] = App::Persistence['method_pressure'] && @mavericks
@@ -211,8 +221,8 @@ class AppDelegate
   end
 
   def get_free_mem(inactive_multiplier = 0)
-    page_size = WeakRef.new(`vm_stat | grep 'page size' | awk '{ print $8 }'`).chomp!.to_i
-    pages_free = WeakRef.new(`vm_stat | grep 'Pages free' | awk '{ print $3 }'`).chomp![0...-1].to_i
+    page_size      = WeakRef.new(`vm_stat | grep 'page size' | awk '{ print $8 }'`).chomp!.to_i
+    pages_free     = WeakRef.new(`vm_stat | grep 'Pages free' | awk '{ print $3 }'`).chomp![0...-1].to_i
     pages_inactive = WeakRef.new(`vm_stat | grep 'Pages inactive' | awk '{ print $3 }'`).chomp![0...-1].to_i
 
     page_size*pages_free + page_size*pages_inactive*inactive_multiplier
@@ -352,7 +362,7 @@ class AppDelegate
           notificationName: nn,
           iconData:         nil,
           priority:         0,
-          isSticky:         true,
+          isSticky:         App::Persistence['sticky'],
           clickContext:     nil)
     else
       notification                 = NSUserNotification.alloc.init

@@ -27,6 +27,7 @@ class MainMenu
     menuItem :escalate_display, 'Auto-escalate', state: NSOffState
     menuItem :show_display, 'Show free memory', state: NSOnState
     menuItem :update_display, 'Update while freeing', state: NSOnState
+    menuItem :sticky_display, 'Sticky Growl notifications', state: NSOffState
 
     menuItem :status_license, 'Registration', submenu: :license
     menuItem :license_display, 'Not Registered'
@@ -83,6 +84,8 @@ class MainMenu
       show_display
       ___
       update_display
+      ___
+      sticky_display
     }
 
     menu(:license, 'Registration') {

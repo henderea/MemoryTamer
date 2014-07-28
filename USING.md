@@ -63,6 +63,9 @@ This option is the next item in the Preferences menu, after Auto-escalate.  It c
 ###Update While Freeing
 This option is the next item in the Preferences menu, after Show Free Memory.  It controls whether or not the current amount of free memory is updated while the freeing process is running.  It is checked by default.  This should not have a noticeable impact on performance either way, but if, for example, you want to see what level the memory was at when it started freeing, you could uncheck this and be able to look at that value while it is freeing.
 
+###Sticky Growl Notifications
+This option is the next item in the Preferences menu, after Update While Freeing.  It controls whether or not the Growl notifications are sticky.  It is unchecked by default.
+
 ##Registration
 This menu has 2 items.  The first will show "Not Registered" if you have not yet purchased a license, or the e-mail address it is registered to if you have a license.
 
