@@ -109,34 +109,40 @@ class AppDelegate
     NSLog "Starting up with memory = #{dfm}; pressure = #{App::Persistence['pressure']}"
     Thread.start {
       @last_free = NSDate.date - 30
+      @last_trim = NSDate.date
       loop do
         cfm = get_free_mem
         @statusItem.setTitle(App::Persistence['show_mem'] ? format_bytes(cfm) : '') if App::Persistence['update_while'] || !@freeing
         diff = (NSDate.date - @last_free)
-        if (cfm < dfm || diff > (App::Persistence['auto_threshold'] == 'low' ? 60*11 : 60*6)) && !@freeing
-          if App::Persistence['auto_threshold'] == 'low'
-            mem_tweak('mem', diff, cfm, 60*5, 60*10)
-          elsif App::Persistence['auto_threshold'] == 'high'
-            mem_tweak('mem', diff, cfm, 60*3, 60*5)
-          end
-          set_mem_display
-        end
-        if (cfm < dtm || diff > (App::Persistence['auto_threshold'] == 'low' ? 60*6 : 60*3)) && !@freeing
-          if App::Persistence['auto_threshold'] == 'low'
-            mem_tweak('trim_mem', diff, cfm, 60*3, 60*5)
-          elsif App::Persistence['auto_threshold'] == 'high'
-            mem_tweak('trim_mem', diff, cfm, 60*2, 60*3)
-          end
-          set_trim_display
-        end
-        if cfm <= dfm && diff >= 60 && !@freeing
+        diff_t = (NSDate.date - @last_trim)
+        mem_tweak_default('mem', cfm, dfm, [diff, diff_t + 30].min, 60*10, 60*15, 60*5, 60*10)
+        mem_tweak_default('trim_mem', cfm, dtm, diff_t, 60*5, 60*10, 60*3, 60*5)
+        App::Persistence['mem'] = [App::Persistence['mem'], App::Persistence['trim_mem']].min
+        set_mem_display
+        if cfm <= dfm && diff >= 60 && diff_t >= 30 && !@freeing
+          NSLog "seconds since last full freeing: #{diff}"
+          NSLog "seconds since last trim: #{diff_t}"
           Thread.start { free_mem_default(cfm) }
-        elsif cfm <= dtm && diff >= 60 && !@freeing
+        elsif cfm <= dtm && diff >= 30 && diff_t >= 30 && !@freeing
+          NSLog "seconds since last full freeing: #{diff}"
+          NSLog "seconds since last trim: #{diff_t}"
           Thread.start { trim_mem(cfm) }
         end
         sleep(2)
       end
     }
+  end
+
+  def mem_tweak_default(var, cfm, dm, diff, low_min, low_max, high_min, high_max)
+    if (cfm < dm || diff > ((App::Persistence['auto_threshold'] == 'low' ? low_max : high_max) + 60)) && !@freeing
+      if App::Persistence['auto_threshold'] == 'low'
+        mem_tweak(var, diff, cfm, low_min, low_max)
+      elsif App::Persistence['auto_threshold'] == 'high'
+        mem_tweak(var, diff, cfm, high_min, high_max)
+      end
+      set_mem_display
+      set_trim_display
+    end
   end
 
   def mem_tweak(var, diff, cfm, min, max)
@@ -250,12 +256,12 @@ class AppDelegate
   def trim_mem(cfm)
     @freeing = true
     notify 'Beginning memory trimming', 'Start Freeing'
-    free_mem_old(0.5)
+    free_mem_old(true)
     nfm = get_free_mem
     notify "Finished trimming #{format_bytes(nfm - cfm)}", 'Finish Freeing'
     NSLog "Freed #{format_bytes(nfm - cfm, true)}"
     @freeing   = false
-    @last_free = NSDate.date - 30
+    @last_trim = NSDate.date
   end
 
   def format_bytes(bytes, show_raw = false)
@@ -314,8 +320,8 @@ class AppDelegate
     end
   end
 
-  def free_mem_old(inactive_multiplier = 1)
-    mtf = get_free_mem(inactive_multiplier)
+  def free_mem_old(trim = false)
+    mtf = trim ? [get_free_mem(1) * 0.75, get_free_mem(0.5)].min : get_free_mem(1)
     NSLog "#{mtf}"
     ep = NSBundle.mainBundle.pathForResource('inactive', ofType: '')
     op = `'#{ep}' '#{mtf}'`
