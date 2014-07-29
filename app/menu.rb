@@ -21,6 +21,8 @@ class MainMenu
     menuItem :memory_change, 'Change memory threshold'
     menuItem :trim_display, 'Memory trim threshold: 2048 MB'
     menuItem :trim_change, 'Change memory trim threshold'
+    menuItem :auto_display, 'Auto-threshold: off'
+    menuItem :auto_change, 'Change auto-threshold'
     menuItem :pressure_display, 'Freeing pressure: warn'
     menuItem :pressure_change, 'Change freeing pressure'
     menuItem :method_display, 'Freeing method: memory pressure'
@@ -74,6 +76,9 @@ class MainMenu
       ___
       trim_display
       trim_change
+      ___
+      auto_display
+      auto_change
       ___
       pressure_display
       pressure_change

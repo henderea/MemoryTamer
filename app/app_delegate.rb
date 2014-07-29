@@ -54,6 +54,17 @@ class AppDelegate
       App::Persistence['trim_mem'] = nm if nm
       set_trim_display
     }
+    MainMenu[:prefs].subscribe(:auto_change) { |_, _|
+      np = get_input('Please select the auto-threshold target level', App::Persistence['auto_threshold'], :select, values: %w(off low high))
+      if np
+        if %w(off low high).include?(np)
+          App::Persistence['auto_threshold'] = np
+          set_auto_display
+        else
+          alert("Invalid option '#{np}'!")
+        end
+      end
+    }.canExecuteBlock { |_| @mavericks }
     MainMenu[:prefs].subscribe(:pressure_change) { |_, _|
       np = get_input('Please select the freeing pressure', App::Persistence['pressure'], :select, values: %w(normal warn critical))
       if np
@@ -101,9 +112,26 @@ class AppDelegate
       loop do
         cfm = get_free_mem
         @statusItem.setTitle(App::Persistence['show_mem'] ? format_bytes(cfm) : '') if App::Persistence['update_while'] || !@freeing
-        if cfm <= dfm && (NSDate.date - @last_free) >= 60 && !@freeing
+        diff = (NSDate.date - @last_free)
+        if (cfm < dfm || diff > (App::Persistence['auto_threshold'] == 'low' ? 60*11 : 60*6)) && !@freeing
+          if App::Persistence['auto_threshold'] == 'low'
+            mem_tweak('mem', diff, cfm, 60*5, 60*10)
+          elsif App::Persistence['auto_threshold'] == 'high'
+            mem_tweak('mem', diff, cfm, 60*3, 60*5)
+          end
+          set_mem_display
+        end
+        if (cfm < dtm || diff > (App::Persistence['auto_threshold'] == 'low' ? 60*6 : 60*3)) && !@freeing
+          if App::Persistence['auto_threshold'] == 'low'
+            mem_tweak('trim_mem', diff, cfm, 60*3, 60*5)
+          elsif App::Persistence['auto_threshold'] == 'high'
+            mem_tweak('trim_mem', diff, cfm, 60*2, 60*3)
+          end
+          set_trim_display
+        end
+        if cfm <= dfm && diff >= 60 && !@freeing
           Thread.start { free_mem_default(cfm) }
-        elsif cfm <= dtm && (NSDate.date - @last_free) >= 60 && !@freeing
+        elsif cfm <= dtm && diff >= 60 && !@freeing
           Thread.start { trim_mem(cfm) }
         end
         sleep(2)
@@ -111,10 +139,19 @@ class AppDelegate
     }
   end
 
+  def mem_tweak(var, diff, cfm, min, max)
+    if diff < min
+      App::Persistence[var] = (App::Persistence[var].to_f * [0.9, (diff.to_f / min.to_f)].max).ceil
+    elsif diff > max
+      App::Persistence[var] = (App::Persistence[var].to_f * [1.1, (diff.to_f / max.to_f)].min).ceil
+    end
+  end
+
   def set_all_displays
     set_notification_display
     set_mem_display
     set_trim_display
+    set_auto_display
     set_pressure_display
     set_method_display
     set_escalate_display
@@ -135,6 +172,10 @@ class AppDelegate
 
   def set_trim_display
     MainMenu[:prefs].items[:trim_display][:title] = "Memory trim threshold: #{App::Persistence['trim_mem']} MB"
+  end
+
+  def set_auto_display
+    MainMenu[:prefs].items[:auto_display][:title] = "Auto-threshold: #{App::Persistence['auto_threshold']}"
   end
 
   def set_pressure_display
@@ -175,6 +216,7 @@ class AppDelegate
   def load_prefs
     App::Persistence['mem']             = 1024 if App::Persistence['mem'].nil?
     App::Persistence['trim_mem']        = 0 if App::Persistence['trim_mem'].nil?
+    App::Persistence['auto_threshold']  = 'off' if App::Persistence['auto_threshold'].nil?
     App::Persistence['pressure']        = 'warn' if App::Persistence['pressure'].nil?
     App::Persistence['growl']           = false if App::Persistence['growl'].nil?
     App::Persistence['method_pressure'] = true if App::Persistence['method_pressure'].nil?

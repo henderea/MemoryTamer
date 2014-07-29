@@ -29,6 +29,7 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v0.8:** add memory quick-trimming functionality and remove the old "reload preferences" menu item
 * **v0.8.1:** add an option to control whether or not growl notifications are sticky
 * **v0.8.2:** add ability to run Memory Trimming on demand
+* **v0.9:** New experimental feature: auto-threshold.  Designed to automatically adjust your thresholds to the target frequency.  If you try it out, please provide feedback at <https://github.com/henderea/MemoryTamer/issues/4>
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.3.zip> (Mavericks-only)
@@ -52,3 +53,4 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v0.8:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-0.8.zip>
 * **v0.8.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-0.8.1.zip>
 * **v0.8.2:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-0.8.2.zip>
+* **v0.9:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-0.9.zip>
