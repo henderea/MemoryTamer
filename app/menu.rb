@@ -9,6 +9,7 @@ class MainMenu
     menuItem :services_item, 'Services', preset: :services
 
     menuItem :status_free, 'Free memory now'
+    menuItem :status_trim, 'Trim memory now'
     menuItem :status_update, 'Check for Updates'
     menuItem :status_version, 'Current Version: 0.0'
     menuItem :status_quit, 'Quit', preset: :quit
@@ -50,6 +51,7 @@ class MainMenu
 
     statusbarMenu(:statusbar, '', status_item_icon: NSImage.imageNamed('Status'), status_item_length: NSVariableStatusItemLength) {
       status_free
+      status_trim
       ___
       status_preferences
       ___

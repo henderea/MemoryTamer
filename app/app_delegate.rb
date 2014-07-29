@@ -28,6 +28,9 @@ class AppDelegate
     MainMenu[:statusbar].subscribe(:status_free) { |_, _|
       Thread.start { free_mem_default(get_free_mem) }
     }.canExecuteBlock { |_| !@freeing }
+    MainMenu[:statusbar].subscribe(:status_trim) { |_, _|
+      Thread.start { trim_mem(get_free_mem) }
+    }.canExecuteBlock { |_| !@freeing }
     MainMenu[:statusbar].subscribe(:status_quit) { |_, _|
       NSApp.terminate
     }
