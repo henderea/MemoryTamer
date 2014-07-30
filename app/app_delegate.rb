@@ -8,7 +8,7 @@ class AppDelegate
     paddle.setVendorId('1657')
     paddle.setApiKey('ff308e08f807298d8a76a7a3db1ee12b')
     paddle.startLicensing({
-                              KPADCurrentPrice => '1.99',
+                              KPADCurrentPrice => '2.49',
                               KPADDevName => 'Eric Henderson',
                               KPADCurrency => 'USD',
                               KPADImage => 'https://raw.githubusercontent.com/henderea/MemoryTamer/master/resources/Icon.png',
@@ -254,9 +254,13 @@ class AppDelegate
     if App::Persistence['auto_threshold'] == 'low'
       App::Persistence['mem']      = ((nfm.to_f * 0.3) / 1024**2).ceil
       App::Persistence['trim_mem'] = ((nfm.to_f * 0.6) / 1024**2).ceil if App::Persistence['trim_mem'] > 0
+      set_mem_display
+      set_trim_display
     elsif App::Persistence['auto_threshold'] == 'high'
       App::Persistence['mem']      = ((nfm.to_f * 0.5) / 1024**2).ceil
       App::Persistence['trim_mem'] = ((nfm.to_f * 0.8) / 1024**2).ceil if App::Persistence['trim_mem'] > 0
+      set_mem_display
+      set_trim_display
     end
   end
 

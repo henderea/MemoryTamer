@@ -3,6 +3,8 @@ MemoryTamer
 
 As of version 0.7.2, Memory Tamer is now a paid app.  Please visit <https://pay.paddle.com/checkout/492767> to get a license.  You can also buy in-app.
 
+Thank you to everyone who has bought MemoryTamer so far.  I've added a lot of features in the time since I put it up for sale at $1.99, and I feel that MemoryTamer is worth a bit more than when it started out.  As such, I have increased the price to $2.49.
+
 A RubyMotion application for keeping memory usage in check.  Shows up in the menu bar and shows current free ram (refreshed every 2 seconds).
 
 **Note:** The plain allocation method uses the C code from <http://forums.macrumors.com/showpost.php?p=8941184&postcount=54>
@@ -33,6 +35,7 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v0.9.1:** Make some changes to auto-threshold to hopefully improve it.  If you try it out, please provide feedback at <https://github.com/henderea/MemoryTamer/issues/4>
 * **v0.9.2:** fix a bug introduced in v0.9.1 where memory threshold would be set to 0 if trim threshold was 0
 * **v0.9.3:** Auto-threshold has changed.  My original design for it didn't turn out well, so I changed it to set the thresholds to a certain percent of post-freeing memory on a full freeing.  Hopefully this will work better.
+* **v0.9.4:** fix a refreshing issue with auto-threshold
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.3.zip> (Mavericks-only)
@@ -60,3 +63,4 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v0.9.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-0.9.1.zip>
 * **v0.9.2:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-0.9.2.zip>
 * **v0.9.3:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-0.9.3.zip>
+* **v0.9.4:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-0.9.4.zip>
