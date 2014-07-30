@@ -31,6 +31,7 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v0.8.2:** add ability to run Memory Trimming on demand
 * **v0.9:** New experimental feature: auto-threshold.  Designed to automatically adjust your thresholds to the target frequency.  If you try it out, please provide feedback at <https://github.com/henderea/MemoryTamer/issues/4>
 * **v0.9.1:** Make some changes to auto-threshold to hopefully improve it.  If you try it out, please provide feedback at <https://github.com/henderea/MemoryTamer/issues/4>
+* **v0.9.2:** fix a bug introduced in v0.9.1 where memory threshold would be set to 0 if trim threshold was 0
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.3.zip> (Mavericks-only)
@@ -56,3 +57,4 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v0.8.2:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-0.8.2.zip>
 * **v0.9:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-0.9.zip>
 * **v0.9.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-0.9.1.zip>
+* **v0.9.2:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-0.9.2.zip>

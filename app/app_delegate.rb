@@ -117,7 +117,7 @@ class AppDelegate
         diff_t = (NSDate.date - @last_trim)
         mem_tweak_default('mem', cfm, dfm, [diff, diff_t + 30].min, 60*10, 60*15, 60*5, 60*10)
         mem_tweak_default('trim_mem', cfm, dtm, diff_t, 60*5, 60*10, 60*3, 60*5)
-        App::Persistence['mem'] = [App::Persistence['mem'], App::Persistence['trim_mem']].min
+        App::Persistence['mem'] = [App::Persistence['mem'], App::Persistence['trim_mem']].min if App::Persistence['trim_mem'] > 0 && App::Persistence['auto_threshold'] != 'off'
         set_mem_display
         if cfm <= dfm && diff >= 60 && diff_t >= 30 && !@freeing
           NSLog "seconds since last full freeing: #{diff}"
