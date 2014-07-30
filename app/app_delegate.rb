@@ -115,9 +115,9 @@ class AppDelegate
         @statusItem.setTitle(App::Persistence['show_mem'] ? format_bytes(cfm) : '') if App::Persistence['update_while'] || !@freeing
         diff = (NSDate.date - @last_free)
         diff_t = (NSDate.date - @last_trim)
-        mem_tweak_default('mem', cfm, dfm, [diff, diff_t + 30].min, 60*10, 60*15, 60*5, 60*10)
-        mem_tweak_default('trim_mem', cfm, dtm, diff_t, 60*5, 60*10, 60*3, 60*5)
-        App::Persistence['mem'] = [App::Persistence['mem'], App::Persistence['trim_mem']].min if App::Persistence['trim_mem'] > 0 && App::Persistence['auto_threshold'] != 'off'
+        # mem_tweak_default('mem', cfm, dfm, [diff, diff_t + 30].min, 60*10, 60*15, 60*5, 60*10)
+        # mem_tweak_default('trim_mem', cfm, dtm, diff_t, 60*5, 60*10, 60*3, 60*5)
+        # App::Persistence['mem'] = [App::Persistence['mem'], App::Persistence['trim_mem']].min if App::Persistence['trim_mem'] > 0 && App::Persistence['auto_threshold'] != 'off'
         set_mem_display
         if cfm <= dfm && diff >= 60 && diff_t >= 30 && !@freeing
           NSLog "seconds since last full freeing: #{diff}"
@@ -133,25 +133,25 @@ class AppDelegate
     }
   end
 
-  def mem_tweak_default(var, cfm, dm, diff, low_min, low_max, high_min, high_max)
-    if (cfm < dm || diff > ((App::Persistence['auto_threshold'] == 'low' ? low_max : high_max) + 60)) && !@freeing
-      if App::Persistence['auto_threshold'] == 'low'
-        mem_tweak(var, diff, cfm, low_min, low_max)
-      elsif App::Persistence['auto_threshold'] == 'high'
-        mem_tweak(var, diff, cfm, high_min, high_max)
-      end
-      set_mem_display
-      set_trim_display
-    end
-  end
-
-  def mem_tweak(var, diff, cfm, min, max)
-    if diff < min
-      App::Persistence[var] = (App::Persistence[var].to_f * [0.9, (diff.to_f / min.to_f)].max).ceil
-    elsif diff > max
-      App::Persistence[var] = (App::Persistence[var].to_f * [1.1, (diff.to_f / max.to_f)].min).ceil
-    end
-  end
+  # def mem_tweak_default(var, cfm, dm, diff, low_min, low_max, high_min, high_max)
+  #   if (cfm < dm || diff > ((App::Persistence['auto_threshold'] == 'low' ? low_max : high_max) + 60)) && !@freeing
+  #     if App::Persistence['auto_threshold'] == 'low'
+  #       mem_tweak(var, diff, cfm, low_min, low_max)
+  #     elsif App::Persistence['auto_threshold'] == 'high'
+  #       mem_tweak(var, diff, cfm, high_min, high_max)
+  #     end
+  #     set_mem_display
+  #     set_trim_display
+  #   end
+  # end
+  #
+  # def mem_tweak(var, diff, cfm, min, max)
+  #   if diff < min
+  #     App::Persistence[var] = (App::Persistence[var].to_f * [0.9, (diff.to_f / min.to_f)].max).ceil
+  #   elsif diff > max
+  #     App::Persistence[var] = (App::Persistence[var].to_f * [1.1, (diff.to_f / max.to_f)].min).ceil
+  #   end
+  # end
 
   def set_all_displays
     set_notification_display
@@ -251,6 +251,13 @@ class AppDelegate
     NSLog "Freed #{format_bytes(nfm - cfm, true)}"
     @freeing   = false
     @last_free = NSDate.date
+    if App::Persistence['auto_threshold'] == 'low'
+      App::Persistence['mem']      = ((nfm.to_f * 0.3) / 1024**2).ceil
+      App::Persistence['trim_mem'] = ((nfm.to_f * 0.6) / 1024**2).ceil if App::Persistence['trim_mem'] > 0
+    elsif App::Persistence['auto_threshold'] == 'high'
+      App::Persistence['mem']      = ((nfm.to_f * 0.5) / 1024**2).ceil
+      App::Persistence['trim_mem'] = ((nfm.to_f * 0.8) / 1024**2).ceil if App::Persistence['trim_mem'] > 0
+    end
   end
 
   def trim_mem(cfm)
