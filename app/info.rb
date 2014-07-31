@@ -1,7 +1,21 @@
 module Info
   module_function
 
-  attr_accessor :last_free, :last_trim
+  def last_free
+    @last_free
+  end
+
+  def last_free=(last_free)
+    @last_free = last_free
+  end
+
+  def last_trim
+    @last_trim
+  end
+
+  def last_trim=(last_trim)
+    @last_trim = last_trim
+  end
 
   def dfm
     Persist.mem * 1024**2
