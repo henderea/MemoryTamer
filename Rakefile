@@ -12,7 +12,7 @@ end
 module Motion::Project
   class Builder
     def codesign(config, platform)
-      app_bundle = config.app_bundle_raw('MacOSX')
+      app_bundle   = config.app_bundle_raw('MacOSX')
       entitlements = File.join(config.versionized_build_dir(platform), 'Entitlements.plist')
       if File.mtime(config.project_file) > File.mtime(app_bundle) or !system("/usr/bin/codesign --verify \"#{app_bundle}\" >& /dev/null")
         App.info 'Codesign', app_bundle

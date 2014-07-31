@@ -93,4 +93,76 @@ class MainMenu
 
   def_menus
   def_items
+
+  class << self
+    def status_item
+      MainMenu[:statusbar].statusItem
+    end
+
+    def set_all_displays
+      set_growl_display
+      set_mem_display
+      set_trim_mem_display
+      set_auto_threshold_display
+      set_pressure_display
+      set_method_pressure_display
+      set_auto_escalate_display
+      set_show_mem_display
+      set_update_while_display
+      set_sticky_display
+      set_license_display
+    end
+
+    def set_growl_display
+      MainMenu[:prefs].items[:notification_display][:title] = "Currently Using #{Persist.growl? ? 'Growl' : 'Notification Center'}"
+      MainMenu[:prefs].items[:notification_change][:title]  = "Use #{!Persist.growl? ? 'Growl' : 'Notification Center'}"
+    end
+
+    def set_mem_display
+      MainMenu[:prefs].items[:memory_display][:title] = "Memory threshold: #{Persist.mem} MB"
+    end
+
+    def set_trim_mem_display
+      MainMenu[:prefs].items[:trim_display][:title] = "Memory trim threshold: #{Persist.trim_mem} MB"
+    end
+
+    def set_auto_threshold_display
+      MainMenu[:prefs].items[:auto_display][:title] = "Auto-threshold: #{Persist.auto_threshold}"
+    end
+
+    def set_pressure_display
+      MainMenu[:prefs].items[:pressure_display][:title] = "Freeing pressure: #{Persist.pressure}"
+      MainMenu[:prefs].items[:pressure_change][:title]  = Info.mavericks? ? 'Change freeing pressure' : 'Requires Mavericks 10.9 or higher'
+    end
+
+    def set_method_pressure_display
+      MainMenu[:prefs].items[:method_display][:title] = "Freeing method: #{Persist.method_pressure? ? 'memory pressure' : 'plain allocation'}"
+      MainMenu[:prefs].items[:method_change][:title]  = Info.mavericks? ? "Use #{!Persist.method_pressure? ? 'memory pressure' : 'plain allocation'} method" : 'Requires Mavericks 10.9 or higher to change'
+    end
+
+    def set_auto_escalate_display
+      MainMenu[:prefs].items[:escalate_display][:state] = Persist.auto_escalate? ? NSOnState : NSOffState
+    end
+
+    def set_show_mem_display
+      MainMenu[:prefs].items[:show_display][:state] = Persist.show_mem? ? NSOnState : NSOffState
+      status_item.setTitle(Persist.show_mem? ? Info.format_bytes(Info.get_free_mem) : '')
+    end
+
+    def set_update_while_display
+      MainMenu[:prefs].items[:update_display][:state] = Persist.update_while? ? NSOnState : NSOffState
+    end
+
+    def set_sticky_display
+      MainMenu[:prefs].items[:sticky_display][:state] = Persist.sticky? ? NSOnState : NSOffState
+    end
+
+    def set_license_display
+      Thread.start {
+        paddle                                             = Paddle.sharedInstance
+        MainMenu[:license].items[:license_display][:title] = paddle.productActivated ? paddle.activatedEmail : 'Not Registered'
+        MainMenu[:license].items[:license_change][:title]  = paddle.productActivated ? 'View Registration' : 'Buy / Register'
+      }
+    end
+  end
 end
