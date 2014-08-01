@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
+        <deployment version="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="5056"/>
     </dependencies>
     <objects>
@@ -10,42 +11,35 @@
         <window title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="196" y="240" width="480" height="270"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
+            <rect key="contentRect" x="196" y="240" width="504" height="298"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
             <view key="contentView" id="EiT-Mj-1SZ">
-                <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                <rect key="frame" x="0.0" y="0.0" width="504" height="298"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <tabView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tdD-5J-jmh">
-                        <rect key="frame" x="-8" y="-10" width="496" height="286"/>
+                    <tabView translatesAutoresizingMaskIntoConstraints="NO" id="tdD-5J-jmh">
+                        <rect key="frame" x="-8" y="-11" width="520" height="315"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <font key="font" metaFont="system"/>
                         <tabViewItems>
                             <tabViewItem label="Notifications" identifier="1" id="VyA-U1-4Hc">
                                 <view key="view" id="giR-ty-jyT">
-                                    <rect key="frame" x="10" y="33" width="476" height="240"/>
+                                    <rect key="frame" x="10" y="33" width="500" height="269"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Vu7-ek-Nhw">
-                                            <rect key="frame" x="15" y="213" width="153" height="26"/>
+                                        <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3tl-fJ-uM0">
+                                            <rect key="frame" x="15" y="231" width="183" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="LH0-o9-F0m">
-                                                <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                            <buttonCell key="cell" type="check" title="Growl Notifications Sticky" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="qSx-4q-MBo">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
-                                                <menu key="menu" title="OtherViews" id="XKk-ml-UKQ">
-                                                    <items>
-                                                        <menuItem title="Notification Center" id="SbQ-Gs-HK9"/>
-                                                        <menuItem title="Growl" id="LQI-LJ-KG0"/>
-                                                        <menuItem title="None" id="wWW-ut-X0m"/>
-                                                    </items>
-                                                </menu>
-                                            </popUpButtonCell>
-                                        </popUpButton>
+                                            </buttonCell>
+                                        </button>
                                     </subviews>
                                 </view>
                             </tabViewItem>
                             <tabViewItem label="Freeing" identifier="2" id="CYZ-1k-QVG">
-                                <view key="view" ambiguous="YES" id="TuT-zk-6S6">
+                                <view key="view" id="TuT-zk-6S6">
                                     <rect key="frame" x="10" y="33" width="476" height="240"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
@@ -76,7 +70,37 @@
                             </tabViewItem>
                         </tabViewItems>
                     </tabView>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5GK-Ju-oED">
+                        <rect key="frame" x="18" y="257" width="126" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Notification System" id="lsY-06-bQt">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hmt-Sj-eSw">
+                        <rect key="frame" x="148" y="250" width="153" height="26"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="CLS-kf-v0j">
+                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <menu key="menu" title="OtherViews" id="DYz-6C-rfV">
+                                <items>
+                                    <menuItem title="Notification Center" id="oFE-VC-DXm"/>
+                                    <menuItem title="Growl" id="j6b-M8-s8V"/>
+                                    <menuItem title="None" id="Q9C-7H-Bpa"/>
+                                </items>
+                            </menu>
+                        </popUpButtonCell>
+                    </popUpButton>
                 </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="tdD-5J-jmh" secondAttribute="trailing" constant="-1" id="SKb-9v-djL"/>
+                    <constraint firstAttribute="bottom" secondItem="tdD-5J-jmh" secondAttribute="bottom" constant="-1" id="VFu-7O-64F"/>
+                    <constraint firstItem="tdD-5J-jmh" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="-1" id="ko0-fb-yjL"/>
+                    <constraint firstItem="tdD-5J-jmh" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" id="wEe-gG-qve"/>
+                </constraints>
             </view>
         </window>
     </objects>
