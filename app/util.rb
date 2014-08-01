@@ -17,6 +17,7 @@ module Util
     NSNotificationCenter.defaultCenter.addObserver(self, selector: :set_license_display, name: KPADActivated, object: nil)
   end
 
+  # noinspection RubyUnusedLocalVariable
   def set_license_display(note)
     MainMenu.set_license_display
   end
@@ -46,7 +47,7 @@ module Util
 
   def notify(msg, nn)
     NSLog "Notification (#{nn}): #{msg}"
-    if Persist.growl?
+    if Persist.notifications == 'Growl'
       GrowlApplicationBridge.notifyWithTitle(
           'MemoryTamer',
           description:      msg,
@@ -55,7 +56,7 @@ module Util
           priority:         0,
           isSticky:         Persist.sticky?,
           clickContext:     nil)
-    else
+    elsif Persist.notifications == 'Notification Center'
       notification                 = NSUserNotification.alloc.init
       notification.title           = 'MemoryTamer'
       notification.informativeText = msg

@@ -9,8 +9,8 @@ class AppDelegate
     Persist.load_prefs
     MainMenu.build!
     MenuActions.setup
-    MainMenu.set_all_displays
-    MainMenu[:statusbar].items[:status_version][:title] = "Current Version: #{NSBundle.mainBundle.infoDictionary['CFBundleVersion']}"
+    # MainMenu.set_all_displays
+    MainMenu[:statusbar].items[:status_version][:title] = "Current Version: #{Info.version}"
     NSUserNotificationCenter.defaultUserNotificationCenter.setDelegate(self) if Info.has_nc?
     GrowlApplicationBridge.setGrowlDelegate(self)
     NSLog "Starting up with memory = #{Info.dfm}; pressure = #{Persist.pressure}"

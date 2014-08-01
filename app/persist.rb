@@ -61,7 +61,7 @@ module Persist
   end
 
   def all
-    hash     = storage.dictionaryRepresentation.select { |k, v| k.start_with?(app_key) }
+    hash     = storage.dictionaryRepresentation.select { |k, _| k.start_with?(app_key) }
     new_hash = {}
     hash.each do |k, v|
       new_hash[k.sub("#{app_key}_", '')] = v
@@ -77,6 +77,8 @@ module Persist
 
   def load_prefs
     Persist.no_refresh {
+      Info.last_version       = Persist.last_version
+      Persist.last_version    = Info.version.to_s
       Persist.mem             = 1024 if Persist.mem.nil?
       Persist.trim_mem        = 0 if Persist.trim_mem.nil?
       Persist.auto_threshold  = 'off' if Persist.auto_threshold.nil?
@@ -84,20 +86,23 @@ module Persist
       Persist.growl           = false if Persist.growl.nil?
       Persist.method_pressure = true if Persist.method_pressure.nil?
       Persist.show_mem        = true if Persist.show_mem.nil?
-      Persist.update_while    = true if Persist.update_while.nil?
+      Persist.update_while    = false if Persist.update_while.nil? || Info.last_version < '1.0'
       Persist.sticky          = false if Persist.sticky.nil?
 
-      Persist.growl           = Persist.growl || !Info.has_nc?
-      Persist.method_pressure = Persist.method_pressure && Info.mavericks?
+      Persist.growl           = Persist.growl? || !Info.has_nc?
+      Persist.method_pressure = Persist.method_pressure? && Info.mavericks?
+      Persist.notifications   = Persist.growl? ? 'Growl' : 'Notification Center' if Persist.notifications.nil?
     }
   end
 
   def method_missing(meth, *args)
-    if /^([a-z_]+)[?]?$/ =~ meth
+    if /^([a-z_]+)_state[?]$/ =~ meth
+      Persist[$1] ? NSOnState : NSOffState
+    elsif /^([a-z_]+)[?]?$/ =~ meth
       Persist[$1]
     elsif /^([a-z_]+)=/ =~ meth
       Persist[$1] = Array(*args)[0]
-      MainMenu.send("set_#{$1}_display") unless @no_refresh
+      # MainMenu.send("set_#{$1}_display") unless @no_refresh
     else
       super
     end

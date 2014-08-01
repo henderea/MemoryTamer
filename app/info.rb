@@ -60,11 +60,64 @@ module Info
     @freeing
   end
 
+  class Version
+    def initialize(version)
+      @version = version || '0.0'
+    end
+
+    def <=>(other)
+      other = Version.new(other && other.to_s)
+      p = parts
+      op = other.parts
+      p <=> op
+    end
+
+    def <(other)
+      (self <=> other) < 0
+      end
+
+    def <=(other)
+      (self <=> other) <= 0
+    end
+
+    def ==(other)
+      (self <=> other) == 0
+    end
+
+    def >(other)
+      (self <=> other) > 0
+    end
+
+    def >=(other)
+      (self <=> other) >= 0
+    end
+
+    def parts
+      @version.split(/\./).map(&:to_i)
+    end
+
+    def to_s
+      @version
+    end
+  end
+
+  def version
+    @version ||= Version.new(NSBundle.mainBundle.infoDictionary['CFBundleVersion'])
+  end
+
+  def last_version
+    @last_version ||= Version.new(nil)
+  end
+
+  def last_version=(last_version)
+    @last_version = Version.new(last_version)
+  end
+
   class Supports
-    attr_reader :has_nc, :mavericks
+    attr_reader :nc, :mavericks
 
     def initialize
-      @has_nc = (NSClassFromString('NSUserNotificationCenter')!=nil)
+      @nc = (NSClassFromString('NSUserNotificationCenter')!=nil)
       system('which memory_pressure')
       @mavericks = $?.success?
     end
@@ -75,10 +128,11 @@ module Info
   end
 
   def has_nc?
-    supports.has_nc
+    supports.nc
   end
 
   def mavericks?
     supports.mavericks
   end
+
 end
