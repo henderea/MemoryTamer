@@ -9,22 +9,22 @@ class MainMenu
     menuItem :status_quit, 'Quit', preset: :quit
 
     menuItem :status_preferences, 'Preferences'#, submenu: :prefs
-    # menuItem :notification_display, 'Currently using: Growl'
-    # menuItem :notification_change, 'Use Notification Center'
-    # menuItem :memory_display, 'Memory threshold: 1024 MB'
-    # menuItem :memory_change, 'Change memory threshold'
-    # menuItem :trim_display, 'Memory trim threshold: 2048 MB'
-    # menuItem :trim_change, 'Change memory trim threshold'
-    # menuItem :auto_display, 'Auto-threshold: off'
-    # menuItem :auto_change, 'Change auto-threshold'
-    # menuItem :pressure_display, 'Freeing pressure: warn'
-    # menuItem :pressure_change, 'Change freeing pressure'
-    # menuItem :method_display, 'Freeing method: memory pressure'
-    # menuItem :method_change, 'Use plain allocation method'
-    # menuItem :escalate_display, 'Auto-escalate', state: NSOffState
+    #√ menuItem :notification_display, 'Currently using: Growl'
+    #√ menuItem :notification_change, 'Use Notification Center'
+    #√ menuItem :memory_display, 'Memory threshold: 1024 MB'
+    #√ menuItem :memory_change, 'Change memory threshold'
+    #√ menuItem :trim_display, 'Memory trim threshold: 2048 MB'
+    #√ menuItem :trim_change, 'Change memory trim threshold'
+    #√ menuItem :auto_display, 'Auto-threshold: off'
+    #√ menuItem :auto_change, 'Change auto-threshold'
+    #√ menuItem :pressure_display, 'Freeing pressure: warn'
+    #√ menuItem :pressure_change, 'Change freeing pressure'
+    #√ menuItem :method_display, 'Freeing method: memory pressure'
+    #√ menuItem :method_change, 'Use plain allocation method'
+    #√ menuItem :escalate_display, 'Auto-escalate', state: NSOffState
     # menuItem :show_display, 'Show free memory', state: NSOnState
     # menuItem :update_display, 'Update while freeing', state: NSOnState
-    # menuItem :sticky_display, 'Sticky Growl notifications', state: NSOffState
+    #√ menuItem :sticky_display, 'Sticky Growl notifications', state: NSOffState
     #
     menuItem :status_license, 'Registration', submenu: :license
     menuItem :license_display, 'Not Registered'
