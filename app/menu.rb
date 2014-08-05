@@ -22,10 +22,10 @@ class MainMenu
     #√ menuItem :method_display, 'Freeing method: memory pressure'
     #√ menuItem :method_change, 'Use plain allocation method'
     #√ menuItem :escalate_display, 'Auto-escalate', state: NSOffState
-    # menuItem :show_display, 'Show free memory', state: NSOnState
-    # menuItem :update_display, 'Update while freeing', state: NSOnState
+    #√ menuItem :show_display, 'Show free memory', state: NSOnState
+    #√ menuItem :update_display, 'Update while freeing', state: NSOnState
     #√ menuItem :sticky_display, 'Sticky Growl notifications', state: NSOffState
-    #
+
     menuItem :status_license, 'Registration', submenu: :license
     menuItem :license_display, 'Not Registered'
     menuItem :license_change, 'Buy / Register'

@@ -100,10 +100,12 @@ module Persist
     }
   end
 
-  def listen(key, &block)
+  def listen(*keys, &block)
     @listeners ||= {}
-    @listeners[key] ||= []
-    @listeners[key] << block
+    Array(*keys).each { |key|
+      @listeners[key] ||= []
+      @listeners[key] << block
+    }
   end
 
   def change_value(key, new_value)
