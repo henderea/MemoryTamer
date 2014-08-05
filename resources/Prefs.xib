@@ -5,7 +5,27 @@
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="5056"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner"/>
+        <customObject id="-2" userLabel="File's Owner" customClass="Prefs">
+            <connections>
+                <outlet property="auto_escalate" destination="8H9-4G-sq5" id="uG5-BI-pj6"/>
+                <outlet property="auto_level" destination="WHa-8E-Yfv" id="jeN-Mu-dKy"/>
+                <outlet property="free_end" destination="Cam-aR-Q5X" id="Od5-V8-8wE"/>
+                <outlet property="free_field" destination="UN9-ts-lVX" id="hoX-te-zJm"/>
+                <outlet property="free_slider" destination="wQK-dU-IpJ" id="53x-pb-1kE"/>
+                <outlet property="free_start" destination="yzc-P8-cG7" id="PrL-vG-Ghr"/>
+                <outlet property="freeing_method" destination="YpC-gS-JT8" id="QVf-wp-p2k"/>
+                <outlet property="freeing_pressure" destination="oD5-N3-F0B" id="aiF-fg-ZQS"/>
+                <outlet property="growl_sticky" destination="3tl-fJ-uM0" id="PLM-5K-sBg"/>
+                <outlet property="notifications" destination="hmt-Sj-eSw" id="b1m-Tp-wd8"/>
+                <outlet property="notifications_nc" destination="oFE-VC-DXm" id="dPq-Ac-y7O"/>
+                <outlet property="show_mem" destination="cTB-Wf-bc5" id="zQk-Sc-xE7"/>
+                <outlet property="trim_end" destination="Onm-zO-gok" id="Ttx-Db-hrm"/>
+                <outlet property="trim_field" destination="ekv-G3-0r5" id="PYl-ZW-g6K"/>
+                <outlet property="trim_slider" destination="4r5-7p-93X" id="aQL-ED-XiR"/>
+                <outlet property="trim_start" destination="f29-W2-4Wi" id="eR2-rd-a3N"/>
+                <outlet property="update_while" destination="Ysd-Lg-KQB" id="bo8-Hd-5aI"/>
+            </connections>
+        </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application"/>
         <window title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
@@ -30,12 +50,12 @@
                                         <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hmt-Sj-eSw">
                                             <rect key="frame" x="333" y="246" width="153" height="26"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="CLS-kf-v0j">
+                                            <popUpButtonCell key="cell" type="push" title="Notification Center" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="oFE-VC-DXm" id="CLS-kf-v0j">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="menu"/>
                                                 <menu key="menu" title="OtherViews" id="DYz-6C-rfV">
                                                     <items>
-                                                        <menuItem title="Notification Center" id="oFE-VC-DXm"/>
+                                                        <menuItem title="Notification Center" state="on" id="oFE-VC-DXm"/>
                                                         <menuItem title="Growl" id="j6b-M8-s8V"/>
                                                         <menuItem title="None" id="Q9C-7H-Bpa"/>
                                                     </items>
@@ -122,11 +142,11 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="nX9-1e-lpO">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
+                                                <font key="font" metaFont="menu"/>
                                                 <menu key="menu" title="OtherViews" id="Plz-sH-MBz">
                                                     <items>
                                                         <menuItem title="low" id="K9s-XU-fIe"/>
-                                                        <menuItem title="high" state="on" id="B4u-Xz-0pD"/>
+                                                        <menuItem title="high" id="B4u-Xz-0pD"/>
                                                     </items>
                                                 </menu>
                                             </popUpButtonCell>
@@ -151,12 +171,12 @@
                                         <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YpC-gS-JT8">
                                             <rect key="frame" x="342" y="162" width="144" height="26"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <popUpButtonCell key="cell" type="push" title="memory pressure" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="Dbe-Pe-5xe" id="uEr-eB-8dI">
+                                            <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="uEr-eB-8dI">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
+                                                <font key="font" metaFont="menu"/>
                                                 <menu key="menu" title="OtherViews" id="MiS-cY-ER0">
                                                     <items>
-                                                        <menuItem title="memory pressure" state="on" id="Dbe-Pe-5xe"/>
+                                                        <menuItem title="memory pressure" id="Dbe-Pe-5xe"/>
                                                         <menuItem title="plain allocation" id="v7O-57-vPh"/>
                                                     </items>
                                                 </menu>
@@ -179,7 +199,7 @@
                                             </constraints>
                                             <popUpButtonCell key="cell" type="push" title="critical" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="0Gc-oF-NdH" id="1dA-eq-qc1">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
+                                                <font key="font" metaFont="menu"/>
                                                 <menu key="menu" title="OtherViews" id="yVG-cp-c3h">
                                                     <items>
                                                         <menuItem title="warn" id="0S5-JE-oMP"/>
@@ -212,7 +232,7 @@
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="81" id="TjF-YZ-Vf0"/>
                                             </constraints>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" enabled="NO" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="OCx-mm-Rqy">
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="OCx-mm-Rqy">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -221,7 +241,7 @@
                                         <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ekv-G3-0r5">
                                             <rect key="frame" x="402" y="216" width="81" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" enabled="NO" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="AaM-Mp-pXR">
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="AaM-Mp-pXR">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -300,5 +320,11 @@
                 </constraints>
             </view>
         </window>
+        <userDefaultsController representsSharedInstance="YES" id="8Ux-kX-fUb"/>
+        <customObject id="c2G-oq-SXG" customClass="Prefs">
+            <connections>
+                <outlet property="window" destination="QvC-M9-y7g" id="Hyr-3Z-7KB"/>
+            </connections>
+        </customObject>
     </objects>
 </document>

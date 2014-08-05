@@ -76,13 +76,13 @@ module Util
       NSLog "Freed #{Info.format_bytes(nfm - cfm, true)}"
       Info.freeing   = false
       Info.last_free = NSDate.date
-      if Persist.auto_threshold == 'low'
-        Persist.mem      = ((nfm.to_f * 0.3) / 1024**2).ceil
-        Persist.trim_mem = ((nfm.to_f * 0.6) / 1024**2).ceil if Persist.trim_mem > 0
-      elsif Persist.auto_threshold == 'high'
-        Persist.mem      = ((nfm.to_f * 0.5) / 1024**2).ceil
-        Persist.trim_mem = ((nfm.to_f * 0.8) / 1024**2).ceil if Persist.trim_mem > 0
-      end
+      # if Persist.auto_threshold == 'low'
+      #   Persist.mem      = ((nfm.to_f * 0.3) / 1024**2).ceil
+      #   Persist.trim_mem = ((nfm.to_f * 0.6) / 1024**2).ceil if Persist.trim_mem > 0
+      # elsif Persist.auto_threshold == 'high'
+      #   Persist.mem      = ((nfm.to_f * 0.5) / 1024**2).ceil
+      #   Persist.trim_mem = ((nfm.to_f * 0.8) / 1024**2).ceil if Persist.trim_mem > 0
+      # end
     }
   end
 

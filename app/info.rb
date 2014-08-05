@@ -67,14 +67,14 @@ module Info
 
     def <=>(other)
       other = Version.new(other && other.to_s)
-      p = parts
-      op = other.parts
+      p     = parts
+      op    = other.parts
       p <=> op
     end
 
     def <(other)
       (self <=> other) < 0
-      end
+    end
 
     def <=(other)
       (self <=> other) <= 0

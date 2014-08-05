@@ -17,6 +17,7 @@ module MenuActions
     }.canExecuteBlock { |_| !Info.freeing? }
     MainMenu[:statusbar].subscribe(:status_preferences) { |_, sender|
       # Prefs.sharedInstance.show_window
+      Prefs.shared_instance.showWindow(sender)
     }
     MainMenu[:statusbar].subscribe(:status_quit) { |_, _|
       NSApp.terminate
