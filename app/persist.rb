@@ -100,17 +100,34 @@ module Persist
     }
   end
 
+  def listen(key, &block)
+    @listeners ||= {}
+    @listeners[key] ||= []
+    @listeners[key] << block
+  end
+
+  def change_value(key, new_value)
+    old_value = Persist[key.to_s]
+    Persist[key.to_s] = new_value
+    if @listeners.has_key?(key.to_sym)
+      @listeners[key.to_sym].each { |l|
+        l.call(key.to_sym, old_value, new_value)
+      }
+    end
+  end
+
   def method_missing(meth, *args)
     if /^([a-z_]+)_state[?]$/ =~ meth
       Persist[$1] ? NSOnState : NSOffState
-      elsif /^([a-z_]+)_bi[?]$/ =~ meth
-      Persist[$1] ? 1 : 0
     elsif /^([a-z_]+)[?]?$/ =~ meth
       Persist[$1]
-    elsif /^([a-z_]+)_bi=/ =~ meth
-      Persist[$1] = Array(*args)[0] == 0
     elsif /^([a-z_]+)=/ =~ meth
-      Persist[$1] = Array(*args)[0]
+      # old_value = Persist[$1]
+      # new_value = Array(*args)[0]
+      # key_str = $1
+      # key = $1.to_sym
+      # Persist[key_str] = new_value
+      change_value($1.to_sym, Array(*args)[0])
       # MainMenu.send("set_#{$1}_display") unless @no_refresh
     else
       super
