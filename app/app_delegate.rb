@@ -7,15 +7,14 @@ class AppDelegate
     paddle.setProductId('993')
     paddle.setVendorId('1657')
     paddle.setApiKey('ff308e08f807298d8a76a7a3db1ee12b')
-    paddle.startLicensing({
-                              KPADCurrentPrice => '2.49',
-                              KPADDevName => 'Eric Henderson',
-                              KPADCurrency => 'USD',
-                              KPADImage => 'https://raw.githubusercontent.com/henderea/MemoryTamer/master/resources/Icon.png',
-                              KPADProductName => 'MemoryTamer',
-                              KPADTrialDuration => '7',
-                              KPADTrialText => 'Thanks for downloading a trial of MemoryTamer! We hope you enjoy it.',
-                              KPADProductImage => 'Icon.png'}, timeTrial: true, withWindow: nil)
+    paddle.startLicensing({ KPADCurrentPrice  => '2.49',
+                            KPADDevName       => 'Eric Henderson',
+                            KPADCurrency      => 'USD',
+                            KPADImage         => 'https://raw.githubusercontent.com/henderea/MemoryTamer/master/resources/Icon.png',
+                            KPADProductName   => 'MemoryTamer',
+                            KPADTrialDuration => '7',
+                            KPADTrialText     => 'Thanks for downloading a trial of MemoryTamer! We hope you enjoy it.',
+                            KPADProductImage  => 'Icon.png' }, timeTrial: true, withWindow: nil)
     NSNotificationCenter.defaultCenter.addObserver(self, selector: :set_license_display, name: KPADActivated, object: nil)
     SUUpdater.sharedUpdater
     @freeing = false
@@ -50,7 +49,7 @@ class AppDelegate
       set_mem_display
     }
     MainMenu[:prefs].subscribe(:trim_change) { |_, _|
-      nm                      = get_input('Please enter the memory trim threshold in MB', "#{App::Persistence['trim_mem']}", :int, min: 0, max: (get_total_memory / 1024**2))
+      nm                           = get_input('Please enter the memory trim threshold in MB', "#{App::Persistence['trim_mem']}", :int, min: 0, max: (get_total_memory / 1024**2))
       App::Persistence['trim_mem'] = nm if nm
       set_trim_display
     }
@@ -113,7 +112,7 @@ class AppDelegate
       loop do
         cfm = get_free_mem
         @statusItem.setTitle(App::Persistence['show_mem'] ? format_bytes(cfm) : '') if App::Persistence['update_while'] || !@freeing
-        diff = (NSDate.date - @last_free)
+        diff   = (NSDate.date - @last_free)
         diff_t = (NSDate.date - @last_trim)
         # mem_tweak_default('mem', cfm, dfm, [diff, diff_t + 30].min, 60*10, 60*15, 60*5, 60*10)
         # mem_tweak_default('trim_mem', cfm, dtm, diff_t, 60*5, 60*10, 60*3, 60*5)
@@ -174,7 +173,7 @@ class AppDelegate
 
   def set_mem_display
     MainMenu[:prefs].items[:memory_display][:title] = "Memory threshold: #{App::Persistence['mem']} MB"
-    end
+  end
 
   def set_trim_display
     MainMenu[:prefs].items[:trim_display][:title] = "Memory trim threshold: #{App::Persistence['trim_mem']} MB"
@@ -213,7 +212,7 @@ class AppDelegate
 
   def set_license_display(note = nil)
     Thread.start {
-      paddle = Paddle.sharedInstance
+      paddle                                             = Paddle.sharedInstance
       MainMenu[:license].items[:license_display][:title] = paddle.productActivated ? paddle.activatedEmail : 'Not Registered'
       MainMenu[:license].items[:license_change][:title]  = paddle.productActivated ? 'View Registration' : 'Buy / Register'
     }
@@ -236,7 +235,7 @@ class AppDelegate
 
   def dfm
     App::Persistence['mem'] * 1024**2
-    end
+  end
 
   def dtm
     App::Persistence['trim_mem'] * 1024**2
@@ -418,14 +417,19 @@ class AppDelegate
   def notify(msg, nn)
     NSLog "Notification (#{nn}): #{msg}"
     if App::Persistence['growl']
-      GrowlApplicationBridge.notifyWithTitle(
-          'MemoryTamer',
-          description:      msg,
-          notificationName: nn,
-          iconData:         nil,
-          priority:         0,
-          isSticky:         App::Persistence['sticky'],
-          clickContext:     nil)
+      if GrowlApplicationBridge.isGrowlRunning
+        ep = NSBundle.mainBundle.pathForResource('growlnotify', ofType: '')
+        system("'#{ep}' -n MemoryTamer -a MemoryTamer#{(App::Persistence['sticky'] ? ' -s' : '')} -m '#{msg}' -t 'MemoryTamer'")
+      else
+        GrowlApplicationBridge.notifyWithTitle(
+            'MemoryTamer',
+            description:      msg,
+            notificationName: nn,
+            iconData:         nil,
+            priority:         0,
+            isSticky:         App::Persistence['sticky'],
+            clickContext:     nil)
+      end
     else
       notification                 = NSUserNotification.alloc.init
       notification.title           = 'MemoryTamer'
