@@ -8,10 +8,12 @@ resources/*.storyboardc
 .DS_Store
 nbproject
 .redcar
-#*#
 *~
 *.sw[po]
 .eprj
 .sass-cache
 .idea
 .dat*.*
+vendor/free_mem/build-MacOSX
+ib.xcodeproj
+vendor/*/build-MacOSX

@@ -9,7 +9,7 @@ rescue LoadError
 # ignored
 end
 
-SKIP_CODESIGN_TIMESTAMP = false
+SKIP_CODESIGN_TIMESTAMP = true
 
 module Motion::Project
   class Builder
@@ -22,6 +22,12 @@ module Motion::Project
         sh "/usr/bin/codesign --deep --force --sign \"#{config.codesign_certificate}\"#{SKIP_CODESIGN_TIMESTAMP ? ' --timestamp=none' : ''} --entitlements \"#{entitlements}\" \"#{app_bundle}\""
       end
     end
+  end
+end
+
+class MotionHeader
+  def include_path
+    @prefix
   end
 end
 
@@ -39,4 +45,7 @@ Motion::Project::App.setup do |app|
   app.embedded_frameworks << 'vendor/Growl.framework'
   app.embedded_frameworks << 'vendor/Sparkle.framework'
   app.embedded_frameworks << 'vendor/Paddle.framework'
+  app.vendor_project('vendor/mem_info', :static)
+  # app.include 'sysctl.h', prefix: '/usr/include/sys/'
+  # app.include 'vm.h', prefix: '/usr/include/sys/'
 end

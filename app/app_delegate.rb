@@ -281,24 +281,59 @@ class AppDelegate
     "#{'%.2f' % (bytes.to_f / 1024.0**lg)} #{unit}#{show_raw ? " (#{bytes} B)" : ''}"
   end
 
+  def sizeof(type)
+    size_ptr  = Pointer.new('Q')
+    align_ptr = Pointer.new('Q')
+    NSGetSizeAndAlignment(type, size_ptr, align_ptr)
+    size_ptr[0]
+  end
+
   def get_free_mem(inactive_multiplier = 0)
-    page_size      = WeakRef.new(`vm_stat | grep 'page size' | awk '{ print $8 }'`).chomp!.to_i
-    pages_free     = WeakRef.new(`vm_stat | grep 'Pages free' | awk '{ print $3 }'`).chomp![0...-1].to_i
-    pages_inactive = WeakRef.new(`vm_stat | grep 'Pages inactive' | awk '{ print $3 }'`).chomp![0...-1].to_i
+    # page_size      = WeakRef.new(`vm_stat | grep 'page size' | awk '{ print $8 }'`).chomp!.to_i
+    # pages_free     = WeakRef.new(`vm_stat | grep 'Pages free' | awk '{ print $3 }'`).chomp![0...-1].to_i
+    # pages_inactive = WeakRef.new(`vm_stat | grep 'Pages inactive' | awk '{ print $3 }'`).chomp![0...-1].to_i
+
+    # pageSize    = Pointer.new(:int)
+    # freeMem     = Pointer.new(:int)
+    # inactiveMem = Pointer.new(:int)
+    #
+    # FreeMem.getPageSize(pageSize, freeMem: freeMem, inactiveMem: inactiveMem)
+    #
+    # page_size      = pageSize.value
+    # pages_free     = freeMem.value
+    # pages_inactive = inactiveMem.value
+    #
+    # # pageSize.dealloc
+    # # freeMem.dealloc
+    # # inactiveMem.dealloc
+    #
+    # pageSize[0]    = 0
+    # freeMem[0]     = 0
+    # inactiveMem[0] = 0
+    #
+    # pageSize    = nil
+    # freeMem     = nil
+    # inactiveMem = nil
+
+    page_size = FreeMem.getPageSize
+    pages_free = FreeMem.getPagesFree
+    pages_inactive = FreeMem.getPagesInactive
 
     page_size*pages_free + page_size*pages_inactive*inactive_multiplier
   end
 
-  def sysctl_get(name)
-    `/usr/sbin/sysctl '#{name}' | awk '{ print $2 }'`.chomp!
-  end
+  # def sysctl_get(name)
+  #   `/usr/sbin/sysctl '#{name}' | awk '{ print $2 }'`.chomp!
+  # end
 
   def get_memory_pressure
-    sysctl_get('kern.memorystatus_vm_pressure_level').to_i
+    # sysctl_get('kern.memorystatus_vm_pressure_level').to_i
+    FreeMem.getMemoryPressure
   end
 
   def get_total_memory
-    sysctl_get('hw.memsize').to_i
+    # sysctl_get('hw.memsize').to_i
+    FreeMem.getTotalMemory
   end
 
   def free_mem(pressure)
