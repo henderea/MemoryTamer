@@ -1,7 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    everyday-menu (1.3.4)
+    everyday-menu (1.3.5)
       rm-digest
     rake (10.3.2)
     rm-digest (0.0.2)
@@ -10,5 +10,5 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  everyday-menu (>= 1.3.4)
+  everyday-menu (>= 1.3.5)
   rake

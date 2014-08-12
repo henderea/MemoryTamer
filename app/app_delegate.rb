@@ -1,4 +1,4 @@
-class String
+class NSObject
   def to_weak
     WeakRef.new(self)
   end
@@ -46,24 +46,24 @@ class AppDelegate
       Paddle.sharedInstance.showLicencing
     }
     MainMenu[:prefs].subscribe(:notification_change) { |_, _|
-      Persist.growl = !Persist.growl?
+      Persist.store.growl = !Persist.store.growl?
       set_notification_display
     }.canExecuteBlock { |_| @has_nc }
     MainMenu[:prefs].subscribe(:memory_change) { |_, _|
-      nm                      = get_input('Please enter the memory threshold in MB', "#{Persist.mem}".to_weak, :int, min: 0, max: (get_total_memory / 1024**2))
-      Persist.mem = nm if nm
+      nm                = get_input('Please enter the memory threshold in MB', "#{Persist.store.mem}".to_weak, :int, min: 0, max: (get_total_memory / 1024**2))
+      Persist.store.mem = nm if nm
       set_mem_display
     }
     MainMenu[:prefs].subscribe(:trim_change) { |_, _|
-      nm                           = get_input('Please enter the memory trim threshold in MB', "#{Persist.trim_mem}".to_weak, :int, min: 0, max: (get_total_memory / 1024**2))
-      Persist.trim_mem = nm if nm
+      nm                     = get_input('Please enter the memory trim threshold in MB', "#{Persist.store.trim_mem}".to_weak, :int, min: 0, max: (get_total_memory / 1024**2))
+      Persist.store.trim_mem = nm if nm
       set_trim_display
     }
     MainMenu[:prefs].subscribe(:auto_change) { |_, _|
-      np = get_input('Please select the auto-threshold target level', Persist.auto_threshold, :select, values: %w(off low high))
+      np = get_input('Please select the auto-threshold target level', Persist.store.auto_threshold, :select, values: %w(off low high))
       if np
         if %w(off low high).include?(np)
-          Persist.auto_threshold = np
+          Persist.store.auto_threshold = np
           set_auto_display
         else
           alert("Invalid option '#{np}'!")
@@ -71,10 +71,10 @@ class AppDelegate
       end
     }.canExecuteBlock { |_| @mavericks }
     MainMenu[:prefs].subscribe(:pressure_change) { |_, _|
-      np = get_input('Please select the freeing pressure', Persist.pressure, :select, values: %w(normal warn critical))
+      np = get_input('Please select the freeing pressure', Persist.store.pressure, :select, values: %w(normal warn critical))
       if np
         if %w(normal warn critical).include?(np)
-          Persist.pressure = np
+          Persist.store.pressure = np
           set_pressure_display
         else
           alert("Invalid option '#{np}'!")
@@ -82,23 +82,23 @@ class AppDelegate
       end
     }.canExecuteBlock { |_| @mavericks }
     MainMenu[:prefs].subscribe(:method_change) { |_, _|
-      Persist.method_pressure = !Persist.method_pressure?
+      Persist.store.method_pressure = !Persist.store.method_pressure?
       set_method_display
     }.canExecuteBlock { |_| @mavericks }
     MainMenu[:prefs].subscribe(:escalate_display) { |command, sender|
-      Persist.auto_escalate = command.parent[:state] == NSOffState
+      Persist.store.auto_escalate = command.parent[:state] == NSOffState
       set_escalate_display
     }.canExecuteBlock { |_| @mavericks }
     MainMenu[:prefs].subscribe(:show_display) { |command, sender|
-      Persist.show_mem = command.parent[:state] == NSOffState
+      Persist.store.show_mem = command.parent[:state] == NSOffState
       set_show_display
     }
     MainMenu[:prefs].subscribe(:update_display) { |command, sender|
-      Persist.update_while = command.parent[:state] == NSOffState
+      Persist.store.update_while = command.parent[:state] == NSOffState
       set_update_display
     }
     MainMenu[:prefs].subscribe(:sticky_display) { |command, sender|
-      Persist.sticky = command.parent[:state] == NSOffState
+      Persist.store.sticky = command.parent[:state] == NSOffState
       set_sticky_display
     }
     MainMenu[:support].subscribe(:support_ticket) { |_, _|
@@ -111,13 +111,13 @@ class AppDelegate
     MainMenu[:statusbar].items[:status_version][:title] = "Current Version: #{NSBundle.mainBundle.infoDictionary['CFBundleVersion']}"
     NSUserNotificationCenter.defaultUserNotificationCenter.setDelegate(self) if @has_nc
     GrowlApplicationBridge.setGrowlDelegate(self)
-    NSLog "Starting up with memory = #{dfm}; pressure = #{Persist.pressure}"
+    NSLog "Starting up with memory = #{dfm}; pressure = #{Persist.store.pressure}"
     Thread.start {
       @last_free = NSDate.date - 30
       @last_trim = NSDate.date
       loop do
         cfm = get_free_mem
-        @statusItem.setTitle(Persist.show_mem? ? format_bytes(cfm).to_weak : '') if Persist.update_while? || !@freeing
+        @statusItem.setTitle(Persist.store.show_mem? ? format_bytes(cfm.to_weak).to_weak : '') if Persist.store.update_while? || !@freeing
         diff   = (NSDate.date - @last_free)
         diff_t = (NSDate.date - @last_trim)
         set_mem_display
@@ -150,47 +150,47 @@ class AppDelegate
   end
 
   def set_notification_display
-    MainMenu[:prefs].items[:notification_display][:title] = "Currently Using #{Persist.growl? ? 'Growl' : 'Notification Center'}".to_weak
-    MainMenu[:prefs].items[:notification_change][:title]  = "Use #{!Persist.growl? ? 'Growl' : 'Notification Center'}".to_weak
+    MainMenu[:prefs].items[:notification_display][:title] = "Currently Using #{Persist.store.growl? ? 'Growl' : 'Notification Center'}".to_weak
+    MainMenu[:prefs].items[:notification_change][:title]  = "Use #{!Persist.store.growl? ? 'Growl' : 'Notification Center'}".to_weak
   end
 
   def set_mem_display
-    MainMenu[:prefs].items[:memory_display][:title] = "Memory threshold: #{Persist.mem} MB".to_weak
+    MainMenu[:prefs].items[:memory_display][:title] = "Memory threshold: #{Persist.store.mem} MB".to_weak
   end
 
   def set_trim_display
-    MainMenu[:prefs].items[:trim_display][:title] = "Memory trim threshold: #{Persist.trim_mem} MB".to_weak
+    MainMenu[:prefs].items[:trim_display][:title] = "Memory trim threshold: #{Persist.store.trim_mem} MB".to_weak
   end
 
   def set_auto_display
-    MainMenu[:prefs].items[:auto_display][:title] = "Auto-threshold: #{Persist.auto_threshold}".to_weak
+    MainMenu[:prefs].items[:auto_display][:title] = "Auto-threshold: #{Persist.store.auto_threshold}".to_weak
   end
 
   def set_pressure_display
-    MainMenu[:prefs].items[:pressure_display][:title] = "Freeing pressure: #{Persist.pressure}".to_weak
+    MainMenu[:prefs].items[:pressure_display][:title] = "Freeing pressure: #{Persist.store.pressure}".to_weak
     MainMenu[:prefs].items[:pressure_change][:title]  = @mavericks ? 'Change freeing pressure' : 'Requires Mavericks 10.9 or higher'
   end
 
   def set_method_display
-    MainMenu[:prefs].items[:method_display][:title] = "Freeing method: #{Persist.method_pressure? ? 'memory pressure' : 'plain allocation'}".to_weak
-    MainMenu[:prefs].items[:method_change][:title]  = @mavericks ? "Use #{!Persist.method_pressure? ? 'memory pressure' : 'plain allocation'} method".to_weak : 'Requires Mavericks 10.9 or higher to change'
+    MainMenu[:prefs].items[:method_display][:title] = "Freeing method: #{Persist.store.method_pressure? ? 'memory pressure' : 'plain allocation'}".to_weak
+    MainMenu[:prefs].items[:method_change][:title]  = @mavericks ? "Use #{!Persist.store.method_pressure? ? 'memory pressure' : 'plain allocation'} method".to_weak : 'Requires Mavericks 10.9 or higher to change'
   end
 
   def set_escalate_display
-    MainMenu[:prefs].items[:escalate_display][:state] = Persist.auto_escalate_state?
+    MainMenu[:prefs].items[:escalate_display][:state] = Persist.store.auto_escalate_state?
   end
 
   def set_show_display
-    MainMenu[:prefs].items[:show_display][:state] = Persist.show_mem_state?
-    @statusItem.setTitle(Persist.show_mem? ? format_bytes(get_free_mem) : '')
+    MainMenu[:prefs].items[:show_display][:state] = Persist.store.show_mem_state?
+    @statusItem.setTitle(Persist.store.show_mem? ? format_bytes(get_free_mem) : '')
   end
 
   def set_update_display
-    MainMenu[:prefs].items[:update_display][:state] = Persist.update_while_state?
+    MainMenu[:prefs].items[:update_display][:state] = Persist.store.update_while_state?
   end
 
   def set_sticky_display
-    MainMenu[:prefs].items[:sticky_display][:state] = Persist.sticky_state?
+    MainMenu[:prefs].items[:sticky_display][:state] = Persist.store.sticky_state?
   end
 
   def set_license_display(note = nil)
@@ -202,45 +202,46 @@ class AppDelegate
   end
 
   def load_prefs
-    Persist.mem             = 1024 if Persist.mem.nil?
-    Persist.trim_mem        = 0 if Persist.trim_mem.nil?
-    Persist.auto_threshold  = 'off' if Persist.auto_threshold.nil?
-    Persist.pressure        = 'warn' if Persist.pressure.nil?
-    Persist.growl           = false if Persist.growl.nil?
-    Persist.method_pressure = true if Persist.method_pressure.nil?
-    Persist.show_mem        = true if Persist.show_mem.nil?
-    Persist.update_while    = true if Persist.update_while.nil?
-    Persist.sticky          = false if Persist.sticky.nil?
+    Persist.store.mem             = 1024 if Persist.store.mem.nil?
+    Persist.store.trim_mem        = 0 if Persist.store.trim_mem.nil?
+    Persist.store.auto_threshold  = 'off' if Persist.store.auto_threshold.nil?
+    Persist.store.pressure        = 'warn' if Persist.store.pressure.nil?
+    Persist.store.growl           = false if Persist.store.growl.nil?
+    Persist.store.method_pressure = true if Persist.store.method_pressure.nil?
+    Persist.store.auto_escalate   = false if Persist.store.auto_escalate.nil?
+    Persist.store.show_mem        = true if Persist.store.show_mem.nil?
+    Persist.store.update_while    = true if Persist.store.update_while.nil?
+    Persist.store.sticky          = false if Persist.store.sticky.nil?
 
-    Persist.growl           = Persist.growl? || !@has_nc
-    Persist.method_pressure = Persist.method_pressure? && @mavericks
+    Persist.store.growl           = Persist.store.growl? || !@has_nc
+    Persist.store.method_pressure = Persist.store.method_pressure? && @mavericks
   end
 
   def dfm
-    Persist.mem * 1024**2
+    Persist.store.mem * 1024**2
   end
 
   def dtm
-    Persist.trim_mem * 1024**2
+    Persist.store.trim_mem * 1024**2
   end
 
   def free_mem_default(cfm)
     @freeing = true
     notify 'Beginning memory freeing', 'Start Freeing'
-    free_mem(Persist.pressure)
+    free_mem(Persist.store.pressure)
     nfm = get_free_mem
     notify "Finished freeing #{format_bytes(nfm - cfm)}", 'Finish Freeing'
     NSLog "Freed #{format_bytes(nfm - cfm, true)}"
     @freeing   = false
     @last_free = NSDate.date
-    if Persist.auto_threshold == 'low'
-      Persist.mem      = ((nfm.to_f * 0.3) / 1024**2).ceil
-      Persist.trim_mem = ((nfm.to_f * 0.6) / 1024**2).ceil if Persist.trim_mem > 0
+    if Persist.store.auto_threshold == 'low'
+      Persist.store.mem      = ((nfm.to_f * 0.3) / 1024**2).ceil
+      Persist.store.trim_mem = ((nfm.to_f * 0.6) / 1024**2).ceil if Persist.store.trim_mem > 0
       set_mem_display
       set_trim_display
-    elsif Persist.auto_threshold == 'high'
-      Persist.mem      = ((nfm.to_f * 0.5) / 1024**2).ceil
-      Persist.trim_mem = ((nfm.to_f * 0.8) / 1024**2).ceil if Persist.trim_mem > 0
+    elsif Persist.store.auto_threshold == 'high'
+      Persist.store.mem      = ((nfm.to_f * 0.5) / 1024**2).ceil
+      Persist.store.trim_mem = ((nfm.to_f * 0.8) / 1024**2).ceil if Persist.store.trim_mem > 0
       set_mem_display
       set_trim_display
     end
@@ -252,7 +253,7 @@ class AppDelegate
     free_mem_old(true)
     nfm = get_free_mem
     notify "Finished trimming #{format_bytes(nfm - cfm)}", 'Finish Freeing'
-    NSLog "Freed #{format_bytes(nfm - cfm, true)}"
+    NSLog "Freed #{format_bytes(nfm - cfm, true)}".to_weak
     @freeing   = false
     @last_trim = NSDate.date
   end
@@ -260,7 +261,7 @@ class AppDelegate
   def format_bytes(bytes, show_raw = false)
     return "#{bytes} B".to_weak if bytes <= 1
     lg   = (Math.log(bytes)/Math.log(1024)).floor.to_f
-    unit = %w(B KB MB GB TB)[lg]
+    unit = %w(B KB MB GB TB).to_weak[lg].to_weak
     "#{('%.2f' % (bytes.to_f / 1024.0**lg)).to_weak} #{unit}#{show_raw ? " (#{bytes} B)".to_weak : ''}"
   end
 
@@ -272,8 +273,8 @@ class AppDelegate
   end
 
   def get_free_mem(inactive_multiplier = 0)
-    page_size = MemInfo.getPageSize
-    pages_free = MemInfo.getPagesFree
+    page_size      = MemInfo.getPageSize
+    pages_free     = MemInfo.getPagesFree
     pages_inactive = MemInfo.getPagesInactive
 
     page_size*pages_free + page_size*pages_inactive*inactive_multiplier
@@ -288,19 +289,20 @@ class AppDelegate
   end
 
   def free_mem(pressure)
-    if Persist.method_pressure?
+    if Persist.store.method_pressure?
       cmp = get_memory_pressure
       if cmp >= 4
         notify 'Memory Pressure too high! Running not a good idea.', 'Error'
         return
       end
       dmp = pressure == 'normal' ? 1 : (pressure == 'warn' ? 2 : 4)
-      if cmp >= dmp && Persist.auto_escalate?
+      if cmp >= dmp && Persist.store.auto_escalate?
         np = cmp == 1 ? 'warn' : 'critical'
-        NSLog "escalating freeing pressure from #{pressure} to #{np}"
+        NSLog "escalating freeing pressure from #{pressure} to #{np}".to_weak
         pressure = np
       end
       IO.popen("memory_pressure -l #{pressure}") { |pipe|
+        pipe      = pipe.to_weak
         pipe.sync = true
         pipe.each { |l|
           NSLog l
@@ -318,9 +320,9 @@ class AppDelegate
 
   def free_mem_old(trim = false)
     mtf = trim ? [get_free_mem(1) * 0.75, get_free_mem(0.5)].min : get_free_mem(1)
-    NSLog "#{mtf}"
+    NSLog "#{mtf}".to_weak
     ep = NSBundle.mainBundle.pathForResource('inactive', ofType: '')
-    op = `'#{ep}' '#{mtf}'`
+    op = `'#{ep}' '#{mtf}'`.to_weak
     NSLog op
   end
 
@@ -337,7 +339,7 @@ class AppDelegate
   end
 
   def get_input(message, default_value, type = :text, options = {})
-    alert = NSAlert.alertWithMessageText(type == :int ? "#{message}#{make_range(options[:min], options[:max])}".to_weak : message, defaultButton: 'OK', alternateButton: 'Cancel', otherButton: nil, informativeTextWithFormat: '')
+    alert = NSAlert.alertWithMessageText(type == :int ? "#{message}#{make_range(options[:min], options[:max]).to_weak}".to_weak : message, defaultButton: 'OK', alternateButton: 'Cancel', otherButton: nil, informativeTextWithFormat: '').to_weak
     case type
       when :select
         input = NSPopUpButton.alloc.initWithFrame(NSMakeRect(0, 0, 200, 24))
@@ -345,11 +347,12 @@ class AppDelegate
         input.selectItemWithTitle(default_value)
       when :int
         input                  = NSTextField.alloc.initWithFrame(NSMakeRect(0, 0, 200, 24))
-        input.stringValue      = "#{default_value}"
+        input.stringValue      = "#{default_value}".to_weak
         formatter              = NSNumberFormatter.alloc.init
         formatter.allowsFloats = false
         formatter.minimum      = options[:min]
         formatter.maximum      = options[:max]
+        input.formatter        = formatter
       else
         input             = NSTextField.alloc.initWithFrame(NSMakeRect(0, 0, 200, 24))
         input.stringValue = default_value
@@ -364,7 +367,7 @@ class AppDelegate
           if options[:values].include?(v)
             v
           else
-            alert("Invalid option #{v}!")
+            alert("Invalid option #{v}!".to_weak)
             nil
           end
         when :int
@@ -372,10 +375,10 @@ class AppDelegate
           begin
             vi = v.to_i
             if options[:min] && vi < options[:min]
-              alert("Value must be >= #{options[:min]}")
+              alert("Value must be >= #{options[:min]}".to_weak)
               nil
             elsif vi > options[:max]
-              alert("Value must be < #{options[:max]}")
+              alert("Value must be < #{options[:max]}".to_weak)
               nil
             else
               vi
@@ -390,22 +393,22 @@ class AppDelegate
     elsif button == NSAlertAlternateReturn
       nil
     else
-      NSLog("Invalid input dialog button #{button}")
+      NSLog("Invalid input dialog button #{button}".to_weak)
       nil
     end
   end
 
   def alert(message)
-    alert = NSAlert.alertWithMessageText(message, defaultButton: 'OK', alternateButton: nil, otherButton: nil, informativeTextWithFormat: '')
+    alert = NSAlert.alertWithMessageText(message, defaultButton: 'OK', alternateButton: nil, otherButton: nil, informativeTextWithFormat: '').to_weak
     alert.runModal
   end
 
   def notify(msg, nn)
-    NSLog "Notification (#{nn}): #{msg}"
-    if Persist.growl?
+    NSLog "Notification (#{nn}): #{msg}".to_weak
+    if Persist.store.growl?
       if GrowlApplicationBridge.isGrowlRunning
         ep = NSBundle.mainBundle.pathForResource('growlnotify', ofType: '')
-        system("'#{ep}' -n MemoryTamer -a MemoryTamer#{(Persist.sticky? ? ' -s' : '')} -m '#{msg}' -t 'MemoryTamer'")
+        system("'#{ep}' -n MemoryTamer -a MemoryTamer#{(Persist.store.sticky? ? ' -s' : '')} -m '#{msg}' -t 'MemoryTamer'")
       else
         GrowlApplicationBridge.notifyWithTitle(
             'MemoryTamer',
@@ -413,7 +416,7 @@ class AppDelegate
             notificationName: nn,
             iconData:         nil,
             priority:         0,
-            isSticky:         Persist.sticky?,
+            isSticky:         Persist.store.sticky?,
             clickContext:     nil)
       end
     else
