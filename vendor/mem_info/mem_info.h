@@ -10,4 +10,5 @@
 + (int) getPagesInactive;
 + (int) getMemoryPressure;
 + (int) getTotalMemory;
++ (long long) getMTMemory;
 @end

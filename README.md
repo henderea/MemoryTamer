@@ -37,6 +37,7 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v0.9.3:** Auto-threshold has changed.  My original design for it didn't turn out well, so I changed it to set the thresholds to a certain percent of post-freeing memory on a full freeing.  Hopefully this will work better.
 * **v0.9.4:** fix a refreshing issue with auto-threshold
 * **v0.9.5:** hopefully work around a memory leak by using a bundled copy of growlnotify; also, new icon
+* **v0.9.6:** hopefully reduce memory leaks and add a mechanism for relaunching MemoryTamer when it starts using up too much memory
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.3.zip> (Mavericks-only)
@@ -66,3 +67,4 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v0.9.3:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-0.9.3.zip>
 * **v0.9.4:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-0.9.4.zip>
 * **v0.9.5:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-0.9.5.zip>
+* **v0.9.6:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-0.9.6.zip>

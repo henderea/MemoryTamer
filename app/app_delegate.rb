@@ -4,6 +4,32 @@ class NSObject
   end
 end
 
+class NSApplication
+  # -(void) relaunchAfterDelay : (float) seconds
+  # {
+  #     NSTask *task = [[[NSTask alloc] init] autorelease];
+  # NSMutableArray *args = [NSMutableArray array];
+  # [args addObject: @ "-c"];
+  # [args addObject: [NSString stringWithFormat: @ "sleep %f; open \"%@\"", seconds, [[NSBundle mainBundle] bundlePath]]];
+  # [task setLaunchPath: @ "/bin/sh"];
+  # [task setArguments: args];
+  # [task launch];
+  #
+  # [self terminate : nil];
+  # }
+  def relaunchAfterDelay(seconds)
+    task = NSTask.alloc.init
+    args = []
+    args << '-c'
+    args << ('sleep %f; open "%s"' % [seconds, NSBundle.mainBundle.bundlePath])
+    task.launchPath = '/bin/sh'
+    task.arguments = args
+    task.launch
+
+    self.terminate(nil)
+  end
+end
+
 class AppDelegate
   attr_accessor :free_display_title
 
@@ -113,9 +139,14 @@ class AppDelegate
     GrowlApplicationBridge.setGrowlDelegate(self)
     NSLog "Starting up with memory = #{dfm}; pressure = #{Persist.store.pressure}"
     Thread.start {
+      @start_time = NSDate.date
       @last_free = NSDate.date - 30
       @last_trim = NSDate.date
       loop do
+        if MemInfo.getMTMemory > (200 * (1024 ** 2)) && (NSDate.date - @start_time) > 300
+          NSLog "MemoryTamer is using #{format_bytes(MemInfo.getMTMemory, true)}; restarting"
+          NSApp.relaunchAfterDelay(1)
+        end
         cfm = get_free_mem
         @statusItem.setTitle(Persist.store.show_mem? ? format_bytes(cfm.to_weak).to_weak : '') if Persist.store.update_while? || !@freeing
         diff   = (NSDate.date - @last_free)
