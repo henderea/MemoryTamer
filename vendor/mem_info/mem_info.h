@@ -5,10 +5,10 @@
 #import <mach/task.h>
 
 @interface MemInfo : NSObject
-+ (int) getPageSize;
++ (long long) getPageSize;
 + (int) getPagesFree;
 + (int) getPagesInactive;
-+ (int) getMemoryPressure;
-+ (int) getTotalMemory;
++ (long long) getMemoryPressure;
++ (long long) getTotalMemory;
 + (long long) getMTMemory;
 @end
