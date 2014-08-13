@@ -8,6 +8,7 @@ resources/*.storyboardc
 .DS_Store
 nbproject
 .redcar
+#*#
 *~
 *.sw[po]
 .eprj
@@ -15,3 +16,4 @@ nbproject
 .idea
 .dat*.*
 ib.xcodeproj
+vendor/*/build-MacOSX
