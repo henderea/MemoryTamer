@@ -22,13 +22,11 @@ class Persist
       define_method("#{name.to_s}".to_weak) { self[name.to_s] }
       define_method("#{name.to_s}?".to_weak) { self[name.to_s] }
       define_method("#{name.to_s}_state?".to_weak) { self[name.to_s] ? NSOnState : NSOffState }
-      # define_method("#{name.to_s}_bi?".to_weak) { self[name.to_s] ? 1 : 0 }
-      define_method("#{name.to_s}=".to_weak) { |v| self[name.to_s] = v }
-      # define_method("#{name.to_s}_bi=".to_weak) { |v| self[name.to_s] = v == 0 }
+      define_method("#{name.to_s}=".to_weak) { |v| change_value(name.to_sym, v) }
     }
   end
 
-  property :mem, :trim_mem, :auto_threshold, :pressure, :growl, :method_pressure, :show_mem, :update_while, :sticky, :auto_escalate
+  property :mem, :trim_mem, :auto_threshold, :pressure, :growl, :method_pressure, :show_mem, :update_while, :sticky, :auto_escalate, :notifications
 
   def identifier
     NSBundle.mainBundle.bundleIdentifier
@@ -91,27 +89,27 @@ class Persist
   end
 
   def load_prefs
-    Persist.no_refresh {
-      Info.last_version       = Persist.last_version
-      Persist.last_version    = Info.version.to_s
-      Persist.mem             = 1024 if Persist.mem.nil?
-      Persist.trim_mem        = 0 if Persist.trim_mem.nil?
-      Persist.auto_threshold  = 'low' if Persist.auto_threshold.nil? || Persist.auto_threshold == 'off'
-      Persist.pressure        = 'warn' if Persist.pressure.nil? || Persist.pressure == 'normal'
-      Persist.growl           = false if Persist.growl.nil?
-      Persist.method_pressure = true if Persist.method_pressure.nil?
-      Persist.show_mem        = true if Persist.show_mem.nil?
-      Persist.update_while    = false if Persist.update_while.nil? || Info.last_version < '1.0'
-      Persist.sticky          = false if Persist.sticky.nil?
-      Persist.free_start      = true if Persist.free_start.nil?
-      Persist.free_end        = true if Persist.free_end.nil?
-      Persist.trim_start      = true if Persist.trim_start.nil?
-      Persist.trim_end        = true if Persist.trim_end.nil?
+    self.no_refresh {
+      Info.last_version    = self.last_version
+      self.last_version    = Info.version.to_s
+      self.mem             = 1024 if self.mem.nil?
+      self.trim_mem        = 0 if self.trim_mem.nil?
+      self.auto_threshold  = 'low' if self.auto_threshold.nil? || self.auto_threshold == 'off'
+      self.pressure        = 'warn' if self.pressure.nil? || self.pressure == 'normal'
+      self.growl           = false if self.growl.nil?
+      self.method_pressure = true if self.method_pressure.nil?
+      self.show_mem        = true if self.show_mem.nil?
+      self.update_while    = false if self.update_while.nil? || Info.last_version < '1.0'
+      self.sticky          = false if self.sticky.nil?
+      self.free_start      = true if self.free_start.nil?
+      self.free_end        = true if self.free_end.nil?
+      self.trim_start      = true if self.trim_start.nil?
+      self.trim_end        = true if self.trim_end.nil?
 
-      Persist.growl           = Persist.growl? || !Info.has_nc?
-      Persist.method_pressure = Persist.method_pressure? && Info.mavericks?
-      Persist.notifications   = Persist.growl? ? 'Growl' : 'Notification Center' if Persist.notifications.nil?
-      Persist.notifications   = 'Growl' if Persist.notifications == 'Notification Center' && !Info.has_nc?
+      self.growl           = self.growl? || !Info.has_nc?
+      self.method_pressure = self.method_pressure? && Info.mavericks?
+      self.notifications   = self.growl? ? 'Growl' : 'Notification Center' if self.notifications.nil?
+      self.notifications   = 'Growl' if self.notifications == 'Notification Center' && !Info.has_nc?
     }
   end
 
@@ -124,30 +122,26 @@ class Persist
   end
 
   def change_value(key, new_value)
-    old_value = Persist[key.to_s]
+    old_value         = Persist[key.to_s]
     Persist[key.to_s] = new_value
-    if @listeners.has_key?(key.to_sym)
-      @listeners[key.to_sym].each { |l|
-        l.call(key.to_sym, old_value, new_value)
-      }
-    end
+    @listeners[key.to_sym].each { |l| l.call(key.to_sym, old_value, new_value) } if @listeners.has_key?(key.to_sym)
   end
 
-  def method_missing(meth, *args)
-    if /^([a-z_]+)_state[?]$/ =~ meth
-      Persist[$1] ? NSOnState : NSOffState
-    elsif /^([a-z_]+)[?]?$/ =~ meth
-      Persist[$1]
-    elsif /^([a-z_]+)=/ =~ meth
-      # old_value = Persist[$1]
-      # new_value = Array(*args)[0]
-      # key_str = $1
-      # key = $1.to_sym
-      # Persist[key_str] = new_value
-      change_value($1.to_sym, Array(*args)[0])
-      # MainMenu.send("set_#{$1}_display") unless @no_refresh
-    else
-      super
-    end
-  end
+  # def method_missing(meth, *args)
+  #   if /^([a-z_]+)_state[?]$/ =~ meth
+  #     Persist[$1] ? NSOnState : NSOffState
+  #   elsif /^([a-z_]+)[?]?$/ =~ meth
+  #     Persist[$1]
+  #   elsif /^([a-z_]+)=/ =~ meth
+  #     # old_value = Persist[$1]
+  #     # new_value = Array(*args)[0]
+  #     # key_str = $1
+  #     # key = $1.to_sym
+  #     # Persist[key_str] = new_value
+  #     change_value($1.to_sym, Array(*args)[0])
+  #     # MainMenu.send("set_#{$1}_display") unless @no_refresh
+  #   else
+  #     super
+  #   end
+  # end
 end

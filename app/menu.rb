@@ -8,7 +8,7 @@ class MainMenu
     menuItem :status_version, 'Current Version: 0.0'
     menuItem :status_quit, 'Quit', preset: :quit
 
-    menuItem :status_preferences, 'Preferences'#, submenu: :prefs
+    menuItem :status_preferences, 'Preferences' #, submenu: :prefs
     #√ menuItem :notification_display, 'Currently using: Growl'
     #√ menuItem :notification_change, 'Use Notification Center'
     #√ menuItem :memory_display, 'Memory threshold: 1024 MB'

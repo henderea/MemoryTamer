@@ -6,7 +6,7 @@ class Prefs < NSWindowController
   end
 
   def self.create_instance
-    instance = alloc.initWithWindowNibName 'Prefs'
+    instance                          = alloc.initWithWindowNibName 'Prefs'
     # instance.notifications.wiretap
     instance.notifications_nc.enabled = Info.has_nc?
     instance.add_tap(:notifications, :selectedValue).listen { |v| Persist.notifications = v if v }
@@ -15,8 +15,8 @@ class Prefs < NSWindowController
 
   def add_tap(name, property)
     @wiretaps ||= []
-    obj = send(name)
-    tap = obj && MW(obj, property)
+    obj       = send(name)
+    tap       = obj && MW(obj, property)
     @wiretaps << tap if tap
     tap
   end
