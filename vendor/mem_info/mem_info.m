@@ -1,9 +1,9 @@
 #import "mem_info.h"
 
-static unsigned int
+static unsigned long long
 read_sysctl_int(const char* name)
 {
-	unsigned int var;
+	unsigned long long var;
 	size_t var_size;
 	int error;
 
@@ -17,7 +17,7 @@ read_sysctl_int(const char* name)
 }
 
 @implementation MemInfo
-+ (int) getPageSize {
++ (long long) getPageSize {
     return read_sysctl_int("hw.pagesize");
 }
 
@@ -45,11 +45,11 @@ read_sysctl_int(const char* name)
     return vmstat.inactive_count;
 }
 
-+ (int) getMemoryPressure {
++ (long long) getMemoryPressure {
     return read_sysctl_int("kern.memorystatus_vm_pressure_level");
 }
 
-+ (int) getTotalMemory {
++ (long long) getTotalMemory {
     return read_sysctl_int("hw.memsize");
 }
 
