@@ -25,6 +25,27 @@ module Motion::Project
   end
 end
 
+namespace :paddle do
+  task :include do
+    Motion::Project::App.setup do |app|
+      app.embedded_frameworks << 'vendor/Sparkle.framework'
+      app.embedded_frameworks << 'vendor/Paddle.framework'
+    end
+  end
+end
+
+namespace :build do
+  namespace :paddle do
+    task :development => %w(paddle:include build:development)
+    task :release => %w(paddle:include build:release)
+    task :default => [:development, :release]
+  end
+end
+
+namespace :run do
+  task :paddle => ['paddle:include', :default]
+end
+
 class MotionHeader
   def include_path
     @prefix
@@ -43,8 +64,8 @@ Motion::Project::App.setup do |app|
   app.deployment_target              = '10.7'
   app.codesign_certificate           = 'Developer ID Application: Eric Henderson (SKWXXEM822)'
   app.embedded_frameworks << 'vendor/Growl.framework'
-  app.embedded_frameworks << 'vendor/Sparkle.framework'
-  app.embedded_frameworks << 'vendor/Paddle.framework'
+  # app.embedded_frameworks << 'vendor/Sparkle.framework'
+  # app.embedded_frameworks << 'vendor/Paddle.framework'
   app.vendor_project('vendor/mem_info', :static)
   # app.include 'sysctl.h', prefix: '/usr/include/sys/'
   # app.include 'vm.h', prefix: '/usr/include/sys/'

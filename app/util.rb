@@ -245,4 +245,20 @@ module Util
   def open_link(link)
     NSWorkspace.sharedWorkspace.openURL(NSURL.URLWithString(link));
   end
+
+  def constrain_value_range(range, value, default)
+    value ? (value < range.min && range.min) || (value > range.max && range.max) : default
+  end
+
+  def constrain_value_list(list, old_value, new_value, default)
+    new_value ? !list.include?(new_value) && ((list.include?(old_value) && old_value) || default) : default
+    end
+
+  def constrain_value_list_enable_map(map, old_value, new_value, new_default, default)
+    new_value ? !map[new_value] && ((map[old_value] && old_value) || default) : new_default
+  end
+
+  def constrain_value_boolean(value, default, enable = true, enable_is_true = true)
+    (value.nil? ? default : value) ? (enable || !enable_is_true) : (!enable && !enable_is_true)
+  end
 end

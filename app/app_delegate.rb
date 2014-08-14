@@ -6,7 +6,7 @@ class AppDelegate
     Util.setup_paddle
     SUUpdater.sharedUpdater
     Info.freeing = false
-    Persist.load_prefs
+    Persist.store.load_prefs
     MainMenu.build!
     MenuActions.setup
     # MainMenu.set_all_displays
