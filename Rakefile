@@ -34,12 +34,10 @@ namespace :paddle do
   end
 end
 
-namespace :build do
-  namespace :paddle do
-    task :development => %w(paddle:include build:development)
-    task :release => %w(paddle:include build:release)
-    task :default => [:development, :release]
-  end
+namespace 'build:paddle' do
+  task :development => %w(paddle:include build:development)
+  task :release => %w(paddle:include build:release)
+  task :default => [:development, :release]
 end
 
 namespace :run do
