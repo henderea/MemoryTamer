@@ -110,10 +110,11 @@ module Info
   end
 
   class Supports
-    attr_reader :nc, :mavericks
+    attr_reader :nc, :mavericks, :paddle
 
     def initialize
       @nc = (NSClassFromString('NSUserNotificationCenter')!=nil)
+      @paddle = (NSClassFromString('Paddle')!=nil)
       system('which memory_pressure')
       @mavericks = $?.success?
     end
@@ -129,6 +130,10 @@ module Info
 
   def mavericks?
     supports.mavericks
+  end
+
+  def paddle?
+    supports.paddle
   end
 
 end

@@ -22,19 +22,21 @@ module Util
   module_function
 
   def setup_paddle
-    paddle = Paddle.sharedInstance
-    paddle.setProductId('993')
-    paddle.setVendorId('1657')
-    paddle.setApiKey('ff308e08f807298d8a76a7a3db1ee12b')
-    paddle.startLicensing({ KPADCurrentPrice  => '2.49',
-                            KPADDevName       => 'Eric Henderson',
-                            KPADCurrency      => 'USD',
-                            KPADImage         => 'https://raw.githubusercontent.com/henderea/MemoryTamer/master/resources/Icon.png',
-                            KPADProductName   => 'MemoryTamer',
-                            KPADTrialDuration => '7',
-                            KPADTrialText     => 'Thanks for downloading a trial of MemoryTamer! We hope you enjoy it.',
-                            KPADProductImage  => 'Icon.png' }, timeTrial: true, withWindow: nil)
-    NSNotificationCenter.defaultCenter.addObserver(self, selector: :set_license_display, name: KPADActivated, object: nil)
+    if Info.paddle?
+      paddle = Paddle.sharedInstance
+      paddle.setProductId('993')
+      paddle.setVendorId('1657')
+      paddle.setApiKey('ff308e08f807298d8a76a7a3db1ee12b')
+      paddle.startLicensing({ KPADCurrentPrice  => '2.49',
+                              KPADDevName       => 'Eric Henderson',
+                              KPADCurrency      => 'USD',
+                              KPADImage         => 'https://raw.githubusercontent.com/henderea/MemoryTamer/master/resources/Icon.png',
+                              KPADProductName   => 'MemoryTamer',
+                              KPADTrialDuration => '7',
+                              KPADTrialText     => 'Thanks for downloading a trial of MemoryTamer! We hope you enjoy it.',
+                              KPADProductImage  => 'Icon.png' }, timeTrial: true, withWindow: nil)
+      NSNotificationCenter.defaultCenter.addObserver(self, selector: :set_license_display, name: KPADActivated, object: nil)
+    end
   end
 
   # noinspection RubyUnusedLocalVariable
@@ -252,7 +254,7 @@ module Util
 
   def constrain_value_list(list, old_value, new_value, default)
     new_value ? !list.include?(new_value) && ((list.include?(old_value) && old_value) || default) : default
-    end
+  end
 
   def constrain_value_list_enable_map(map, old_value, new_value, new_default, default)
     new_value ? !map[new_value] && ((map[old_value] && old_value) || default) : new_default

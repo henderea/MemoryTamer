@@ -28,9 +28,10 @@ module MenuActions
   end
 
   def setup_license
+    MainMenu.set_license_display
     MainMenu[:license].subscribe(:license_change) { |_, _|
       Paddle.sharedInstance.showLicencing
-    }
+    }.canExecuteBlock { |_| Info.paddle? }
   end
 
   # def setup_prefs
