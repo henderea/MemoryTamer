@@ -4,6 +4,12 @@ class NSObject
   end
 end
 
+# class Symbol
+#   def to_name
+#     self.to_s.gsub(/_/, ' ').gsub(/(^|(?<=[ ]))\w/) { |v| v[0].upcase}
+#   end
+# end
+
 class NSUserDefaults
 
   # Retrieves the object for the passed key
@@ -44,7 +50,7 @@ class Persist
     end
   end
 
-  property :mem, :trim_mem, :auto_threshold, :pressure, :growl, :method_pressure, :show_mem, :update_while, :sticky, :auto_escalate, :notifications, :free_start, :free_end, :trim_start, :trim_end, :last_version
+  property :mem, :trim_mem, :auto_threshold, :pressure, :growl, :method_pressure, :show_mem, :update_while, :sticky, :auto_escalate, :notifications, :free_start, :free_end, :trim_start, :trim_end, :last_version, :app_store
 
   validate_map(:mem) { |_, _, nv| Util.constrain_value_range((0..MemInfo.getTotalMemory), nv, 1024) }
   validate_map(:trim_mem) { |_, _, nv| Util.constrain_value_range((0..MemInfo.getTotalMemory), nv, 0) }
@@ -56,6 +62,11 @@ class Persist
   validate_map(:update_while) { |_, _, nv| Util.constrain_value_boolean(nv, false, Info.last_version >= '1.0') }
   validate_map(:sticky) { |_, _, nv| Util.constrain_value_boolean(nv, false) }
   validate_map(:auto_escalate) { |_, _, nv| Util.constrain_value_boolean(nv, false) }
+  validate_map(:notifications) { |_, ov, nv| Util.constrain_value_list_enable_map({'Off' => true, 'Growl' => true, 'Notification Center' => Info.has_nc?}, ov, nv, Persist.store.growl ? 'Growl' : 'Notification Center', 'Growl') }
+  validate_map(:free_start) { |_, _, nv| Util.constrain_value_boolean(nv, true) }
+  validate_map(:free_end) { |_, _, nv| Util.constrain_value_boolean(nv, true) }
+  validate_map(:trim_start) { |_, _, nv| Util.constrain_value_boolean(nv, true) }
+  validate_map(:trim_end) { |_, _, nv| Util.constrain_value_boolean(nv, true) }
 
   def identifier
     NSBundle.mainBundle.bundleIdentifier
@@ -119,8 +130,11 @@ class Persist
 
   def load_prefs
     self.no_refresh {
-      Info.last_version    = self.last_version
-      self.last_version    = Info.version.to_s
+      Info.last_version = self.last_version
+      self.last_version = Info.version.to_s
+      self.app_store    = false if self.app_store.nil?
+      self.app_store    = true unless Info.paddle?
+      self.validate! :mem, :trim_mem, :auto_threshold, :pressure, :growl, :method_pressure, :show_mem, :update_while, :sticky, :auto_escalate, :notifications, :free_start, :free_end, :trim_start, :trim_end
       # self.mem             = 1024 if self.mem.nil?
       # self.trim_mem        = 0 if self.trim_mem.nil?
       # self.auto_threshold  = 'low' if self.auto_threshold.nil? || self.auto_threshold == 'off'

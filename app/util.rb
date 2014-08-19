@@ -144,7 +144,8 @@ module Util
         NSLog "escalating freeing pressure from #{pressure} to #{np}"
         pressure = np
       end
-      IO.popen("memory_pressure -l #{pressure}") { |pipe|
+      ep = NSBundle.mainBundle.pathForResource('memory_pressure', ofType: '')
+      IO.popen("'#{ep}' -l #{pressure}") { |pipe|
         pipe.sync = true
         pipe.each { |l|
           NSLog l
@@ -257,7 +258,7 @@ module Util
   end
 
   def constrain_value_list_enable_map(map, old_value, new_value, new_default, default)
-    new_value ? !map[new_value] && ((map[old_value] && old_value) || default) : new_default
+    map[new_value || new_default] ? (new_value || new_default) : ((map[old_value] && old_value) || default)
   end
 
   def constrain_value_boolean(value, default, enable = true, enable_is_true = true)
