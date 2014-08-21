@@ -25,21 +25,42 @@ class Prefs < NSWindowController
 
   def self.create_instance
     instance                          = alloc.initWithWindowNibName 'Prefs'
-    instance.notifications_nc.enabled = Info.has_nc?
-    # instance.freeing_method_mp.enabled = Info.mavericks?
-    instance.link :list, :notifications
-    instance.link :bool, :growl_sticky
-    instance.link :bool, :free_start
-    instance.link :bool, :free_end
-    instance.link :bool, :trim_start
-    instance.link :bool, :trim_end
-    instance.link :slider, :free_slider, :mem, :free_field
-    instance.link :slider, :trim_slider, :trim_mem, :trim_field
-    instance.link :list, :auto_level, :auto_threshold
-    instance.link :list, :freeing_method
-    instance.link :bool, :auto_escalate
-    instance.link :bool, :show_mem
-    instance.link :bool, :update_while
+    instance.loadWindow
+    instance.setup!
+    instance
+    # instance.notifications_nc.enabled = Info.has_nc?
+    # # instance.freeing_method_mp.enabled = Info.mavericks?
+    # instance.link :list, :notifications
+    # instance.link :bool, :growl_sticky
+    # instance.link :bool, :free_start
+    # instance.link :bool, :free_end
+    # instance.link :bool, :trim_start
+    # instance.link :bool, :trim_end
+    # instance.link :slider, :free_slider, :mem, :free_field
+    # instance.link :slider, :trim_slider, :trim_mem, :trim_field
+    # instance.link :list, :auto_level, :auto_threshold
+    # instance.link :list, :freeing_method
+    # instance.link :bool, :auto_escalate
+    # instance.link :bool, :show_mem
+    # instance.link :bool, :update_while
+  end
+
+  def setup!
+    notifications_nc.enabled = Info.has_nc?
+    # freeing_method_mp.enabled = Info.mavericks?
+    link :list, :notifications
+    link :bool, :growl_sticky
+    link :bool, :free_start
+    link :bool, :free_end
+    link :bool, :trim_start
+    link :bool, :trim_end
+    link :slider, :free_slider, :mem, :free_field
+    link :slider, :trim_slider, :trim_mem, :trim_field
+    link :list, :auto_level, :auto_threshold
+    link :list, :freeing_method
+    link :bool, :auto_escalate
+    link :bool, :show_mem
+    link :bool, :update_while
   end
 
   def add_tap(name, property)
@@ -64,7 +85,7 @@ class Prefs < NSWindowController
     persist_name_str = persist_name.to_s
     field            = send(field_name)
     pv               = Persist.store[persist_name_str]
-    FIELD_SETTERS(setter_type).call(field, pv) if pv
+    FIELD_SETTERS[setter_type].call(field, pv) if pv
     self.add_tap(field_name, PROPERTY_NAMES[setter_type]).listen { |v| PERSIST_SETTERS(setter_type).call(persist_name_str, v) if v }
     Persist.listen(persist_name) { |_, _, nv| FIELD_SETTERS(setter_type).call(field, nv) if nv }
   end
