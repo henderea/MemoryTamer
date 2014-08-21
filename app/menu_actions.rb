@@ -24,7 +24,7 @@ module MenuActions
     }
     MainMenu[:statusbar].subscribe(:status_update) { |_, sender|
       SUUpdater.sharedUpdater.checkForUpdates(sender)
-    }
+    }.canExecuteBlock { |_| Info.paddle? }
   end
 
   def setup_license

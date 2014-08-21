@@ -21,6 +21,21 @@ end
 module Util
   module_function
 
+  def run_task(path, *args)
+    task            = NSTask.alloc.init
+    task.launchPath = path
+    task.arguments  = args
+    task.launch
+    task.waitUntilExit
+  end
+
+  def run_task_no_wait(path, *args)
+    task            = NSTask.alloc.init
+    task.launchPath = path
+    task.arguments  = args
+    task.launch
+  end
+
   def setup_paddle
     if Info.paddle?
       paddle = Paddle.sharedInstance
@@ -75,24 +90,37 @@ module Util
     NSLog "Notification (#{nn}): #{msg}"
     if Persist.store.notifications == 'Growl'
       if GrowlApplicationBridge.isGrowlRunning
-        ep = NSBundle.mainBundle.pathForResource('growlnotify', ofType: '')
-        system("'#{ep}' -n MemoryTamer -a MemoryTamer#{(Persist.store.sticky? ? ' -s' : '')} -m '#{msg}' -t 'MemoryTamer'")
-      else
-        GrowlApplicationBridge.notifyWithTitle(
-            'MemoryTamer',
-            description:      msg,
-            notificationName: nn,
-            iconData:         nil,
-            priority:         0,
-            isSticky:         Persist.store.sticky?,
-            clickContext:     nil)
+        if NotifyUtil.isGrowlRunning
+          ep   = NSBundle.mainBundle.pathForResource('growlnotify', ofType: '')
+          # system("'#{ep}' -n MemoryTamer -a MemoryTamer#{(Persist.store.growl_sticky? ? ' -s' : '')} -m '#{msg}' -t 'MemoryTamer'")
+          args = []
+          args << '-n'
+          args << 'MemoryTamer'
+          args << '-s' if Persist.store.growl_sticky?
+          args << '-m'
+          args << msg
+          args << '-t'
+          args << 'MemoryTamer'
+          run_task_no_wait(ep, *args)
+        else
+          GrowlApplicationBridge.notifyWithTitle(
+              'MemoryTamer',
+              description:      msg,
+              notificationName: nn,
+              iconData:         nil,
+              priority:         0,
+              isSticky:         Persist.store.growl_sticky?,
+              clickContext:     nil)
+          # NotifyUtil.notifyGrowlDesc(msg, name: nn, sticky: Persist.store.growl_sticky?)
+        end
+      elsif Persist.store.notifications == 'Notification Center'
+        notification                 = NSUserNotification.alloc.init
+        notification.title           = 'MemoryTamer'
+        notification.informativeText = msg
+        notification.soundName       = nil #NSUserNotificationDefaultSoundName
+        NSUserNotificationCenter.defaultUserNotificationCenter.scheduleNotification(notification)
+        # NotifyUtil.notifyNCDesc(msg)
       end
-    elsif Persist.store.notifications == 'Notification Center'
-      notification                 = NSUserNotification.alloc.init
-      notification.title           = 'MemoryTamer'
-      notification.informativeText = msg
-      notification.soundName       = nil #NSUserNotificationDefaultSoundName
-      NSUserNotificationCenter.defaultUserNotificationCenter.scheduleNotification(notification)
     end
   end
 
@@ -132,7 +160,7 @@ module Util
   end
 
   def free_mem(pressure)
-    if Persist.store.method_pressure?
+    if Persist.store.freeing_method == 'Memory Pressure'
       cmp = Info.get_memory_pressure
       if cmp >= 4
         notify 'Memory Pressure too high! Running not a good idea.', 'Error'
@@ -163,86 +191,11 @@ module Util
 
   def free_mem_old(trim = false)
     mtf = trim ? [Info.get_free_mem(1) * 0.75, Info.get_free_mem(0.5)].min : Info.get_free_mem(1)
-    NSLog "#{mtf}"
-    ep = NSBundle.mainBundle.pathForResource('inactive', ofType: '')
-    op = `'#{ep}' '#{mtf}'`
-    NSLog op
-  end
-
-  def make_range(min, max)
-    if min && max
-      " (#{min}-#{max})"
-    elsif min
-      " (min #{min})"
-    elsif max
-      " (max #{max})"
-    else
-      ''
-    end
-  end
-
-  def get_input(message, default_value, type = :text, options = {})
-    alert = NSAlert.alertWithMessageText(type == :int ? "#{message}#{make_range(options[:min], options[:max])}" : message, defaultButton: 'OK', alternateButton: 'Cancel', otherButton: nil, informativeTextWithFormat: '')
-    case type
-      when :select
-        input = NSPopUpButton.alloc.initWithFrame(NSMakeRect(0, 0, 200, 24))
-        input.addItemsWithTitles(options[:values])
-        input.selectItemWithTitle(default_value)
-      when :int
-        input                  = NSTextField.alloc.initWithFrame(NSMakeRect(0, 0, 200, 24))
-        input.stringValue      = "#{default_value}"
-        formatter              = NSNumberFormatter.alloc.init
-        formatter.allowsFloats = false
-        formatter.minimum      = options[:min]
-        formatter.maximum      = options[:max]
-      else
-        input             = NSTextField.alloc.initWithFrame(NSMakeRect(0, 0, 200, 24))
-        input.stringValue = default_value
-    end
-    alert.setAccessoryView(input)
-    button = alert.runModal
-    if button == NSAlertDefaultReturn
-      input.validateEditing
-      case type
-        when :select
-          v = input.titleOfSelectedItem
-          if options[:values].include?(v)
-            v
-          else
-            alert("Invalid option #{v}!")
-            nil
-          end
-        when :int
-          v = input.stringValue
-          begin
-            vi = v.to_i
-            if options[:min] && vi < options[:min]
-              alert("Value must be >= #{options[:min]}")
-              nil
-            elsif vi > options[:max]
-              alert("Value must be < #{options[:max]}")
-              nil
-            else
-              vi
-            end
-          rescue
-            alert('Value must be an integer!')
-            nil
-          end
-        else
-          input.stringValue
-      end
-    elsif button == NSAlertAlternateReturn
-      nil
-    else
-      NSLog("Invalid input dialog button #{button}")
-      nil
-    end
-  end
-
-  def alert(message)
-    alert = NSAlert.alertWithMessageText(message, defaultButton: 'OK', alternateButton: nil, otherButton: nil, informativeTextWithFormat: '')
-    alert.runModal
+    # NSLog "#{mtf}"
+    ep  = NSBundle.mainBundle.pathForResource('inactive', ofType: '')
+    # op = `'#{ep}' '#{mtf}'`
+    # NSLog op
+    run_task(ep, mtf)
   end
 
   def open_link(link)

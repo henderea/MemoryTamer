@@ -65,6 +65,4 @@ Motion::Project::App.setup do |app|
   # app.embedded_frameworks << 'vendor/Sparkle.framework'
   # app.embedded_frameworks << 'vendor/Paddle.framework'
   app.vendor_project('vendor/mem_info', :static)
-  # app.include 'sysctl.h', prefix: '/usr/include/sys/'
-  # app.include 'vm.h', prefix: '/usr/include/sys/'
 end

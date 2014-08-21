@@ -4,12 +4,6 @@ class NSObject
   end
 end
 
-# class Symbol
-#   def to_name
-#     self.to_s.gsub(/_/, ' ').gsub(/(^|(?<=[ ]))\w/) { |v| v[0].upcase}
-#   end
-# end
-
 class NSUserDefaults
 
   # Retrieves the object for the passed key
@@ -26,6 +20,8 @@ end
 
 class Persist
   class << self
+    attr_reader :aliases
+
     def store
       @store ||= Persist.new
     end
@@ -39,6 +35,14 @@ class Persist
       }
     end
 
+    def alias_property(map = {})
+      @aliases ||= {}
+      map.each { |orig, name|
+        @aliases[name.to_s] = orig.to_s
+        property name
+      }
+    end
+
     def validate_map(*keys, &block)
       @validators ||= {}
       Array(*keys).each { |key| @validators[key.to_sym] = block }
@@ -48,9 +52,35 @@ class Persist
       @validators ||= {}
       (@validators.has_key?(key) && @validators[key].call(key, old_value, new_value)) || new_value
     end
+
+    def depend(deps = {})
+      @deps ||= {}
+      deps.each { |k, v|
+        @deps[k.to_sym] ||= []
+        @deps[k.to_sym] << v.to_sym
+      }
+    end
+
+    def depend?(dep)
+      @deps ||= {}
+      @deps[dep] || []
+    end
   end
 
-  property :mem, :trim_mem, :auto_threshold, :pressure, :growl, :method_pressure, :show_mem, :update_while, :sticky, :auto_escalate, :notifications, :free_start, :free_end, :trim_start, :trim_end, :last_version, :app_store
+  property :mem, :trim_mem,
+           :auto_threshold,
+           :pressure, :method_pressure, :freeing_method, :auto_escalate,
+           :show_mem, :update_while,
+           :growl, :sticky, :notifications,
+           :free_start, :free_end, :trim_start, :trim_end,
+           :last_version,
+           :app_store
+
+  alias_property pressure: :freeing_pressure,
+                 growl:    :growl_sticky
+
+  depend freeing_method: :method_pressure,
+         notifications:  :growl
 
   validate_map(:mem) { |_, _, nv| Util.constrain_value_range((0..MemInfo.getTotalMemory), nv, 1024) }
   validate_map(:trim_mem) { |_, _, nv| Util.constrain_value_range((0..MemInfo.getTotalMemory), nv, 0) }
@@ -58,11 +88,12 @@ class Persist
   validate_map(:pressure) { |_, ov, nv| Util.constrain_value_list(%w(warn critical), ov, nv, 'warn') }
   validate_map(:growl) { |_, _, nv| Util.constrain_value_boolean(nv, false, Info.has_nc?, false) }
   validate_map(:method_pressure) { |_, _, nv| Util.constrain_value_boolean(nv, true, Info.mavericks?) }
+  validate_map(:freeing_method) { |_, ov, nv| Util.constrain_value_list_enable_map({ 'Memory Pressure' => Info.mavericks?, 'Plain Allocation' => true }, ov, nv, Persist.store.method_pressure? ? 'Memory Pressure' : 'Plain Allocation', 'Plain Allocation') }
   validate_map(:show_mem) { |_, _, nv| Util.constrain_value_boolean(nv, true) }
   validate_map(:update_while) { |_, _, nv| Util.constrain_value_boolean(nv, false, Info.last_version >= '1.0') }
   validate_map(:sticky) { |_, _, nv| Util.constrain_value_boolean(nv, false) }
   validate_map(:auto_escalate) { |_, _, nv| Util.constrain_value_boolean(nv, false) }
-  validate_map(:notifications) { |_, ov, nv| Util.constrain_value_list_enable_map({'Off' => true, 'Growl' => true, 'Notification Center' => Info.has_nc?}, ov, nv, Persist.store.growl ? 'Growl' : 'Notification Center', 'Growl') }
+  validate_map(:notifications) { |_, ov, nv| Util.constrain_value_list_enable_map({ 'Off' => true, 'Growl' => true, 'Notification Center' => Info.has_nc? }, ov, nv, Persist.store.growl ? 'Growl' : 'Notification Center', 'Growl') }
   validate_map(:free_start) { |_, _, nv| Util.constrain_value_boolean(nv, true) }
   validate_map(:free_end) { |_, _, nv| Util.constrain_value_boolean(nv, true) }
   validate_map(:trim_start) { |_, _, nv| Util.constrain_value_boolean(nv, true) }
@@ -77,18 +108,26 @@ class Persist
   end
 
   def []=(key, value)
-    storage.setObject(value, forKey: storage_key(key).to_s)
-    storage.synchronize
+    if Persist.aliases.has_key?(key.to_s)
+      self[Persist.aliases[key.to_s]] = value
+    else
+      storage.setObject(value, forKey: storage_key(key).to_s)
+      storage.synchronize
+    end
   end
 
   def [](key)
-    value = storage.objectForKey storage_key(key).to_s
+    if Persist.aliases.has_key?(key.to_s)
+      self[Persist.aliases[key.to_s]]
+    else
+      value = storage.objectForKey storage_key(key).to_s
 
-    # RubyMotion currently has a bug where the strings returned from
-    # standardUserDefaults are missing some methods (e.g. to_data).
-    # And because the returned object is slightly different than a normal
-    # String, we can't just use `value.is_a?(String)`
-    value.class.to_s == 'String' ? value.dup.to_weak : value
+      # RubyMotion currently has a bug where the strings returned from
+      # standardUserDefaults are missing some methods (e.g. to_data).
+      # And because the returned object is slightly different than a normal
+      # String, we can't just use `value.is_a?(String)`
+      value.class.to_s == 'String' ? value.dup : value
+    end
   end
 
   def merge(values)
@@ -134,25 +173,14 @@ class Persist
       self.last_version = Info.version.to_s
       self.app_store    = false if self.app_store.nil?
       self.app_store    = true unless Info.paddle?
-      self.validate! :mem, :trim_mem, :auto_threshold, :pressure, :growl, :method_pressure, :show_mem, :update_while, :sticky, :auto_escalate, :notifications, :free_start, :free_end, :trim_start, :trim_end
-      # self.mem             = 1024 if self.mem.nil?
-      # self.trim_mem        = 0 if self.trim_mem.nil?
-      # self.auto_threshold  = 'low' if self.auto_threshold.nil? || self.auto_threshold == 'off'
-      # self.pressure        = 'warn' if self.pressure.nil? || self.pressure == 'normal'
-      # self.growl           = false if self.growl.nil?
-      # self.method_pressure = true if self.method_pressure.nil?
-      # self.show_mem        = true if self.show_mem.nil?
-      # self.update_while    = false if self.update_while.nil? || Info.last_version < '1.0'
-      # self.sticky          = false if self.sticky.nil?
-      # self.free_start      = true if self.free_start.nil?
-      # self.free_end        = true if self.free_end.nil?
-      # self.trim_start      = true if self.trim_start.nil?
-      # self.trim_end        = true if self.trim_end.nil?
-      #
-      # self.growl           = self.growl? || !Info.has_nc?
-      # self.method_pressure = self.method_pressure? && Info.mavericks?
-      # self.notifications   = self.growl? ? 'Growl' : 'Notification Center' if self.notifications.nil?
-      # self.notifications   = 'Growl' if self.notifications == 'Notification Center' && !Info.has_nc?
+      self.validate! :mem, :trim_mem,
+                     :auto_threshold,
+                     :pressure, :method_pressure, :freeing_method, :auto_escalate,
+                     :show_mem, :update_while,
+                     :growl, :sticky, :notifications,
+                     :free_start, :free_end, :trim_start, :trim_end,
+                     :last_version,
+                     :app_store
     }
   end
 
@@ -173,13 +201,18 @@ class Persist
 
   def validate!(*keys)
     keys.each { |key|
-      value     = self[key.to_s]
-      new_value = Persist.validate?(key.to_sym, value, value)
+      depend!(key)
+      old_value = self[key.to_s]
+      new_value = Persist.validate?(key.to_sym, old_value, old_value)
       if new_value
         self[key.to_s] = new_value
         fire_listeners(key.to_sym, old_value, new_value)
       end
     }
+  end
+
+  def depend!(key)
+    Persist.depend?(key).each { |v| self.validate!(v) }
   end
 
   def fire_listeners(key, old_value, new_value)

@@ -65,4 +65,22 @@ read_sysctl_int(const char* name)
         return -1;
     }
 }
+
++ (long long) getFreeMemory:(float)inactiveMultiplier {
+    long double page_size = (long double)[MemInfo getPageSize];
+    long double pages_free = (long double)[MemInfo getPagesFree];
+    long double pages_inactive = (long double)[MemInfo getPagesInactive];
+
+    return (long long)(page_size * pages_free + page_size * pages_inactive * (long double)inactiveMultiplier);
+}
+
+//+ (NSString *) formatBytes:(long long)bytes showRaw:(BOOL)showRaw {
+//    if(abs(bytes) <= 1) {
+//        return [NSString stringWithFormat: @"%lld%@", bytes, @" B"];
+//    }
+//    int lg   = (int)floor(log(abs((long double)bytes))/log(1024.0));
+//    NSString * units[] = { @"B", @"KB", @"MB", @"GB", @"TB", @"PB", @"EB", @"ZB", @"YB" };
+//    NSString *unit = units[lg];
+//    return [NSString stringWithFormat: @"%.2f%@%@%@", (float)((long double)bytes / (long double)pow(1024.0, (long double)lg)), @" ", unit, showRaw ? [NSString stringWithFormat: @"%@%lld%@", @" (", bytes, @" B)"] : @""];
+//}
 @end

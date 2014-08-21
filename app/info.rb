@@ -26,11 +26,12 @@ module Info
   end
 
   def get_free_mem(inactive_multiplier = 0)
-    page_size      = MemInfo.getPageSize
-    pages_free     = MemInfo.getPagesFree
-    pages_inactive = MemInfo.getPagesInactive
-
-    page_size*pages_free + page_size*pages_inactive*inactive_multiplier
+    # page_size      = MemInfo.getPageSize
+    # pages_free     = MemInfo.getPagesFree
+    # pages_inactive = MemInfo.getPagesInactive
+    #
+    # page_size*pages_free + page_size*pages_inactive*inactive_multiplier
+    MemInfo.getFreeMemory(inactive_multiplier)
   end
 
   def get_memory_pressure
@@ -42,10 +43,11 @@ module Info
   end
 
   def format_bytes(bytes, show_raw = false)
-    return "#{bytes} B" if bytes <= 1
-    lg   = (Math.log(bytes)/Math.log(1024)).floor.to_f
-    unit = %w(B KB MB GB TB)[lg]
+    return "#{bytes} B" if bytes.abs <= 1
+    lg   = (Math.log(bytes.abs)/Math.log(1024)).floor.to_f
+    unit = %w(B KB MB GB TB PB EB ZB YB)[lg]
     "#{'%.2f' % (bytes.to_f / 1024.0**lg)} #{unit}#{show_raw ? " (#{bytes} B)" : ''}"
+    # MemInfo.formatBytes(bytes, showRaw: show_raw)
   end
 
   def freeing=(freeing)
@@ -113,9 +115,9 @@ module Info
     attr_reader :nc, :mavericks, :paddle
 
     def initialize
-      @nc = (NSClassFromString('NSUserNotificationCenter')!=nil)
+      @nc     = (NSClassFromString('NSUserNotificationCenter')!=nil)
       @paddle = (NSClassFromString('Paddle')!=nil)
-      system('which memory_pressure')
+      system('which memory_pressure 2>&- >&-')
       @mavericks = $?.success?
     end
   end

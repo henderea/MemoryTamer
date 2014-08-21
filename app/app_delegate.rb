@@ -4,7 +4,7 @@ class AppDelegate
   # noinspection RubyUnusedLocalVariable
   def applicationDidFinishLaunching(notification)
     Util.setup_paddle
-    SUUpdater.sharedUpdater
+    SUUpdater.sharedUpdater if Info.paddle?
     Info.freeing = false
     Persist.store.load_prefs
     MainMenu.build!
