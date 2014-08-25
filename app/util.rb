@@ -24,7 +24,7 @@ module Util
   def run_task(path, *args)
     task            = NSTask.alloc.init
     task.launchPath = path
-    task.arguments  = args
+    task.arguments  = args.map { |v| v.to_s }
     task.launch
     task.waitUntilExit
   end
@@ -89,9 +89,7 @@ module Util
   def notify(msg, nn)
     NSLog "Notification (#{nn}): #{msg}"
     if Persist.store.notifications == 'Growl'
-      NSLog 'hi1'
       if GrowlApplicationBridge.isGrowlRunning
-        NSLog 'hi2'
         ep = NSBundle.mainBundle.pathForResource('growlnotify', ofType: '')
         NSLog ep
         # system("'#{ep}' -n MemoryTamer -a MemoryTamer#{(Persist.store.growl_sticky? ? ' -s' : '')} -m '#{msg}' -t 'MemoryTamer'")
@@ -100,26 +98,24 @@ module Util
         args << 'MemoryTamer'
         args << '-s' if Persist.store.growl_sticky?
         args << '-m'
-        args << msg
+        args << msg.to_s
         args << '-t'
         args << 'MemoryTamer'
         run_task_no_wait(ep, *args)
       else
-        NSLog Persist.store.growl_sticky?.inspect
         GrowlApplicationBridge.notifyWithTitle(
             'MemoryTamer',
-            description:      msg,
-            notificationName: nn,
+            description:      msg.to_s,
+            notificationName: nn.to_s,
             iconData:         nil,
             priority:         0,
             isSticky:         Persist.store.growl_sticky?,
             clickContext:     nil)
       end
     elsif Persist.store.notifications == 'Notification Center'
-      NSLog 'hi3'
       notification                 = NSUserNotification.alloc.init
       notification.title           = 'MemoryTamer'
-      notification.informativeText = msg
+      notification.informativeText = msg.to_s
       notification.soundName       = nil #NSUserNotificationDefaultSoundName
       NSUserNotificationCenter.defaultUserNotificationCenter.scheduleNotification(notification)
     end
@@ -196,7 +192,7 @@ module Util
     ep  = NSBundle.mainBundle.pathForResource('inactive', ofType: '')
     # op = `'#{ep}' '#{mtf}'`
     # NSLog op
-    run_task(ep, mtf)
+    run_task(ep, mtf.to_s)
   end
 
   def open_link(link)

@@ -8,6 +8,7 @@ begin
 rescue
   begin
     system('bundle install')
+    Gem.clear_paths
     require 'bundler'
     Bundler.require
   rescue LoadError
