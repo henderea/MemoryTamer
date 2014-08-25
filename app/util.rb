@@ -174,7 +174,6 @@ module Util
         pipe.sync = true
         pipe.each { |l|
           NSLog l
-          # if l.include?('CMD: Allocating pages')
           if l.include?('Stabilizing at')
             Process.kill 'SIGINT', pipe.pid
             break
@@ -188,10 +187,7 @@ module Util
 
   def free_mem_old(trim = false)
     mtf = trim ? [Info.get_free_mem(1) * 0.75, Info.get_free_mem(0.5)].min : Info.get_free_mem(1)
-    # NSLog "#{mtf}"
     ep  = NSBundle.mainBundle.pathForResource('inactive', ofType: '')
-    # op = `'#{ep}' '#{mtf}'`
-    # NSLog op
     run_task(ep, mtf.to_s)
   end
 

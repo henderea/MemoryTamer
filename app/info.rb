@@ -26,11 +26,6 @@ module Info
   end
 
   def get_free_mem(inactive_multiplier = 0)
-    # page_size      = MemInfo.getPageSize
-    # pages_free     = MemInfo.getPagesFree
-    # pages_inactive = MemInfo.getPagesInactive
-    #
-    # page_size*pages_free + page_size*pages_inactive*inactive_multiplier
     MemInfo.getFreeMemory(inactive_multiplier)
   end
 
@@ -47,7 +42,6 @@ module Info
     lg   = (Math.log(bytes.abs)/Math.log(1024)).floor.to_f
     unit = %w(B KB MB GB TB PB EB ZB YB)[lg]
     "#{'%.2f' % (bytes.to_f / 1024.0**lg)} #{unit}#{show_raw ? " (#{bytes} B)" : ''}"
-    # MemInfo.formatBytes(bytes, showRaw: show_raw)
   end
 
   def freeing=(freeing)

@@ -13,5 +13,4 @@
 + (long long) getTotalMemory;
 + (long long) getMTMemory;
 + (long long) getFreeMemory:(float)inactiveMultiplier;
-//+ (NSString *) formatBytes:(long long)bytes showRaw:(BOOL)showRaw;
 @end
