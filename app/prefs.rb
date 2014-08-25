@@ -11,6 +11,11 @@ class Prefs < NSWindowController
       slider: -> (p, v) { Persist.store[p] = v }
   }
 
+  # PERSIST_MAPPERS = {
+  #     list: nil,
+  #     bool: -> ()
+  # }
+
   FIELD_SETTERS = {
       list:   -> (f, v) { f.selectItemWithTitle(v) },
       bool:   -> (f, v) { f.state = v ? NSOnState : NSOffState },
@@ -57,6 +62,7 @@ class Prefs < NSWindowController
     slider = send(slider_name)
     text   = send(text_name)
     slider.bind('intValue', toObject: text, withKeyPath: 'intValue', options: { 'NSContinuouslyUpdatesValue' => true })
+    text.bind('intValue', toObject: slider, withKeyPath: 'intValue', options: { 'NSContinuouslyUpdatesValue' => true })
   end
 
   def link(setter_type, field_name, persist_name = field_name, field_name_2 = nil)
@@ -68,6 +74,7 @@ class Prefs < NSWindowController
     pv               = Persist.store[persist_name_str]
     FIELD_SETTERS[setter_type].call(field, pv) if pv
     field.bind(PROPERTY_NAMES[setter_type], toObject: NSUserDefaultsController.sharedUserDefaultsController, withKeyPath: "values.#{Persist.store.key_for(persist_name)}", options: { 'NSContinuouslyUpdatesValue' => true })
+    NSUserDefaultsController.sharedUserDefaultsController.bind("values.#{Persist.store.key_for(persist_name)}", toObject: field, withKeyPath: PROPERTY_NAMES[setter_type], options: { 'NSContinuouslyUpdatesValue' => true })
     Persist.store.listen(persist_name) { |_, _, nv| FIELD_SETTERS(setter_type).call(field, nv) if nv }
   end
 
