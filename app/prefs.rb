@@ -63,19 +63,20 @@ class Prefs < NSWindowController
     link :bool, :update_while
   end
 
-  def add_tap(name, property)
-    @wiretaps ||= []
-    obj       = send(name)
-    tap       = obj && MW(obj, property)
-    @wiretaps << tap if tap
-    tap
-  end
+  # def add_tap(name, property)
+  #   @wiretaps ||= []
+  #   obj       = send(name)
+  #   tap       = obj && MW(obj, property)
+  #   @wiretaps << tap if tap
+  #   tap
+  # end
 
   def link_slider_and_text(slider_name, text_name)
     slider = send(slider_name)
     text   = send(text_name)
-    add_tap(slider, :intValue).bind_to(text, :intValue)
-    add_tap(text, :intValue).bind_to(slider, :intValue)
+    slider.bind('intValue', toObject: text, withKeyPath: 'intValue', options: { 'NSContinuouslyUpdatesValue' => true })
+    # add_tap(slider, :intValue).bind_to(text, :intValue)
+    # add_tap(text, :intValue).bind_to(slider, :intValue)
   end
 
   def link(setter_type, field_name, persist_name = field_name, field_name_2 = nil)
@@ -86,8 +87,11 @@ class Prefs < NSWindowController
     field            = send(field_name)
     pv               = Persist.store[persist_name_str]
     FIELD_SETTERS[setter_type].call(field, pv) if pv
-    self.add_tap(field_name, PROPERTY_NAMES[setter_type]).listen { |v| PERSIST_SETTERS(setter_type).call(persist_name_str, v) if v }
-    Persist.listen(persist_name) { |_, _, nv| FIELD_SETTERS(setter_type).call(field, nv) if nv }
+    # self.add_tap(field_name, PROPERTY_NAMES[setter_type]).listen { |v| PERSIST_SETTERS(setter_type).call(persist_name_str, v) if v }
+    # self.add_tap(field_name, PROPERTY_NAMES[setter_type]).bind_to(NSUserDefaultsController.sharedUserDefaultsController, Persist.store.key_for(persist_name))
+    field.bind(PROPERTY_NAMES[setter_type], toObject: NSUserDefaultsController.sharedUserDefaultsController, withKeyPath: "values.#{Persist.store.key_for(persist_name)}", options: {'NSContinuouslyUpdatesValue' => true})
+    Persist.store.listen(persist_name) { |_, _, nv| FIELD_SETTERS(setter_type).call(field, nv) if nv }
+
   end
 
   #region Notifications Tab

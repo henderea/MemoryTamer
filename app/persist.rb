@@ -152,6 +152,14 @@ class Persist
     "#{app_key.to_weak}_#{key.to_weak}".to_weak
   end
 
+  def key_for(key)
+    if Persist.aliases.has_key?(key.to_s)
+      self.key_for(Persist.aliases[key.to_s])
+    else
+      storage_key(key.to_s)
+    end
+  end
+
   def all
     hash     = storage.dictionaryRepresentation.select { |k, _| k.start_with?(app_key) }
     new_hash = {}

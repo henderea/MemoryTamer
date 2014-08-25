@@ -5,8 +5,14 @@ require 'motion/project/template/osx'
 begin
   require 'bundler'
   Bundler.require
-rescue LoadError
-# ignored
+rescue
+  begin
+    system('bundle install')
+    require 'bundler'
+    Bundler.require
+  rescue LoadError
+    # ignored
+  end
 end
 
 SKIP_CODESIGN_TIMESTAMP = true
@@ -28,6 +34,7 @@ end
 namespace :paddle do
   task :include do
     Motion::Project::App.setup do |app|
+      app.entitlements['com.apple.security.app-sandbox'] = false
       app.embedded_frameworks << 'vendor/Sparkle.framework'
       app.embedded_frameworks << 'vendor/Paddle.framework'
     end
@@ -44,23 +51,18 @@ namespace :run do
   task :paddle => ['paddle:include', :default]
 end
 
-class MotionHeader
-  def include_path
-    @prefix
-  end
-end
-
 Motion::Project::App.setup do |app|
-  app.icon                           = 'Icon.icns'
-  app.info_plist['CFBundleIconFile'] = 'Icon.icns'
-  app.name                           = 'MemoryTamer'
-  app.version                        = '0.9.6.1'
-  app.short_version                  = '0.9.6.1'
-  app.identifier                     = 'us.myepg.MemoryTamer'
-  app.info_plist['NSUIElement']      = 1
-  app.info_plist['SUFeedURL']        = 'https://raw.githubusercontent.com/henderea/MemoryTamer/master/appcast.xml'
-  app.deployment_target              = '10.7'
-  app.codesign_certificate           = 'Developer ID Application: Eric Henderson (SKWXXEM822)'
+  app.icon                                           = 'Icon.icns'
+  app.info_plist['CFBundleIconFile']                 = 'Icon.icns'
+  app.name                                           = 'MemoryTamer'
+  app.version                                        = '0.9.6.1'
+  app.short_version                                  = '0.9.6.1'
+  app.identifier                                     = 'us.myepg.MemoryTamer'
+  app.info_plist['NSUIElement']                      = 1
+  app.info_plist['SUFeedURL']                        = 'https://raw.githubusercontent.com/henderea/MemoryTamer/master/appcast.xml'
+  app.deployment_target                              = '10.7'
+  app.codesign_certificate                           = 'Developer ID Application: Eric Henderson (SKWXXEM822)'
+  app.entitlements['com.apple.security.app-sandbox'] = true
   app.embedded_frameworks << 'vendor/Growl.framework'
   # app.embedded_frameworks << 'vendor/Sparkle.framework'
   # app.embedded_frameworks << 'vendor/Paddle.framework'

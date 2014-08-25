@@ -89,38 +89,39 @@ module Util
   def notify(msg, nn)
     NSLog "Notification (#{nn}): #{msg}"
     if Persist.store.notifications == 'Growl'
+      NSLog 'hi1'
       if GrowlApplicationBridge.isGrowlRunning
-        if NotifyUtil.isGrowlRunning
-          ep   = NSBundle.mainBundle.pathForResource('growlnotify', ofType: '')
-          # system("'#{ep}' -n MemoryTamer -a MemoryTamer#{(Persist.store.growl_sticky? ? ' -s' : '')} -m '#{msg}' -t 'MemoryTamer'")
-          args = []
-          args << '-n'
-          args << 'MemoryTamer'
-          args << '-s' if Persist.store.growl_sticky?
-          args << '-m'
-          args << msg
-          args << '-t'
-          args << 'MemoryTamer'
-          run_task_no_wait(ep, *args)
-        else
-          GrowlApplicationBridge.notifyWithTitle(
-              'MemoryTamer',
-              description:      msg,
-              notificationName: nn,
-              iconData:         nil,
-              priority:         0,
-              isSticky:         Persist.store.growl_sticky?,
-              clickContext:     nil)
-          # NotifyUtil.notifyGrowlDesc(msg, name: nn, sticky: Persist.store.growl_sticky?)
-        end
-      elsif Persist.store.notifications == 'Notification Center'
-        notification                 = NSUserNotification.alloc.init
-        notification.title           = 'MemoryTamer'
-        notification.informativeText = msg
-        notification.soundName       = nil #NSUserNotificationDefaultSoundName
-        NSUserNotificationCenter.defaultUserNotificationCenter.scheduleNotification(notification)
-        # NotifyUtil.notifyNCDesc(msg)
+        NSLog 'hi2'
+        ep = NSBundle.mainBundle.pathForResource('growlnotify', ofType: '')
+        NSLog ep
+        # system("'#{ep}' -n MemoryTamer -a MemoryTamer#{(Persist.store.growl_sticky? ? ' -s' : '')} -m '#{msg}' -t 'MemoryTamer'")
+        args = []
+        args << '-n'
+        args << 'MemoryTamer'
+        args << '-s' if Persist.store.growl_sticky?
+        args << '-m'
+        args << msg
+        args << '-t'
+        args << 'MemoryTamer'
+        run_task_no_wait(ep, *args)
+      else
+        NSLog Persist.store.growl_sticky?.inspect
+        GrowlApplicationBridge.notifyWithTitle(
+            'MemoryTamer',
+            description:      msg,
+            notificationName: nn,
+            iconData:         nil,
+            priority:         0,
+            isSticky:         Persist.store.growl_sticky?,
+            clickContext:     nil)
       end
+    elsif Persist.store.notifications == 'Notification Center'
+      NSLog 'hi3'
+      notification                 = NSUserNotification.alloc.init
+      notification.title           = 'MemoryTamer'
+      notification.informativeText = msg
+      notification.soundName       = nil #NSUserNotificationDefaultSoundName
+      NSUserNotificationCenter.defaultUserNotificationCenter.scheduleNotification(notification)
     end
   end
 
