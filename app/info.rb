@@ -26,7 +26,10 @@ module Info
   end
 
   def get_free_mem(inactive_multiplier = 0)
-    MemInfo.getFreeMemory(inactive_multiplier)
+    page_size      = MemInfo.getPageSize
+    pages_free     = MemInfo.getPagesFree
+    pages_inactive = MemInfo.getPagesInactive
+    page_size * pages_free + page_size * pages_inactive * inactive_multiplier
   end
 
   def get_memory_pressure

@@ -66,11 +66,11 @@ read_sysctl_int(const char* name)
     }
 }
 
-+ (long long) getFreeMemory:(float)inactiveMultiplier {
-    long double page_size = (long double)[MemInfo getPageSize];
-    long double pages_free = (long double)[MemInfo getPagesFree];
-    long double pages_inactive = (long double)[MemInfo getPagesInactive];
-
-    return (long long)(page_size * pages_free + page_size * pages_inactive * (long double)inactiveMultiplier);
-}
+//+ (long long) getFreeMemory:(float)inactiveMultiplier {
+//    long double page_size = (long double)[MemInfo getPageSize];
+//    long double pages_free = (long double)[MemInfo getPagesFree];
+//    long double pages_inactive = (long double)[MemInfo getPagesInactive];
+//
+//    return (long long)(page_size * pages_free + page_size * pages_inactive * (long double)inactiveMultiplier);
+//}
 @end

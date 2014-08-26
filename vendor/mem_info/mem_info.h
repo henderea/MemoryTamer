@@ -12,5 +12,5 @@
 + (long long) getMemoryPressure;
 + (long long) getTotalMemory;
 + (long long) getMTMemory;
-+ (long long) getFreeMemory:(float)inactiveMultiplier;
+//+ (long long) getFreeMemory:(float)inactiveMultiplier;
 @end
