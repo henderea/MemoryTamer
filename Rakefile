@@ -6,14 +6,8 @@ begin
   require 'bundler'
   Bundler.require
 rescue
-  begin
-    system('bundle install')
-    Gem.clear_paths
-    require 'bundler'
-    Bundler.require
-  rescue LoadError
-    # ignored
-  end
+  system('bundle install')
+  exit
 end
 
 SKIP_CODESIGN_TIMESTAMP = true

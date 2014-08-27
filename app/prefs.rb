@@ -5,6 +5,10 @@ class Prefs < NSWindowController
     @instance ||= create_instance
   end
 
+  def show_window(sender)
+    self.window.makeKeyAndOrderFront(sender)
+  end
+
   PERSIST_SETTERS = {
       list:   -> (p, v) { Persist.store[p] = v },
       bool:   -> (p, v) { Persist.store[p] = v == NSOnState },
@@ -74,7 +78,7 @@ class Prefs < NSWindowController
     pv               = Persist.store[persist_name_str]
     FIELD_SETTERS[setter_type].call(field, pv) if pv
     field.bind(PROPERTY_NAMES[setter_type], toObject: NSUserDefaultsController.sharedUserDefaultsController, withKeyPath: "values.#{Persist.store.key_for(persist_name)}", options: { 'NSContinuouslyUpdatesValue' => true })
-    NSUserDefaultsController.sharedUserDefaultsController.bind("values.#{Persist.store.key_for(persist_name)}", toObject: field, withKeyPath: PROPERTY_NAMES[setter_type], options: { 'NSContinuouslyUpdatesValue' => true })
+    # NSUserDefaultsController.sharedUserDefaultsController.bind("values.#{Persist.store.key_for(persist_name)}", toObject: field, withKeyPath: PROPERTY_NAMES[setter_type], options: { 'NSContinuouslyUpdatesValue' => true })
     Persist.store.listen(persist_name) { |_, _, nv| FIELD_SETTERS(setter_type).call(field, nv) if nv }
   end
 

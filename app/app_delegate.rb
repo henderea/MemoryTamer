@@ -1,5 +1,5 @@
 class AppDelegate
-  attr_accessor :free_display_title
+  attr_accessor :prefs
 
   # noinspection RubyUnusedLocalVariable
   def applicationDidFinishLaunching(notification)

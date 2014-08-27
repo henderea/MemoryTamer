@@ -14,6 +14,7 @@
                 <outlet property="free_slider" destination="wQK-dU-IpJ" id="53x-pb-1kE"/>
                 <outlet property="free_start" destination="yzc-P8-cG7" id="PrL-vG-Ghr"/>
                 <outlet property="freeing_method" destination="YpC-gS-JT8" id="QVf-wp-p2k"/>
+                <outlet property="freeing_method_mp" destination="Dbe-Pe-5xe" id="VxQ-XB-jsz"/>
                 <outlet property="freeing_pressure" destination="oD5-N3-F0B" id="aiF-fg-ZQS"/>
                 <outlet property="growl_sticky" destination="3tl-fJ-uM0" id="PLM-5K-sBg"/>
                 <outlet property="notifications" destination="hmt-Sj-eSw" id="b1m-Tp-wd8"/>
@@ -24,6 +25,7 @@
                 <outlet property="trim_slider" destination="4r5-7p-93X" id="aQL-ED-XiR"/>
                 <outlet property="trim_start" destination="f29-W2-4Wi" id="eR2-rd-a3N"/>
                 <outlet property="update_while" destination="Ysd-Lg-KQB" id="bo8-Hd-5aI"/>
+                <outlet property="window" destination="QvC-M9-y7g" id="gAk-6p-8Gq"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
@@ -171,7 +173,7 @@
                                         <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YpC-gS-JT8">
                                             <rect key="frame" x="342" y="162" width="144" height="26"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="uEr-eB-8dI">
+                                            <popUpButtonCell key="cell" type="push" title="memory pressure" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="Dbe-Pe-5xe" id="uEr-eB-8dI">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="menu"/>
                                                 <menu key="menu" title="OtherViews" id="MiS-cY-ER0">
