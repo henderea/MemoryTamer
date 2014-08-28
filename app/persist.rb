@@ -88,7 +88,7 @@ class Persist
   validate_map(:pressure) { |_, ov, nv| Util.constrain_value_list(%w(warn critical), ov, nv, 'warn') }
   validate_map(:growl) { |_, _, nv| Util.constrain_value_boolean(nv, false, Info.has_nc?, false) }
   validate_map(:method_pressure) { |_, _, nv| Util.constrain_value_boolean(nv, true, Info.mavericks?) }
-  validate_map(:freeing_method) { |_, ov, nv| Util.constrain_value_list_enable_map({ 'Memory Pressure' => Info.mavericks?, 'Plain Allocation' => true }, ov, nv, Persist.store.method_pressure? ? 'Memory Pressure' : 'Plain Allocation', 'Plain Allocation') }
+  validate_map(:freeing_method) { |_, ov, nv| Util.constrain_value_list_enable_map({ 'memory pressure' => Info.mavericks?, 'plain allocation' => true }, ov, nv, Persist.store.method_pressure? ? 'memory pressure' : 'plain allocation', 'plain allocation') }
   validate_map(:show_mem) { |_, _, nv| Util.constrain_value_boolean(nv, true) }
   validate_map(:update_while) { |_, _, nv| Util.constrain_value_boolean(nv, false, Info.last_version >= '1.0') }
   validate_map(:sticky) { |_, _, nv| Util.constrain_value_boolean(nv, false) }
@@ -212,7 +212,7 @@ class Persist
       depend!(key)
       old_value = self[key.to_s]
       new_value = Persist.validate?(key.to_sym, old_value, old_value)
-      if new_value
+      unless new_value.nil?
         self[key.to_s] = new_value
         fire_listeners(key.to_sym, old_value, new_value)
       end

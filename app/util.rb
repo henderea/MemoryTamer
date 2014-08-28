@@ -157,7 +157,7 @@ module Util
   end
 
   def free_mem(pressure)
-    if Persist.store.freeing_method == 'Memory Pressure'
+    if Persist.store.freeing_method == 'memory pressure'
       cmp = Info.get_memory_pressure
       if cmp >= 4
         notify 'Memory Pressure too high! Running not a good idea.', 'Error'

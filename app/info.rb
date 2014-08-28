@@ -88,7 +88,7 @@ module Info
     end
 
     def parts
-      @version.split(/\./).map(&:to_i)
+      @version.gsub(/^(\d+)([^.]*)$/, '\1.0.0\3').gsub(/^(\d+)\.(\d+)([^.]*)$/, '\1.\2.0\3').gsub(/\.(\d+)b(\d+)$/, '.-1.\1.\2').split(/\./).map(&:to_i)
     end
 
     def to_s
@@ -97,7 +97,7 @@ module Info
   end
 
   def version
-    @version ||= Version.new(NSBundle.mainBundle.infoDictionary['CFBundleVersion'])
+    @version ||= Version.new(NSBundle.mainBundle.infoDictionary['CFBundleShortVersionString'])
   end
 
   def last_version
@@ -108,14 +108,17 @@ module Info
     @last_version = Version.new(last_version)
   end
 
+  def os_version
+    @os_version ||= Version.new(MemInfo.getOSVersion)
+  end
+
   class Supports
     attr_reader :nc, :mavericks, :paddle
 
     def initialize
       @nc     = (NSClassFromString('NSUserNotificationCenter')!=nil)
       @paddle = (NSClassFromString('Paddle')!=nil)
-      system('which memory_pressure 2>&- >&-')
-      @mavericks = $?.success?
+      @mavericks = Info.os_version >= '13'
     end
   end
 
