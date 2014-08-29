@@ -1,3 +1,13 @@
+class ActionTarget
+  def initialize(&block)
+    @block = block
+  end
+
+  def action(sender)
+    @block.call(sender)
+  end
+end
+
 class Prefs < NSWindowController
   extend IB
 
@@ -20,10 +30,16 @@ class Prefs < NSWindowController
   #     bool: -> ()
   # }
 
-  FIELD_SETTERS = {
+  FIELD_SETTERS   = {
       list:   -> (f, v) { f.selectItemWithTitle(v) },
-      bool:   -> (f, v) { f.state = v ? NSOnState : NSOffState },
+      bool:   -> (f, v) { f.state = (v && v != 0 && v != NSOffState) ? NSOnState : NSOffState },
       slider: -> (f, v) { f.intValue = v }
+  }
+
+  FIELD_GETTERS = {
+      list:   -> (f) { f.selectedValue },
+      bool:   -> (f) { f.state },
+      slider: -> (f) { f.intValue }
   }
 
   PROPERTY_NAMES = {
@@ -57,9 +73,9 @@ class Prefs < NSWindowController
     link :bool, :update_while
 
     self.free_slider.minValue = 0
-    self.free_slider.maxValue = Info.get_total_memory
+    self.free_slider.maxValue = (Info.get_total_memory / 1024 ** 2)
     self.trim_slider.minValue = 0
-    self.trim_slider.maxValue = Info.get_total_memory
+    self.trim_slider.maxValue = (Info.get_total_memory / 1024 ** 2)
   end
 
   def link_slider_and_text(slider_name, text_name)
@@ -67,19 +83,35 @@ class Prefs < NSWindowController
     text   = send(text_name)
     slider.bind('intValue', toObject: text, withKeyPath: 'intValue', options: { 'NSContinuouslyUpdatesValue' => true })
     text.bind('intValue', toObject: slider, withKeyPath: 'intValue', options: { 'NSContinuouslyUpdatesValue' => true })
+    slider.target     = ActionTarget.new { |sender| text.intValue = sender.intValue }
+    slider.continuous = true
   end
 
   def link(setter_type, field_name, persist_name = field_name, field_name_2 = nil)
-    if setter_type == :slider && field_name_2
-      link_slider_and_text(field_name, field_name_2)
-    end
     persist_name_str = persist_name.to_s
     field            = send(field_name)
     pv               = Persist.store[persist_name_str]
-    FIELD_SETTERS[setter_type].call(field, pv) if pv
-    field.bind(PROPERTY_NAMES[setter_type], toObject: NSUserDefaultsController.sharedUserDefaultsController, withKeyPath: "values.#{Persist.store.key_for(persist_name)}", options: { 'NSContinuouslyUpdatesValue' => true })
-    # NSUserDefaultsController.sharedUserDefaultsController.bind("values.#{Persist.store.key_for(persist_name)}", toObject: field, withKeyPath: PROPERTY_NAMES[setter_type], options: { 'NSContinuouslyUpdatesValue' => true })
-    Persist.store.listen(persist_name) { |_, _, nv| FIELD_SETTERS(setter_type).call(field, nv) if nv }
+    FIELD_SETTERS[setter_type].call(field, pv) unless pv.nil?
+    if setter_type == :slider && field_name_2
+      field2 = send(field_name_2)
+      FIELD_SETTERS[setter_type].call(field2, pv) unless pv.nil?
+    end
+    act   = ActionTarget.new { |sender|
+      nv = FIELD_GETTERS[setter_type].call(sender)
+      PERSIST_SETTERS[setter_type].call(persist_name, nv)
+      nv = Persist.store[persist_name_str]
+      FIELD_SETTERS[setter_type].call(field, nv)
+      FIELD_SETTERS[setter_type].call(field2, nv) if field2
+    }
+    @acts ||= []
+    @acts << act
+    field.target     = act
+    field.action     = 'action:'
+    field.continuous = true
+    if setter_type == :slider && field_name_2
+      field2.target     = act
+      field2.action     = 'action:'
+    end
   end
 
   #region Notifications Tab

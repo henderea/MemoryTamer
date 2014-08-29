@@ -86,38 +86,51 @@ module Util
     }
   end
 
+  def nn_str(nn)
+    {
+        free_start: 'Start Freeing',
+        trim_start: 'Start Freeing',
+        free_end:   'Finish Freeing',
+        trim_end:   'Finish Freeing',
+        error:      'Error'
+    }[nn]
+  end
+
   def notify(msg, nn)
-    NSLog "Notification (#{nn}): #{msg}"
-    if Persist.store.notifications == 'Growl'
-      if GrowlApplicationBridge.isGrowlRunning
-        ep = NSBundle.mainBundle.pathForResource('growlnotify', ofType: '')
-        NSLog ep
-        # system("'#{ep}' -n MemoryTamer -a MemoryTamer#{(Persist.store.growl_sticky? ? ' -s' : '')} -m '#{msg}' -t 'MemoryTamer'")
-        args = []
-        args << '-n'
-        args << 'MemoryTamer'
-        args << '-s' if Persist.store.growl_sticky?
-        args << '-m'
-        args << msg.to_s
-        args << '-t'
-        args << 'MemoryTamer'
-        run_task_no_wait(ep, *args)
-      else
-        GrowlApplicationBridge.notifyWithTitle(
-            'MemoryTamer',
-            description:      msg.to_s,
-            notificationName: nn.to_s,
-            iconData:         nil,
-            priority:         0,
-            isSticky:         Persist.store.growl_sticky?,
-            clickContext:     nil)
+    enabled = nn == :error || Persist.store["#{nn}?"]
+    NSLog "Notification (#{nn}=#{enabled.inspect}): #{msg}"
+    if enabled
+      if Persist.store.notifications == 'Growl'
+        if GrowlApplicationBridge.isGrowlRunning
+          ep = NSBundle.mainBundle.pathForResource('growlnotify', ofType: '')
+          NSLog ep
+          # system("'#{ep}' -n MemoryTamer -a MemoryTamer#{(Persist.store.growl_sticky? ? ' -s' : '')} -m '#{msg}' -t 'MemoryTamer'")
+          args = []
+          args << '-n'
+          args << 'MemoryTamer'
+          args << '-s' if Persist.store.growl_sticky?
+          args << '-m'
+          args << msg.to_s
+          args << '-t'
+          args << 'MemoryTamer'
+          run_task_no_wait(ep, *args)
+        else
+          GrowlApplicationBridge.notifyWithTitle(
+              'MemoryTamer',
+              description:  msg.to_s,
+              notificationName: nn_str(nn),
+              iconData:     nil,
+              priority:     0,
+              isSticky:     Persist.store.growl_sticky?,
+              clickContext: nil)
+        end
+      elsif Persist.store.notifications == 'Notification Center'
+        notification                 = NSUserNotification.alloc.init
+        notification.title           = 'MemoryTamer'
+        notification.informativeText = msg.to_s
+        notification.soundName       = nil #NSUserNotificationDefaultSoundName
+        NSUserNotificationCenter.defaultUserNotificationCenter.scheduleNotification(notification)
       end
-    elsif Persist.store.notifications == 'Notification Center'
-      notification                 = NSUserNotification.alloc.init
-      notification.title           = 'MemoryTamer'
-      notification.informativeText = msg.to_s
-      notification.soundName       = nil #NSUserNotificationDefaultSoundName
-      NSUserNotificationCenter.defaultUserNotificationCenter.scheduleNotification(notification)
     end
   end
 
@@ -125,10 +138,10 @@ module Util
     Thread.start {
       cfm          = Info.get_free_mem
       Info.freeing = true
-      notify 'Beginning memory freeing', 'Start Freeing'
+      notify 'Beginning memory freeing', :free_start
       free_mem(Persist.store.pressure)
       nfm = Info.get_free_mem
-      notify "Finished freeing #{Info.format_bytes(nfm - cfm)}", 'Finish Freeing'
+      notify "Finished freeing #{Info.format_bytes(nfm - cfm)}", :free_end
       NSLog "Freed #{Info.format_bytes(nfm - cfm, true)}"
       Info.freeing   = false
       Info.last_free = NSDate.date
@@ -146,10 +159,10 @@ module Util
     Thread.start {
       cfm          = Info.get_free_mem
       Info.freeing = true
-      notify 'Beginning memory trimming', 'Start Freeing'
+      notify 'Beginning memory trimming', :trim_start
       free_mem_old(true)
       nfm = Info.get_free_mem
-      notify "Finished trimming #{Info.format_bytes(nfm - cfm)}", 'Finish Freeing'
+      notify "Finished trimming #{Info.format_bytes(nfm - cfm)}", :trim_end
       NSLog "Freed #{Info.format_bytes(nfm - cfm, true)}"
       Info.freeing   = false
       Info.last_trim = NSDate.date
@@ -160,7 +173,7 @@ module Util
     if Persist.store.freeing_method == 'memory pressure'
       cmp = Info.get_memory_pressure
       if cmp >= 4
-        notify 'Memory Pressure too high! Running not a good idea.', 'Error'
+        notify 'Memory Pressure too high! Running not a good idea.', :error
         return
       end
       dmp = pressure == 'normal' ? 1 : (pressure == 'warn' ? 2 : 4)

@@ -29,7 +29,7 @@ class Persist
     def property(*names)
       names.each { |name|
         define_method("#{name.to_s}".to_weak) { self[name.to_s] }
-        define_method("#{name.to_s}?".to_weak) { self[name.to_s] && self[name.to_s] != 0 && self[name.to_s] != NSOffState }
+        define_method("#{name.to_s}?".to_weak) { self["#{name.to_s}?"] }
         define_method("#{name.to_s}_state?".to_weak) { self[name.to_s] ? NSOnState : NSOffState }
         define_method("#{name.to_s}=".to_weak) { |v| change_value(name.to_sym, v) }
       }
@@ -116,10 +116,12 @@ class Persist
   end
 
   def [](key)
-    if Persist.aliases.has_key?(key.to_s)
-      self[Persist.aliases[key.to_s]]
+    is_bool = key.to_s.end_with?('?')
+    key2 = is_bool ? key.to_s[0...-1] : key
+    rv = if Persist.aliases.has_key?(key2.to_s)
+      self[Persist.aliases[key2.to_s]]
     else
-      value = storage.objectForKey storage_key(key).to_s
+      value = storage.objectForKey storage_key(key2).to_s
 
       # RubyMotion currently has a bug where the strings returned from
       # standardUserDefaults are missing some methods (e.g. to_data).
@@ -127,6 +129,7 @@ class Persist
       # String, we can't just use `value.is_a?(String)`
       value.class.to_s == 'String' ? value.dup : value
     end
+    is_bool ? (rv && rv != 0 && rv != NSOffState) : rv
   end
 
   def merge(values)
@@ -221,6 +224,6 @@ class Persist
 
   def fire_listeners(key, old_value, new_value)
     @listeners ||= {}
-    @listeners[key].each { |l| l.call(key, old_value, new_value) } if @listeners.has_key?(key)
+    @listeners[key].each { |l| l.call(key, old_value, new_value) } if @listeners.has_key?(key) && !@no_refresh
   end
 end
