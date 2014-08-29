@@ -73,8 +73,7 @@ class Persist
            :show_mem, :update_while,
            :growl, :sticky, :notifications,
            :free_start, :free_end, :trim_start, :trim_end,
-           :last_version,
-           :app_store
+           :last_version
 
   alias_property pressure: :freeing_pressure,
                  growl:    :growl_sticky
@@ -179,16 +178,13 @@ class Persist
     self.no_refresh {
       Info.last_version = self.last_version
       self.last_version = Info.version.to_s
-      self.app_store    = false if self.app_store.nil?
-      self.app_store    = true unless Info.paddle?
       self.validate! :mem, :trim_mem,
                      :auto_threshold,
                      :pressure, :method_pressure, :freeing_method, :auto_escalate,
                      :show_mem, :update_while,
                      :growl, :sticky, :notifications,
                      :free_start, :free_end, :trim_start, :trim_end,
-                     :last_version,
-                     :app_store
+                     :last_version
     }
   end
 

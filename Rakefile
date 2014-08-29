@@ -29,6 +29,7 @@ end
 namespace :paddle do
   task :include do
     Motion::Project::App.setup do |app|
+      app.identifier                                     = 'us.myepg.MemoryTamer'
       app.entitlements['com.apple.security.app-sandbox'] = false
       app.embedded_frameworks << 'vendor/Sparkle.framework'
       app.embedded_frameworks << 'vendor/Paddle.framework'
@@ -52,7 +53,7 @@ Motion::Project::App.setup do |app|
   app.name                                           = 'MemoryTamer'
   app.version                                        = '0.9.6.1'
   app.short_version                                  = '1.0b1'
-  app.identifier                                     = 'us.myepg.MemoryTamer'
+  app.identifier                                     = 'com.memorytamer.MemoryTamer'
   app.info_plist['NSUIElement']                      = 1
   app.info_plist['SUFeedURL']                        = 'https://raw.githubusercontent.com/henderea/MemoryTamer/master/appcast.xml'
   app.deployment_target                              = '10.7'
