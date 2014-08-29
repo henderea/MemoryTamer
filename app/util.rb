@@ -208,6 +208,6 @@ module Util
   end
 
   def constrain_value_boolean(value, default, enable = true, enable_is_true = true)
-    (value.nil? ? default : value) ? (enable || !enable_is_true) : (!enable && !enable_is_true)
+    ((value.nil? ? default : (value && value != 0 && value != NSOffState)) ? (enable || !enable_is_true) : (!enable && !enable_is_true)) ? NSOnState : NSOffState
   end
 end

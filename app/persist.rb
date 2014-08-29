@@ -29,7 +29,7 @@ class Persist
     def property(*names)
       names.each { |name|
         define_method("#{name.to_s}".to_weak) { self[name.to_s] }
-        define_method("#{name.to_s}?".to_weak) { self[name.to_s] }
+        define_method("#{name.to_s}?".to_weak) { self[name.to_s] && self[name.to_s] != 0 && self[name.to_s] != NSOffState }
         define_method("#{name.to_s}_state?".to_weak) { self[name.to_s] ? NSOnState : NSOffState }
         define_method("#{name.to_s}=".to_weak) { |v| change_value(name.to_sym, v) }
       }
@@ -76,7 +76,7 @@ class Persist
            :last_version
 
   alias_property pressure: :freeing_pressure,
-                 growl:    :growl_sticky
+                 sticky:    :growl_sticky
 
   depend freeing_method: :method_pressure,
          notifications:  :growl
