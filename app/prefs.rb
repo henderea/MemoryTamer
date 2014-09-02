@@ -25,11 +25,6 @@ class Prefs < NSWindowController
       slider: -> (p, v) { Persist.store[p] = v }
   }
 
-  # PERSIST_MAPPERS = {
-  #     list: nil,
-  #     bool: -> ()
-  # }
-
   FIELD_SETTERS   = {
       list:   -> (f, v) { f.selectItemWithTitle(v) },
       bool:   -> (f, v) { f.state = (v && v != 0 && v != NSOffState) ? NSOnState : NSOffState },
@@ -37,16 +32,16 @@ class Prefs < NSWindowController
   }
 
   FIELD_GETTERS = {
-      list:   -> (f) { f.selectedValue },
+      list:   -> (f) { f.titleOfSelectedItem },
       bool:   -> (f) { f.state },
       slider: -> (f) { f.intValue }
   }
 
-  PROPERTY_NAMES = {
-      list:   :selectedValue,
-      bool:   :state,
-      slider: :intValue
-  }
+  # PROPERTY_NAMES = {
+  #     list:   :selectedValue,
+  #     bool:   :state,
+  #     slider: :intValue
+  # }
 
   def self.create_instance
     instance = alloc.initWithWindowNibName 'Prefs'
@@ -57,7 +52,7 @@ class Prefs < NSWindowController
 
   def setup!
     notifications_nc.enabled = Info.has_nc?
-    # freeing_method_mp.enabled = Info.mavericks?
+    freeing_method_mp.enabled = Info.mavericks?
     link :list, :notifications
     link :bool, :growl_sticky
     link :bool, :free_start
@@ -68,6 +63,7 @@ class Prefs < NSWindowController
     link :slider, :trim_slider, :trim_mem, :trim_field
     link :list, :auto_level, :auto_threshold
     link :list, :freeing_method
+    link :list, :freeing_pressure
     link :bool, :auto_escalate
     link :bool, :show_mem
     link :bool, :update_while
@@ -109,8 +105,8 @@ class Prefs < NSWindowController
     field.action     = 'action:'
     field.continuous = true
     if setter_type == :slider && field_name_2
-      field2.target     = act
-      field2.action     = 'action:'
+      field2.target = act
+      field2.action = 'action:'
     end
   end
 
@@ -130,10 +126,35 @@ class Prefs < NSWindowController
   outlet :trim_slider, NSSlider
   outlet :trim_field, NSTextField
   outlet :auto_level, NSPopUpButton
+  outlet :suggest_threshold_button, NSButton
   outlet :freeing_method, NSPopUpButton
   outlet :freeing_method_mp, NSMenuItem
   outlet :freeing_pressure, NSPopUpButton
   outlet :auto_escalate, NSButton
+
+  def suggest_threshold(sender)
+    Thread.start {
+      Info.freeing = true
+      self.suggest_threshold_button.enabled = false
+      Util.free_mem(Persist.store.pressure)
+      nfm            = Info.get_free_mem
+      if Persist.store.auto_threshold == 'high'
+        Persist.store.mem      = ((nfm.to_f * 0.5) / 1024**2).ceil
+        Persist.store.trim_mem = ((nfm.to_f * 0.8) / 1024**2).ceil if Persist.store.trim_mem > 0
+      else
+        Persist.store.mem      = ((nfm.to_f * 0.3) / 1024**2).ceil
+        Persist.store.trim_mem = ((nfm.to_f * 0.6) / 1024**2).ceil if Persist.store.trim_mem > 0
+      end
+      self.free_slider.intValue = Persist.store.mem
+      self.free_field.intValue  = Persist.store.mem
+      self.trim_slider.intValue = Persist.store.trim_mem
+      self.trim_field.intValue  = Persist.store.trim_mem
+      self.suggest_threshold_button.enabled = true
+      Info.freeing   = false
+      Info.last_free = NSDate.date
+    }
+  end
+
   #endregion
 
   #region Display Tab

@@ -20,6 +20,7 @@
                 <outlet property="notifications" destination="hmt-Sj-eSw" id="b1m-Tp-wd8"/>
                 <outlet property="notifications_nc" destination="oFE-VC-DXm" id="dPq-Ac-y7O"/>
                 <outlet property="show_mem" destination="cTB-Wf-bc5" id="zQk-Sc-xE7"/>
+                <outlet property="suggest_threshold_button" destination="K35-Ib-BYj" id="jPh-Jo-lZ4"/>
                 <outlet property="trim_end" destination="Onm-zO-gok" id="Ttx-Db-hrm"/>
                 <outlet property="trim_field" destination="ekv-G3-0r5" id="PYl-ZW-g6K"/>
                 <outlet property="trim_slider" destination="4r5-7p-93X" id="aQL-ED-XiR"/>
@@ -34,7 +35,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="240" width="504" height="298"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
             <view key="contentView" id="EiT-Mj-1SZ">
                 <rect key="frame" x="0.0" y="0.0" width="504" height="298"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -160,6 +161,9 @@
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
+                                            <connections>
+                                                <action selector="suggest_threshold:" target="-2" id="Y6O-hF-O5X"/>
+                                            </connections>
                                         </button>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="e2A-R0-knX">
                                             <rect key="frame" x="19" y="167" width="107" height="17"/>
@@ -218,13 +222,13 @@
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                         </button>
-                                        <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wQK-dU-IpJ">
-                                            <rect key="frame" x="253" y="240" width="143" height="26"/>
+                                        <slider verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wQK-dU-IpJ">
+                                            <rect key="frame" x="253" y="240" width="143" height="25"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <sliderCell key="cell" state="on" alignment="left" maxValue="16384" doubleValue="1024" tickMarkPosition="above" numberOfTickMarks="16" sliderType="linear" id="D8h-hu-91T"/>
                                         </slider>
-                                        <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4r5-7p-93X">
-                                            <rect key="frame" x="253" y="215" width="143" height="26"/>
+                                        <slider verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4r5-7p-93X">
+                                            <rect key="frame" x="253" y="215" width="143" height="25"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <sliderCell key="cell" state="on" alignment="left" maxValue="16384" doubleValue="1024" tickMarkPosition="above" numberOfTickMarks="16" sliderType="linear" id="Q8h-ae-Gt1"/>
                                         </slider>

@@ -52,8 +52,8 @@ Motion::Project::App.setup do |app|
   app.info_plist['CFBundleIconFile']                 = 'Icon.icns'
   app.name                                           = 'MemoryTamer'
   app.version                                        = '0.9.6.1'
-  app.short_version                                  = '1.0b5'
-  app.identifier                                     = 'com.memorytamer.MemoryTamer'
+  app.short_version                                  = '1.0b6'
+  app.identifier                                     = 'us.myepg.MemoryTamerMAS'
   app.info_plist['NSUIElement']                      = 1
   app.info_plist['SUFeedURL']                        = 'https://raw.githubusercontent.com/henderea/MemoryTamer/master/appcast.xml'
   app.deployment_target                              = '10.7'

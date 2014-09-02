@@ -213,7 +213,8 @@ module Util
   end
 
   def constrain_value_list(list, old_value, new_value, default)
-    new_value ? !list.include?(new_value) && ((list.include?(old_value) && old_value) || default) : default
+    # puts "#{new_value};#{old_value}"
+    (list.include?(new_value)) ? new_value : (list.include?(old_value) ? old_value : default)
   end
 
   def constrain_value_list_enable_map(map, old_value, new_value, new_default, default)
