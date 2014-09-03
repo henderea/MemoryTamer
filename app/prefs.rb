@@ -15,8 +15,8 @@ class Prefs < NSWindowController
     @instance ||= create_instance
   end
 
-  def show_window(sender)
-    self.window.makeKeyAndOrderFront(sender)
+  def show_window
+    self.window.makeKeyAndOrderFront(nil)
   end
 
   PERSIST_SETTERS = {

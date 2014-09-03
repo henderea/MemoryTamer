@@ -22,18 +22,23 @@ module Util
   module_function
 
   def run_task(path, *args)
+    NSLog "task: #{path}; args: #{args.inspect}"
     task            = NSTask.alloc.init
     task.launchPath = path
     task.arguments  = args.map { |v| v.to_s }
     task.launch
+    NSLog 'task launched'
     task.waitUntilExit
+    NSLog 'task finished'
   end
 
   def run_task_no_wait(path, *args)
+    NSLog "task: #{path}; args: #{args.inspect}"
     task            = NSTask.alloc.init
     task.launchPath = path
     task.arguments  = args
     task.launch
+    NSLog 'task launched'
   end
 
   def setup_paddle
@@ -141,8 +146,8 @@ module Util
       notify 'Beginning memory freeing', :free_start
       free_mem(Persist.store.pressure)
       nfm = Info.get_free_mem
-      notify "Finished freeing #{Info.format_bytes(nfm - cfm)}", :free_end
       NSLog "Freed #{Info.format_bytes(nfm - cfm, true)}"
+      notify "Finished freeing #{Info.format_bytes(nfm - cfm)}", :free_end
       Info.freeing   = false
       Info.last_free = NSDate.date
       # if Persist.store.auto_threshold == 'low'
@@ -201,7 +206,11 @@ module Util
   def free_mem_old(trim = false)
     mtf = trim ? [Info.get_free_mem(1) * 0.75, Info.get_free_mem(0.5)].min : Info.get_free_mem(1)
     ep  = NSBundle.mainBundle.pathForResource('inactive', ofType: '')
+    NSLog "'#{ep}' '#{mtf.to_s}'"
     run_task(ep, mtf.to_s)
+    # system("'#{ep}' '#{mtf.to_s}'")
+    # o = `'#{ep}' '#{mtf.to_s}'`
+    # NSLog o
   end
 
   def open_link(link)
