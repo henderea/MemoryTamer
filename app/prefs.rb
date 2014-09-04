@@ -17,6 +17,7 @@ class Prefs < NSWindowController
 
   def show_window
     self.window.makeKeyAndOrderFront(nil)
+    self.window.orderFrontRegardless
   end
 
   PERSIST_SETTERS = {
