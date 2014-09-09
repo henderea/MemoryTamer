@@ -46,6 +46,7 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 	* As part of the preferences update, you can now turn off all notifications or individual ones.  Note that if you have the notification system set to "None", the individual notification checkboxes will be ignored.
 	* When upgrading from a pre-1.0 version, the "update while freeing" option will be turned off the first time you launch 1.0. This is because the suddenly decreasing free memory amount may cause confusion. You can turn this option back on if desired.
 	* Thanks to all of the beta testers that helped me get this version working well.
+* **v1.0.1:** integrate a crash reporter
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.3.zip> (Mavericks-only)
@@ -78,3 +79,4 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v0.9.6:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-0.9.6.zip>
 * **v0.9.6.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-0.9.6.1.zip>
 * **v1.0:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.0.zip>
+* **v1.0.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.0.1.zip>
