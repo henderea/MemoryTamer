@@ -66,7 +66,7 @@ class Prefs < NSWindowController
     link :list, :freeing_method
     link :list, :freeing_pressure
     link :bool, :auto_escalate
-    link :bool, :show_mem
+    link :list, :display_what
     link :bool, :update_while
 
     self.free_slider.minValue = 0
@@ -159,7 +159,7 @@ class Prefs < NSWindowController
   #endregion
 
   #region Display Tab
-  outlet :show_mem, NSButton
+  outlet :display_what, NSPopUpButton
   outlet :update_while, NSButton
   #endregion
 

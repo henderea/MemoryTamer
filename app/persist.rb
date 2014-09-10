@@ -43,6 +43,14 @@ class Persist
       }
     end
 
+    def calculated_property(*names, &getter)
+      names.each { |name|
+        define_method("#{name.to_s}".to_weak) { getter.call(self) }
+        define_method("#{name.to_s}?".to_weak) { Util.value_to_bool(getter.call(self)) }
+        define_method("#{name.to_s}_state?".to_weak) { getter.call(self) ? NSOnState : NSOffState }
+      }
+    end
+
     def validate_map(*keys, &block)
       @validators ||= {}
       Array(*keys).each { |key| @validators[key.to_sym] = block }
@@ -70,7 +78,7 @@ class Persist
   property :mem, :trim_mem,
            :auto_threshold,
            :pressure, :method_pressure, :freeing_method, :auto_escalate,
-           :show_mem, :update_while,
+           :update_while, :display_what,
            :growl, :sticky, :notifications,
            :free_start, :free_end, :trim_start, :trim_end,
            :last_version
@@ -81,6 +89,9 @@ class Persist
   depend freeing_method: :method_pressure,
          notifications:  :growl
 
+  calculated_property(:show_mem) { |s| ['Show Icon + Free Memory', 'Show Free Memory'].include?(s.display_what) }
+  calculated_property(:show_icon) { |s| ['Show Icon + Free Memory', 'Show Icon'].include?(s.display_what) }
+
   validate_map(:mem) { |_, _, nv| Util.constrain_value_range((0..MemInfo.getTotalMemory), nv, 1024) }
   validate_map(:trim_mem) { |_, _, nv| Util.constrain_value_range((0..MemInfo.getTotalMemory), nv, 0) }
   validate_map(:auto_threshold) { |_, ov, nv| Util.constrain_value_list(%w(low high), ov, nv, 'low') }
@@ -88,8 +99,8 @@ class Persist
   validate_map(:growl) { |_, _, nv| Util.constrain_value_boolean(nv, false, Info.has_nc?, false) }
   validate_map(:method_pressure) { |_, _, nv| Util.constrain_value_boolean(nv, true, Info.mavericks?) }
   validate_map(:freeing_method) { |_, ov, nv| Util.constrain_value_list_enable_map({ 'memory pressure' => Info.mavericks?, 'plain allocation' => true }, ov, nv, Persist.store.method_pressure? ? 'memory pressure' : 'plain allocation', 'plain allocation') }
-  validate_map(:show_mem) { |_, _, nv| Util.constrain_value_boolean(nv, true) }
   validate_map(:update_while) { |_, _, nv| Util.constrain_value_boolean(nv, false, Info.last_version >= '1.0b6') }
+  validate_map(:display_what) { |_, ov, nv| Util.constrain_value_list(['Show Icon + Free Memory', 'Show Icon', 'Show Free Memory'], ov, nv, (Persist.store['show_mem'].nil? || Persist.store['show_mem?']) ? 'Show Icon + Free Memory' : 'Show Icon') }
   validate_map(:sticky) { |_, _, nv| Util.constrain_value_boolean(nv, false) }
   validate_map(:auto_escalate) { |_, _, nv| Util.constrain_value_boolean(nv, false) }
   validate_map(:notifications) { |_, ov, nv| Util.constrain_value_list_enable_map({ 'Off' => true, 'Growl' => true, 'Notification Center' => Info.has_nc? }, ov, nv, Persist.store.growl ? 'Growl' : 'Notification Center', 'Growl') }
@@ -110,8 +121,11 @@ class Persist
     if Persist.aliases.has_key?(key.to_s)
       self[Persist.aliases[key.to_s]] = value
     else
-      storage.setObject(value, forKey: storage_key(key).to_s)
+      old_value = self[key.to_s]
+      new_value = Persist.validate?(key.to_sym, old_value, value)
+      storage.setObject(new_value, forKey: storage_key(key).to_s)
       storage.synchronize
+      fire_listeners(key.to_sym, old_value, new_value)
     end
   end
 
@@ -181,10 +195,14 @@ class Persist
     self.no_refresh {
       Info.last_version = self.last_version
       self.last_version = Info.version.to_s
+      self.listen(:display_what) { |_, _, _|
+        MainMenu.status_item.setImage(Persist.store.show_icon? ? NSImage.imageNamed('Status') : nil)
+        MainMenu.status_item.setTitle(Persist.store.show_mem? ? Info.format_bytes(Info.get_free_mem) : '')
+      }
       self.validate! :mem, :trim_mem,
                      :auto_threshold,
                      :pressure, :method_pressure, :freeing_method, :auto_escalate,
-                     :show_mem, :update_while,
+                     :update_while, :display_what,
                      :growl, :sticky, :notifications,
                      :free_start, :free_end, :trim_start, :trim_end,
                      :last_version
@@ -200,21 +218,13 @@ class Persist
   end
 
   def change_value(key, new_value)
-    old_value      = self[key.to_s]
-    new_value      = Persist.validate?(key.to_sym, old_value, new_value)
     self[key.to_s] = new_value
-    fire_listeners(key.to_sym, old_value, new_value)
   end
 
   def validate!(*keys)
     keys.each { |key|
       depend!(key)
-      old_value = self[key.to_s]
-      new_value = Persist.validate?(key.to_sym, old_value, old_value)
-      unless new_value.nil?
-        self[key.to_s] = new_value
-        fire_listeners(key.to_sym, old_value, new_value)
-      end
+      self[key.to_s] = self[key.to_s]
     }
   end
 

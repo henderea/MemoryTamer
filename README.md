@@ -48,6 +48,7 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 	* Thanks to all of the beta testers that helped me get this version working well.
 * **v1.0.1:** integrate a crash reporter
 * **v1.0.2:** change update handler
+* **v1.0.3:** add the option to choose between showing both the icon and free memory, just the free memory, or just the icon.  The only new state is the one with just the free memory.
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.3.zip> (Mavericks-only)
@@ -82,3 +83,4 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.0:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.0.zip>
 * **v1.0.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.0.1.zip>
 * **v1.0.2:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.0.2.zip>
+* **v1.0.3:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.0.3.zip>
