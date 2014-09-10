@@ -1,14 +1,10 @@
 class AppDelegate
   attr_accessor :prefs
 
-  BITCrashManagerStatusDisabled = 0
-  BITCrashManagerStatusAlwaysAsk = 1
-  BITCrashManagerStatusAutoSend = 2
-
   # noinspection RubyUnusedLocalVariable
   def applicationDidFinishLaunching(notification)
     BITHockeyManager.sharedHockeyManager.configureWithIdentifier('128ebd3240db358d4b1ea5f228269de6')
-    # BITHockeyManager.sharedHockeyManager.crashManager.crashManagerStatus = BITCrashManagerStatusAutoSend
+    BITHockeyManager.sharedHockeyManager.crashManager.setAutoSubmitCrashReport(true)
     BITHockeyManager.sharedHockeyManager.startManager
     Util.setup_paddle
     SUUpdater.sharedUpdater if Info.paddle?

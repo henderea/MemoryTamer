@@ -31,6 +31,7 @@ namespace :paddle do
     Motion::Project::App.setup do |app|
       app.identifier                                     = 'us.myepg.MemoryTamer'
       app.entitlements['com.apple.security.app-sandbox'] = false
+      app.info_plist['SUFeedURL']                        = 'https://rink.hockeyapp.net/api/2/apps/128ebd3240db358d4b1ea5f228269de6'
       app.embedded_frameworks << 'vendor/Sparkle.framework'
       app.embedded_frameworks << 'vendor/Paddle.framework'
     end
@@ -51,11 +52,10 @@ Motion::Project::App.setup do |app|
   app.icon                                           = 'Icon.icns'
   app.info_plist['CFBundleIconFile']                 = 'Icon.icns'
   app.name                                           = 'MemoryTamer'
-  app.version                                        = '1.0.1'
-  app.short_version                                  = '1.0.1'
+  app.version                                        = '1.0.2'
+  app.short_version                                  = '1.0.2'
   app.identifier                                     = 'us.myepg.MemoryTamerMAS'
   app.info_plist['NSUIElement']                      = 1
-  app.info_plist['SUFeedURL']                        = 'https://raw.githubusercontent.com/henderea/MemoryTamer/master/appcast.xml'
   app.deployment_target                              = '10.7'
   app.codesign_certificate                           = 'Developer ID Application: Eric Henderson (SKWXXEM822)'
   app.entitlements['com.apple.security.app-sandbox'] = true
