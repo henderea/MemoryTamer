@@ -78,7 +78,7 @@ class Persist
   property :mem, :trim_mem,
            :auto_threshold,
            :pressure, :method_pressure, :freeing_method, :auto_escalate,
-           :update_while, :display_what,
+           :update_while, :display_what, :mem_places,
            :growl, :sticky, :notifications,
            :free_start, :free_end, :trim_start, :trim_end,
            :last_version
@@ -101,6 +101,7 @@ class Persist
   validate_map(:freeing_method) { |_, ov, nv| Util.constrain_value_list_enable_map({ 'memory pressure' => Info.mavericks?, 'plain allocation' => true }, ov, nv, Persist.store.method_pressure? ? 'memory pressure' : 'plain allocation', 'plain allocation') }
   validate_map(:update_while) { |_, _, nv| Util.constrain_value_boolean(nv, false, Info.last_version >= '1.0b6') }
   validate_map(:display_what) { |_, ov, nv| Util.constrain_value_list(['Show Icon + Free Memory', 'Show Icon', 'Show Free Memory'], ov, nv, (Persist.store['show_mem'].nil? || Persist.store['show_mem?']) ? 'Show Icon + Free Memory' : 'Show Icon') }
+  validate_map(:mem_places) { |_, _, nv| Util.constrain_value_range((0..3), nv, 2) }
   validate_map(:sticky) { |_, _, nv| Util.constrain_value_boolean(nv, false) }
   validate_map(:auto_escalate) { |_, _, nv| Util.constrain_value_boolean(nv, false) }
   validate_map(:notifications) { |_, ov, nv| Util.constrain_value_list_enable_map({ 'Off' => true, 'Growl' => true, 'Notification Center' => Info.has_nc? }, ov, nv, Persist.store.growl ? 'Growl' : 'Notification Center', 'Growl') }
@@ -195,14 +196,12 @@ class Persist
     self.no_refresh {
       Info.last_version = self.last_version
       self.last_version = Info.version.to_s
-      self.listen(:display_what) { |_, _, _|
-        MainMenu.status_item.setImage(Persist.store.show_icon? ? NSImage.imageNamed('Status') : nil)
-        MainMenu.status_item.setTitle(Persist.store.show_mem? ? Info.format_bytes(Info.get_free_mem) : '')
-      }
+      self.listen(:display_what) { |_, _, _| MainMenu.status_item.setImage(Persist.store.show_icon? ? NSImage.imageNamed('Status') : nil) }
+      self.listen(:display_what, :mem_places) { |_, _, _| MainMenu.status_item.setTitle(Persist.store.show_mem? ? Info.format_bytes(Info.get_free_mem) : '') }
       self.validate! :mem, :trim_mem,
                      :auto_threshold,
                      :pressure, :method_pressure, :freeing_method, :auto_escalate,
-                     :update_while, :display_what,
+                     :update_while, :display_what, :mem_places,
                      :growl, :sticky, :notifications,
                      :free_start, :free_end, :trim_start, :trim_end,
                      :last_version

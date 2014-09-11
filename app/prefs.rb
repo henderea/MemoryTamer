@@ -26,7 +26,7 @@ class Prefs < NSWindowController
       slider: -> (p, v) { Persist.store[p] = v }
   }
 
-  FIELD_SETTERS   = {
+  FIELD_SETTERS = {
       list:   -> (f, v) { f.selectItemWithTitle(v) },
       bool:   -> (f, v) { f.state = (v && v != 0 && v != NSOffState) ? NSOnState : NSOffState },
       slider: -> (f, v) { f.intValue = v }
@@ -52,7 +52,7 @@ class Prefs < NSWindowController
   end
 
   def setup!
-    notifications_nc.enabled = Info.has_nc?
+    notifications_nc.enabled  = Info.has_nc?
     freeing_method_mp.enabled = Info.mavericks?
     link :list, :notifications
     link :bool, :growl_sticky
@@ -68,11 +68,14 @@ class Prefs < NSWindowController
     link :bool, :auto_escalate
     link :list, :display_what
     link :bool, :update_while
+    link :slider, :mem_places_slider, :mem_places, :mem_places_field
 
-    self.free_slider.minValue = 0
-    self.free_slider.maxValue = (Info.get_total_memory / 1024 ** 2)
-    self.trim_slider.minValue = 0
-    self.trim_slider.maxValue = (Info.get_total_memory / 1024 ** 2)
+    self.free_slider.minValue       = 0
+    self.free_slider.maxValue       = (Info.get_total_memory / 1024 ** 2)
+    self.trim_slider.minValue       = 0
+    self.trim_slider.maxValue       = (Info.get_total_memory / 1024 ** 2)
+    self.mem_places_slider.minValue = 0
+    self.mem_places_slider.maxValue = 3
   end
 
   def link_slider_and_text(slider_name, text_name)
@@ -135,10 +138,10 @@ class Prefs < NSWindowController
 
   def suggest_threshold(sender)
     Thread.start {
-      Info.freeing = true
+      Info.freeing                          = true
       self.suggest_threshold_button.enabled = false
       Util.free_mem(Persist.store.pressure)
-      nfm            = Info.get_free_mem
+      nfm = Info.get_free_mem
       if Persist.store.auto_threshold == 'high'
         Persist.store.mem      = ((nfm.to_f * 0.5) / 1024**2).ceil
         Persist.store.trim_mem = ((nfm.to_f * 0.8) / 1024**2).ceil if Persist.store.trim_mem > 0
@@ -146,13 +149,13 @@ class Prefs < NSWindowController
         Persist.store.mem      = ((nfm.to_f * 0.3) / 1024**2).ceil
         Persist.store.trim_mem = ((nfm.to_f * 0.6) / 1024**2).ceil if Persist.store.trim_mem > 0
       end
-      self.free_slider.intValue = Persist.store.mem
-      self.free_field.intValue  = Persist.store.mem
-      self.trim_slider.intValue = Persist.store.trim_mem
-      self.trim_field.intValue  = Persist.store.trim_mem
+      self.free_slider.intValue             = Persist.store.mem
+      self.free_field.intValue              = Persist.store.mem
+      self.trim_slider.intValue             = Persist.store.trim_mem
+      self.trim_field.intValue              = Persist.store.trim_mem
       self.suggest_threshold_button.enabled = true
-      Info.freeing   = false
-      Info.last_free = NSDate.date
+      Info.freeing                          = false
+      Info.last_free                        = NSDate.date
     }
   end
 
@@ -161,6 +164,8 @@ class Prefs < NSWindowController
   #region Display Tab
   outlet :display_what, NSPopUpButton
   outlet :update_while, NSButton
+  outlet :mem_places_slider, NSSlider
+  outlet :mem_places_field, NSTextField
   #endregion
 
 end

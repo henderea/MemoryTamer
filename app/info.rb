@@ -44,7 +44,7 @@ module Info
     return "#{bytes} B" if bytes.abs <= 1
     lg   = (Math.log(bytes.abs)/Math.log(1024)).floor.to_f
     unit = %w(B KB MB GB TB PB EB ZB YB)[lg]
-    "#{'%.2f' % (bytes.to_f / 1024.0**lg)} #{unit}#{show_raw ? " (#{bytes} B)" : ''}"
+    "#{"%.#{show_raw ? '3' : Persist.store.mem_places.to_s}f" % (bytes.to_f / 1024.0**lg)} #{unit}#{show_raw ? " (#{bytes} B)" : ''}"
   end
 
   def freeing=(freeing)

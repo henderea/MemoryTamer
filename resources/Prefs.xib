@@ -18,6 +18,8 @@
                 <outlet property="freeing_method_mp" destination="Dbe-Pe-5xe" id="VxQ-XB-jsz"/>
                 <outlet property="freeing_pressure" destination="oD5-N3-F0B" id="aiF-fg-ZQS"/>
                 <outlet property="growl_sticky" destination="3tl-fJ-uM0" id="PLM-5K-sBg"/>
+                <outlet property="mem_places_field" destination="roX-u5-xO4" id="9Lj-Pw-ljN"/>
+                <outlet property="mem_places_slider" destination="K4o-lr-rew" id="NBC-im-5P4"/>
                 <outlet property="notifications" destination="hmt-Sj-eSw" id="b1m-Tp-wd8"/>
                 <outlet property="notifications_nc" destination="oFE-VC-DXm" id="dPq-Ac-y7O"/>
                 <outlet property="suggest_threshold_button" destination="K35-Ib-BYj" id="jPh-Jo-lZ4"/>
@@ -298,7 +300,7 @@
                                     <rect key="frame" x="10" y="33" width="500" height="269"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ysd-Lg-KQB">
+                                        <button translatesAutoresizingMaskIntoConstraints="NO" id="Ysd-Lg-KQB">
                                             <rect key="frame" x="15" y="225" width="285" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="Update free memory display while freeing" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="2HD-We-xsR">
@@ -306,12 +308,12 @@
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                         </button>
-                                        <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7za-rf-L0W">
-                                            <rect key="frame" x="15" y="242" width="211" height="26"/>
+                                        <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7za-rf-L0W">
+                                            <rect key="frame" x="15" y="242" width="198" height="26"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <popUpButtonCell key="cell" type="push" title="Show Icon + Free Memory" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="OTE-16-1iU" id="qJO-ga-UZj">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
+                                                <font key="font" metaFont="menu"/>
                                                 <menu key="menu" title="OtherViews" id="2Ra-HF-RUi">
                                                     <items>
                                                         <menuItem title="Show Icon + Free Memory" state="on" id="OTE-16-1iU"/>
@@ -321,7 +323,50 @@
                                                 </menu>
                                             </popUpButtonCell>
                                         </popUpButton>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="EaF-x9-iRh">
+                                            <rect key="frame" x="17" y="202" width="101" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Decimal Places:" id="n7c-ZY-O91">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="roX-u5-xO4">
+                                            <rect key="frame" x="387" y="197" width="96" height="22"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="yVU-EI-kt6">
+                                                <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#" negativeFormat="#" allowsFloats="NO" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="309" id="X4r-Ja-5Io">
+                                                    <real key="minimum" value="0.0"/>
+                                                    <real key="maximum" value="3"/>
+                                                </numberFormatter>
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="K4o-lr-rew">
+                                            <rect key="frame" x="285" y="195" width="96" height="26"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="92" id="aOZ-DB-RBj"/>
+                                            </constraints>
+                                            <sliderCell key="cell" state="on" alignment="left" maxValue="3" doubleValue="2" tickMarkPosition="above" numberOfTickMarks="4" allowsTickMarkValuesOnly="YES" sliderType="linear" id="lLG-Nw-QcV"/>
+                                        </slider>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="trailing" secondItem="K4o-lr-rew" secondAttribute="trailing" constant="121" id="1Fy-BZ-gQZ"/>
+                                        <constraint firstAttribute="trailing" secondItem="roX-u5-xO4" secondAttribute="trailing" constant="17" id="1HP-Ho-vTK"/>
+                                        <constraint firstItem="K4o-lr-rew" firstAttribute="top" secondItem="Ysd-Lg-KQB" secondAttribute="bottom" constant="6" id="47t-Cd-M2F"/>
+                                        <constraint firstItem="EaF-x9-iRh" firstAttribute="leading" secondItem="giL-It-2aF" secondAttribute="leading" constant="19" id="8lL-eb-BhT"/>
+                                        <constraint firstItem="Ysd-Lg-KQB" firstAttribute="leading" secondItem="giL-It-2aF" secondAttribute="leading" constant="17" id="KtV-La-miU"/>
+                                        <constraint firstItem="Ysd-Lg-KQB" firstAttribute="top" secondItem="7za-rf-L0W" secondAttribute="bottom" constant="4" id="eSs-Xe-qhI"/>
+                                        <constraint firstItem="EaF-x9-iRh" firstAttribute="top" secondItem="Ysd-Lg-KQB" secondAttribute="bottom" constant="8" symbolic="YES" id="g2I-lF-R0z"/>
+                                        <constraint firstItem="K4o-lr-rew" firstAttribute="bottom" secondItem="roX-u5-xO4" secondAttribute="bottom" id="g3r-I2-tL8"/>
+                                        <constraint firstItem="Ysd-Lg-KQB" firstAttribute="leading" secondItem="7za-rf-L0W" secondAttribute="leading" id="hqW-NP-75a"/>
+                                        <constraint firstItem="roX-u5-xO4" firstAttribute="leading" secondItem="K4o-lr-rew" secondAttribute="trailing" constant="8" id="o6Q-EQ-0r5"/>
+                                        <constraint firstItem="K4o-lr-rew" firstAttribute="top" secondItem="giL-It-2aF" secondAttribute="top" constant="48" id="uFb-y5-YBo"/>
+                                    </constraints>
                                 </view>
                             </tabViewItem>
                         </tabViewItems>
