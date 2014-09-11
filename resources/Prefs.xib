@@ -22,6 +22,8 @@
                 <outlet property="mem_places_slider" destination="K4o-lr-rew" id="NBC-im-5P4"/>
                 <outlet property="notifications" destination="hmt-Sj-eSw" id="b1m-Tp-wd8"/>
                 <outlet property="notifications_nc" destination="oFE-VC-DXm" id="dPq-Ac-y7O"/>
+                <outlet property="refresh_rate_field" destination="L0e-Vi-eJF" id="Wue-zJ-Kem"/>
+                <outlet property="refresh_rate_slider" destination="CTp-OY-KKn" id="o8S-uH-XFf"/>
                 <outlet property="suggest_threshold_button" destination="K35-Ib-BYj" id="jPh-Jo-lZ4"/>
                 <outlet property="trim_end" destination="Onm-zO-gok" id="Ttx-Db-hrm"/>
                 <outlet property="trim_field" destination="ekv-G3-0r5" id="PYl-ZW-g6K"/>
@@ -353,12 +355,41 @@
                                             </constraints>
                                             <sliderCell key="cell" state="on" alignment="left" maxValue="3" doubleValue="2" tickMarkPosition="above" numberOfTickMarks="4" allowsTickMarkValuesOnly="YES" sliderType="linear" id="lLG-Nw-QcV"/>
                                         </slider>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8fI-SQ-sF0">
+                                            <rect key="frame" x="17" y="177" width="150" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Refresh Rate (seconds):" id="Bua-UX-so8">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <textField verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="L0e-Vi-eJF">
+                                            <rect key="frame" x="387" y="172" width="96" height="22"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="sRd-Sp-ouj">
+                                                <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#" allowsFloats="NO" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" id="jVM-UQ-YFV">
+                                                    <real key="minimum" value="1"/>
+                                                    <real key="maximum" value="5"/>
+                                                </numberFormatter>
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <slider verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CTp-OY-KKn">
+                                            <rect key="frame" x="285" y="172" width="96" height="26"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <sliderCell key="cell" state="on" alignment="left" minValue="1" maxValue="5" doubleValue="2" tickMarkPosition="above" numberOfTickMarks="5" allowsTickMarkValuesOnly="YES" sliderType="linear" id="jWT-86-3cA"/>
+                                        </slider>
                                     </subviews>
                                     <constraints>
                                         <constraint firstAttribute="trailing" secondItem="K4o-lr-rew" secondAttribute="trailing" constant="121" id="1Fy-BZ-gQZ"/>
                                         <constraint firstAttribute="trailing" secondItem="roX-u5-xO4" secondAttribute="trailing" constant="17" id="1HP-Ho-vTK"/>
                                         <constraint firstItem="K4o-lr-rew" firstAttribute="top" secondItem="Ysd-Lg-KQB" secondAttribute="bottom" constant="6" id="47t-Cd-M2F"/>
                                         <constraint firstItem="EaF-x9-iRh" firstAttribute="leading" secondItem="giL-It-2aF" secondAttribute="leading" constant="19" id="8lL-eb-BhT"/>
+                                        <constraint firstAttribute="trailing" secondItem="L0e-Vi-eJF" secondAttribute="trailing" constant="17" id="Ead-GE-KQF"/>
+                                        <constraint firstItem="L0e-Vi-eJF" firstAttribute="leading" secondItem="CTp-OY-KKn" secondAttribute="trailing" constant="8" id="GaZ-fV-eZv"/>
                                         <constraint firstItem="Ysd-Lg-KQB" firstAttribute="leading" secondItem="giL-It-2aF" secondAttribute="leading" constant="17" id="KtV-La-miU"/>
                                         <constraint firstItem="Ysd-Lg-KQB" firstAttribute="top" secondItem="7za-rf-L0W" secondAttribute="bottom" constant="4" id="eSs-Xe-qhI"/>
                                         <constraint firstItem="EaF-x9-iRh" firstAttribute="top" secondItem="Ysd-Lg-KQB" secondAttribute="bottom" constant="8" symbolic="YES" id="g2I-lF-R0z"/>

@@ -69,6 +69,7 @@ class Prefs < NSWindowController
     link :list, :display_what
     link :bool, :update_while
     link :slider, :mem_places_slider, :mem_places, :mem_places_field
+    link :slider, :refresh_rate_slider, :refresh_rate, :refresh_rate_field
 
     self.free_slider.minValue       = 0
     self.free_slider.maxValue       = (Info.get_total_memory / 1024 ** 2)
@@ -76,6 +77,8 @@ class Prefs < NSWindowController
     self.trim_slider.maxValue       = (Info.get_total_memory / 1024 ** 2)
     self.mem_places_slider.minValue = 0
     self.mem_places_slider.maxValue = 3
+    self.refresh_rate_slider.minValue = 1
+    self.refresh_rate_slider.maxValue = 5
   end
 
   def link_slider_and_text(slider_name, text_name)
@@ -166,6 +169,8 @@ class Prefs < NSWindowController
   outlet :update_while, NSButton
   outlet :mem_places_slider, NSSlider
   outlet :mem_places_field, NSTextField
+  outlet :refresh_rate_slider, NSSlider
+  outlet :refresh_rate_field, NSTextField
   #endregion
 
 end

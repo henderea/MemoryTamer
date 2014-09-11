@@ -86,7 +86,7 @@ module Util
           NSLog "seconds since last trim: #{diff_t}"
           Util.trim_mem
         end
-        sleep(2)
+        sleep(Persist.store.refresh_rate)
       end
     }
   end
