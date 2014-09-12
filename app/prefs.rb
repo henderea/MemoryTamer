@@ -44,11 +44,21 @@ class Prefs < NSWindowController
   #     slider: :intValue
   # }
 
-  def self.create_instance
-    instance = alloc.initWithWindowNibName 'Prefs'
-    instance.loadWindow
-    instance.setup!
-    instance
+  def self.create_instance(tried = false)
+    begin
+      instance = alloc.initWithWindowNibName 'Prefs'
+      instance.loadWindow
+      instance.setup!
+      instance
+    rescue Exception => e
+      NSLog e.inspect
+      if tried
+        Util.notify('ERROR: unable to open preferences; relaunching', :error)
+        NSApp.relaunchAfterDelay(1)
+      else
+        self.create_instance(true)
+      end
+    end
   end
 
   def setup!
@@ -71,12 +81,12 @@ class Prefs < NSWindowController
     link :slider, :mem_places_slider, :mem_places, :mem_places_field
     link :slider, :refresh_rate_slider, :refresh_rate, :refresh_rate_field
 
-    self.free_slider.minValue       = 0
-    self.free_slider.maxValue       = (Info.get_total_memory / 1024 ** 2)
-    self.trim_slider.minValue       = 0
-    self.trim_slider.maxValue       = (Info.get_total_memory / 1024 ** 2)
-    self.mem_places_slider.minValue = 0
-    self.mem_places_slider.maxValue = 3
+    self.free_slider.minValue         = 0
+    self.free_slider.maxValue         = (Info.get_total_memory / 1024 ** 2)
+    self.trim_slider.minValue         = 0
+    self.trim_slider.maxValue         = (Info.get_total_memory / 1024 ** 2)
+    self.mem_places_slider.minValue   = 0
+    self.mem_places_slider.maxValue   = 3
     self.refresh_rate_slider.minValue = 1
     self.refresh_rate_slider.maxValue = 5
   end
