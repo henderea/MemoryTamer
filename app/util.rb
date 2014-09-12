@@ -150,13 +150,6 @@ module Util
       notify "Finished freeing #{Info.format_bytes(nfm - cfm)}", :free_end
       Info.freeing   = false
       Info.last_free = NSDate.date
-      # if Persist.store.auto_threshold == 'low'
-      #   Persist.store.mem      = ((nfm.to_f * 0.3) / 1024**2).ceil
-      #   Persist.store.trim_mem = ((nfm.to_f * 0.6) / 1024**2).ceil if Persist.store.trim_mem > 0
-      # elsif Persist.store.auto_threshold == 'high'
-      #   Persist.store.mem      = ((nfm.to_f * 0.5) / 1024**2).ceil
-      #   Persist.store.trim_mem = ((nfm.to_f * 0.8) / 1024**2).ceil if Persist.store.trim_mem > 0
-      # end
     }
   end
 
@@ -187,7 +180,8 @@ module Util
         NSLog "escalating freeing pressure from #{pressure} to #{np}"
         pressure = np
       end
-      ep = NSBundle.mainBundle.pathForResource('memory_pressure', ofType: '')
+      ep = Info.paddle? ? 'memory_pressure' : NSBundle.mainBundle.pathForResource('memory_pressure', ofType: '')
+      NSLog ep
       IO.popen("'#{ep}' -l #{pressure}") { |pipe|
         pipe.sync = true
         pipe.each { |l|

@@ -9,7 +9,7 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 
 **Note:** The plain allocation method uses the C code from <http://forums.macrumors.com/showpost.php?p=8941184&postcount=54>
 
-**Note:** In version 1.0, I bundled a copy of the Mavericks memory_pressure system command.
+**Note:** In version 1.0, I bundled a copy of the Mavericks `memory_pressure` system command.
 
 ###Release notes
 * **v0.3:** Initial public release.  Only supports Mavericks and up because it uses the memory_pressure command introduced then.  Configuration is in a plain text file in the home directory and only checked on startup.
@@ -52,6 +52,7 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.0.4:** add the option to control the number of decimal places
 * **v1.0.5:** remove the out of date usage link and add a link to the app twitter account
 * **v1.0.6:** add option to control refresh rate
+* **v1.0.7:** hopefully fix crash on Mavericks by using the system copy of `memory_pressure`
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.3.zip> (Mavericks-only)
@@ -90,3 +91,4 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.0.4:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.0.4.zip>
 * **v1.0.5:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.0.5.zip>
 * **v1.0.6:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.0.6.zip>
+* **v1.0.7:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.0.7.zip>
