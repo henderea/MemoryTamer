@@ -51,7 +51,7 @@ class Prefs < NSWindowController
       instance.setup!
       instance
     rescue Exception => e
-      NSLog e.inspect
+      Util.log.error e.inspect
       if tried
         Util.notify('ERROR: unable to open preferences; relaunching', :error)
         NSApp.relaunchAfterDelay(1)

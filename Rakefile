@@ -52,8 +52,8 @@ Motion::Project::App.setup do |app|
   app.icon                                           = 'Icon.icns'
   app.info_plist['CFBundleIconFile']                 = 'Icon.icns'
   app.name                                           = 'MemoryTamer'
-  app.version                                        = '1.0.8'
-  app.short_version                                  = '1.0.8'
+  app.version                                        = '1.0.9'
+  app.short_version                                  = '1.0.9'
   app.identifier                                     = 'us.myepg.MemoryTamerMAS'
   app.info_plist['NSUIElement']                      = 1
   app.deployment_target                              = '10.7'
@@ -62,4 +62,8 @@ Motion::Project::App.setup do |app|
   app.embedded_frameworks << 'vendor/Growl.framework'
   app.embedded_frameworks << 'vendor/HockeySDK.framework'
   app.vendor_project('vendor/mem_info', :static)
+
+  app.pods do
+    pod 'CocoaLumberjack'
+  end
 end

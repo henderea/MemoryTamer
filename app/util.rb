@@ -1,3 +1,91 @@
+module LoggerClassMethods
+  FLAGS = {
+      :error   => (1<<0), # 0...00001
+      :warn    => (1<<1), # 0...00010
+      :info    => (1<<2), # 0...00100
+      :debug   => (1<<3), # 0...01000
+      :verbose => (1<<4) # 0...10000
+  }
+
+  LEVELS = {
+      :off     => 0,
+      :error   => FLAGS[:error],
+      :warn    => FLAGS[:error] | FLAGS[:warn],
+      :info    => FLAGS[:error] | FLAGS[:warn] | FLAGS[:info],
+      :debug   => FLAGS[:error] | FLAGS[:warn] | FLAGS[:info] | FLAGS[:debug],
+      :verbose => FLAGS[:error] | FLAGS[:warn] | FLAGS[:info] | FLAGS[:debug] | FLAGS[:verbose]
+  }
+
+  def level=(level)
+    @level = level
+  end
+
+  def level
+    @level
+  end
+
+  def async=(async)
+    @async = async
+  end
+
+  def async
+    @async
+  end
+
+  def error(message)
+    __log(:error, message)
+  end
+
+  def warn(message)
+    __log(:warn, message)
+  end
+
+  def info(message)
+    __log(:info, message)
+  end
+
+  def debug(message)
+    __log(:verbose, message)
+  end
+
+  alias_method :verbose, :debug
+
+  def logging?(flag)
+    (LEVELS[level] & FLAGS[flag]) > 0
+  end
+
+  protected
+  def __log(flag, message)
+    return unless logging?(flag)
+    raise ArgumentError, "flag must be one of #{FLAGS.keys}" unless FLAGS.keys.include?(flag)
+    async_enabled = self.async || (self.level == :error)
+    message       = message.gsub('%', '%%')
+
+    log(async_enabled,
+        level:    LEVELS[level],
+        flag:     FLAGS[flag],
+        context:  0,
+        file:     __FILE__,
+        function: __method__,
+        line:     __LINE__,
+        tag:      0,
+        format:   message)
+  end
+end
+
+module Motion
+  class Log < ::DDLog
+    class << self
+      alias_method :flush, :flushLog
+    end
+
+    extend LoggerClassMethods
+
+    @async = true
+    @level = :info
+  end
+end
+
 class NSObject
   def to_weak
     WeakRef.new(self)
@@ -22,23 +110,23 @@ module Util
   module_function
 
   def run_task(path, *args)
-    NSLog "task: #{path}; args: #{args.inspect}"
+    Util.log.debug "task: #{path}; args: #{args.inspect}"
     task            = NSTask.alloc.init
     task.launchPath = path
     task.arguments  = args.map { |v| v.to_s }
     task.launch
-    NSLog 'task launched'
+    Util.log.debug 'task launched'
     task.waitUntilExit
-    NSLog 'task finished'
+    Util.log.debug 'task finished'
   end
 
   def run_task_no_wait(path, *args)
-    NSLog "task: #{path}; args: #{args.inspect}"
+    Util.log.debug "task: #{path}; args: #{args.inspect}"
     task            = NSTask.alloc.init
     task.launchPath = path
     task.arguments  = args
     task.launch
-    NSLog 'task launched'
+    Util.log.debug 'task launched'
   end
 
   def setup_paddle
@@ -64,13 +152,34 @@ module Util
     MainMenu.set_license_display
   end
 
+  def log
+    Motion::Log
+  end
+
+  attr_reader :file_logger
+
+  def setup_logging
+    @file_logger                                        = DDFileLogger.new
+    @file_logger.rollingFrequency                       = 60 * 60 * 24
+    @file_logger.logFileManager.maximumNumberOfLogFiles = 7
+    Util.log.addLogger @file_logger, withLogLevel: LoggerClassMethods::FLAGS[:verbose]
+
+    tty_logger = DDTTYLogger.sharedInstance
+    Util.log.addLogger tty_logger, withLogLevel: LoggerClassMethods::FLAGS[:verbose]
+
+    asl_logger = DDASLLogger.sharedInstance
+    Util.log.addLogger asl_logger, withLogLevel: LoggerClassMethods::FLAGS[:debug]
+
+    Util.log.level = :verbose
+  end
+
   def freeing_loop
     Thread.start {
       Info.last_free = NSDate.date - 30
       Info.last_trim = NSDate.date
       loop do
         if MemInfo.getMTMemory > (200 * (1024 ** 2)) && (NSDate.date - @start_time) > 300
-          NSLog "MemoryTamer is using #{format_bytes(MemInfo.getMTMemory, true)}; restarting"
+          Util.log.warn "MemoryTamer is using #{format_bytes(MemInfo.getMTMemory, true)}; restarting"
           NSApp.relaunchAfterDelay(1)
         end
         cfm = Info.get_free_mem
@@ -78,12 +187,12 @@ module Util
         diff   = (NSDate.date - Info.last_free)
         diff_t = (NSDate.date - Info.last_trim)
         if cfm <= Info.dfm && diff >= 60 && diff_t >= 30 && !Info.freeing?
-          NSLog "seconds since last full freeing: #{diff}"
-          NSLog "seconds since last trim: #{diff_t}"
+          Util.log.info "seconds since last full freeing: #{diff}"
+          Util.log.info "seconds since last trim: #{diff_t}"
           Util.free_mem_default
         elsif cfm <= Info.dtm && diff >= 30 && diff_t >= 30 && !Info.freeing?
-          NSLog "seconds since last full freeing: #{diff}"
-          NSLog "seconds since last trim: #{diff_t}"
+          Util.log.info "seconds since last full freeing: #{diff}"
+          Util.log.info "seconds since last trim: #{diff_t}"
           Util.trim_mem
         end
         sleep(Persist.store.refresh_rate)
@@ -103,12 +212,12 @@ module Util
 
   def notify(msg, nn)
     enabled = nn == :error || Persist.store["#{nn}?"]
-    NSLog "Notification (#{nn}=#{enabled.inspect}): #{msg}"
+    Util.log.info "Notification (#{nn}=#{enabled.inspect}): #{msg}"
     if enabled
       if Persist.store.notifications == 'Growl'
         if GrowlApplicationBridge.isGrowlRunning
           ep = NSBundle.mainBundle.pathForResource('growlnotify', ofType: '')
-          NSLog ep
+          Util.log.debug ep
           # system("'#{ep}' -n MemoryTamer -a MemoryTamer#{(Persist.store.growl_sticky? ? ' -s' : '')} -m '#{msg}' -t 'MemoryTamer'")
           args = []
           args << '-n'
@@ -122,12 +231,12 @@ module Util
         else
           GrowlApplicationBridge.notifyWithTitle(
               'MemoryTamer',
-              description:  msg.to_s,
+              description:      msg.to_s,
               notificationName: nn_str(nn),
-              iconData:     nil,
-              priority:     0,
-              isSticky:     Persist.store.growl_sticky?,
-              clickContext: nil)
+              iconData:         nil,
+              priority:         0,
+              isSticky:         Persist.store.growl_sticky?,
+              clickContext:     nil)
         end
       elsif Persist.store.notifications == 'Notification Center'
         notification                 = NSUserNotification.alloc.init
@@ -146,7 +255,7 @@ module Util
       notify 'Beginning memory freeing', :free_start
       free_mem(Persist.store.pressure)
       nfm = Info.get_free_mem
-      NSLog "Freed #{Info.format_bytes(nfm - cfm, true)}"
+      Util.log.info "Freed #{Info.format_bytes(nfm - cfm, true)}"
       notify "Finished freeing #{Info.format_bytes(nfm - cfm)}", :free_end
       Info.freeing   = false
       Info.last_free = NSDate.date
@@ -161,7 +270,7 @@ module Util
       free_mem_old(true)
       nfm = Info.get_free_mem
       notify "Finished trimming #{Info.format_bytes(nfm - cfm)}", :trim_end
-      NSLog "Freed #{Info.format_bytes(nfm - cfm, true)}"
+      Util.log.info "Freed #{Info.format_bytes(nfm - cfm, true)}"
       Info.freeing   = false
       Info.last_trim = NSDate.date
     }
@@ -177,15 +286,15 @@ module Util
       dmp = pressure == 'normal' ? 1 : (pressure == 'warn' ? 2 : 4)
       if cmp >= dmp && Persist.store.auto_escalate?
         np = cmp == 1 ? 'warn' : 'critical'
-        NSLog "escalating freeing pressure from #{pressure} to #{np}"
+        Util.log.warn "escalating freeing pressure from #{pressure} to #{np}"
         pressure = np
       end
       ep = Info.paddle? ? 'memory_pressure' : NSBundle.mainBundle.pathForResource('memory_pressure', ofType: '')
-      NSLog ep
+      Util.log.debug ep
       IO.popen("'#{ep}' -l #{pressure}") { |pipe|
         pipe.sync = true
         pipe.each { |l|
-          NSLog l
+          Util.log.verbose l
           if l.include?('Stabilizing at')
             Process.kill 'SIGINT', pipe.pid
             break
@@ -200,11 +309,8 @@ module Util
   def free_mem_old(trim = false)
     mtf = trim ? [Info.get_free_mem(1) * 0.75, Info.get_free_mem(0.5)].min : Info.get_free_mem(1)
     ep  = NSBundle.mainBundle.pathForResource('inactive', ofType: '')
-    NSLog "'#{ep}' '#{mtf.to_s}'"
+    Util.log.debug "'#{ep}' '#{mtf.to_s}'"
     run_task(ep, mtf.to_s)
-    # system("'#{ep}' '#{mtf.to_s}'")
-    # o = `'#{ep}' '#{mtf.to_s}'`
-    # NSLog o
   end
 
   def open_link(link)

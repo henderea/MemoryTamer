@@ -8,7 +8,6 @@ resources/*.storyboardc
 .DS_Store
 nbproject
 .redcar
-#*#
 *~
 *.sw[po]
 .eprj
@@ -17,3 +16,5 @@ nbproject
 .dat*.*
 ib.xcodeproj
 vendor/*/build-MacOSX
+vendor/Podfile.lock
+vendor/Pods

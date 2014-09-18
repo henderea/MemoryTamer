@@ -54,6 +54,7 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.0.6:** add option to control refresh rate
 * **v1.0.7:** hopefully fix crash on Mavericks by using the system copy of `memory_pressure`
 * **v1.0.8:** handle errors in launching preferences window better
+* **v1.0.9:** put log messages into a file and include them in the automatic crash reports
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.3.zip> (Mavericks-only)
@@ -94,3 +95,4 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.0.6:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.0.6.zip>
 * **v1.0.7:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.0.7.zip>
 * **v1.0.8:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.0.8.zip>
+* **v1.0.9:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.0.9.zip>
