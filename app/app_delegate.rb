@@ -16,6 +16,7 @@ class AppDelegate
     MainMenu[:statusbar].items[:status_version][:title] = "Current Version: #{Info.version}"
     NSUserNotificationCenter.defaultUserNotificationCenter.setDelegate(self) if Info.has_nc?
     GrowlApplicationBridge.setGrowlDelegate(self)
+    MainMenu.status_item.setImage(Persist.store.show_icon? ? NSImage.imageNamed('Status') : nil)
     Util.freeing_loop
   end
 
