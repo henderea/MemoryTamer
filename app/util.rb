@@ -156,7 +156,9 @@ module Util
     Motion::Log
   end
 
-  attr_reader :file_logger
+  def file_logger
+    @file_logger
+  end
 
   def setup_logging
     @file_logger                                        = DDFileLogger.new
@@ -307,7 +309,7 @@ module Util
   end
 
   def free_mem_old(trim = false)
-    mtf = trim ? [Info.get_free_mem(1) * 0.75, Info.get_free_mem(0.5)].min : Info.get_free_mem(1)
+    mtf = trim ? [Info.get_free_mem(1) * 0.75, Info.get_free_mem(0.5)].min : Info.get_free_mem(0.9)
     ep  = NSBundle.mainBundle.pathForResource('inactive', ofType: '')
     Util.log.debug "'#{ep}' '#{mtf.to_s}'"
     run_task(ep, mtf.to_s)

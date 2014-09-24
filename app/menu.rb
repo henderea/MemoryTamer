@@ -6,6 +6,7 @@ class MainMenu
     menuItem :status_trim, 'Trim memory now'
     menuItem :status_update, 'Check for Updates'
     menuItem :status_version, 'Current Version: 0.0'
+    menuItem :status_review, 'Write a review'
     menuItem :status_quit, 'Quit', preset: :quit
 
     menuItem :status_preferences, 'Preferences'
@@ -33,6 +34,8 @@ class MainMenu
       ___
       status_update
       status_version
+      ___
+      status_review
       ___
       status_quit
     }

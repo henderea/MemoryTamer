@@ -22,7 +22,7 @@ class AppDelegate
 
   def getLatestLogFileContent
     description = ''
-    sortedLogFileInfos = Util.file_logger.sortedLogFileInfos
+    sortedLogFileInfos = Util.file_logger.logFileManager.sortedLogFileInfos
     sortedLogFileInfos.reverse_each { |logFileInfo|
       logData = NSFileManager.defaultManager.contentsAtPath logFileInfo.filePath
       if logData.length > 0
