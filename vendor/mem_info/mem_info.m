@@ -72,12 +72,4 @@ read_sysctl_int(const char* name)
     int ret = sysctlbyname("kern.osrelease", str, &size, NULL, 0);
     return [NSString stringWithUTF8String: str];
 }
-
-//+ (long long) getFreeMemory:(float)inactiveMultiplier {
-//    long double page_size = (long double)[MemInfo getPageSize];
-//    long double pages_free = (long double)[MemInfo getPagesFree];
-//    long double pages_inactive = (long double)[MemInfo getPagesInactive];
-//
-//    return (long long)(page_size * pages_free + page_size * pages_inactive * (long double)inactiveMultiplier);
-//}
 @end

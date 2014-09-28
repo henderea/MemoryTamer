@@ -113,11 +113,10 @@ module Info
   end
 
   class Supports
-    attr_reader :nc, :mavericks, :paddle
+    attr_reader :nc, :mavericks
 
     def initialize
-      @nc     = (NSClassFromString('NSUserNotificationCenter')!=nil)
-      @paddle = (NSClassFromString('Paddle')!=nil)
+      @nc        = (NSClassFromString('NSUserNotificationCenter')!=nil)
       @mavericks = Info.os_version >= '13'
     end
   end
@@ -132,10 +131,6 @@ module Info
 
   def mavericks?
     supports.mavericks
-  end
-
-  def paddle?
-    supports.paddle
   end
 
 end

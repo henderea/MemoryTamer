@@ -13,5 +13,4 @@
 + (long long) getTotalMemory;
 + (long long) getMTMemory;
 + (NSString *) getOSVersion;
-//+ (long long) getFreeMemory:(float)inactiveMultiplier;
 @end

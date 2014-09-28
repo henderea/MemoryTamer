@@ -62,14 +62,10 @@ class MainMenu
 
     def set_license_display
       Thread.start {
-        if Info.paddle?
-          paddle                                             = Paddle.sharedInstance
-          MainMenu[:license].items[:license_display][:title] = paddle.productActivated ? paddle.activatedEmail : 'Not Registered'
-          MainMenu[:license].items[:license_change][:title]  = paddle.productActivated ? 'View Registration' : 'Buy / Register'
-        else
-          MainMenu[:license].items[:license_display][:title] = 'Bought in App Store'
-          MainMenu[:license].items[:license_change][:title]  = ''
-        end
+        paddle                                             = Paddle.sharedInstance
+        activated                                          = paddle.productActivated
+        MainMenu[:license].items[:license_display][:title] = activated ? paddle.activatedEmail : 'Not Registered'
+        MainMenu[:license].items[:license_change][:title]  = activated ? 'View Registration' : 'Buy / Register'
       }
     end
   end

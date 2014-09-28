@@ -8,7 +8,7 @@ class AppDelegate
     BITHockeyManager.sharedHockeyManager.crashManager.setAutoSubmitCrashReport(true)
     BITHockeyManager.sharedHockeyManager.startManager
     Util.setup_paddle
-    SUUpdater.sharedUpdater if Info.paddle?
+    SUUpdater.sharedUpdater
     Info.freeing = false
     Persist.store.load_prefs
     MainMenu.build!
@@ -21,7 +21,7 @@ class AppDelegate
   end
 
   def getLatestLogFileContent
-    description = ''
+    description        = ''
     sortedLogFileInfos = Util.file_logger.logFileManager.sortedLogFileInfos
     sortedLogFileInfos.reverse_each { |logFileInfo|
       logData = NSFileManager.defaultManager.contentsAtPath logFileInfo.filePath

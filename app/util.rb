@@ -130,21 +130,19 @@ module Util
   end
 
   def setup_paddle
-    if Info.paddle?
-      paddle = Paddle.sharedInstance
-      paddle.setProductId('993')
-      paddle.setVendorId('1657')
-      paddle.setApiKey('ff308e08f807298d8a76a7a3db1ee12b')
-      paddle.startLicensing({ KPADCurrentPrice  => '2.49',
-                              KPADDevName       => 'Eric Henderson',
-                              KPADCurrency      => 'USD',
-                              KPADImage         => 'https://raw.githubusercontent.com/henderea/MemoryTamer/master/resources/Icon.png',
-                              KPADProductName   => 'MemoryTamer',
-                              KPADTrialDuration => '7',
-                              KPADTrialText     => 'Thanks for downloading a trial of MemoryTamer! We hope you enjoy it.',
-                              KPADProductImage  => 'Icon.png' }, timeTrial: true, withWindow: nil)
-      NSNotificationCenter.defaultCenter.addObserver(self, selector: :set_license_display, name: KPADActivated, object: nil)
-    end
+    paddle = Paddle.sharedInstance
+    paddle.setProductId('993')
+    paddle.setVendorId('1657')
+    paddle.setApiKey('ff308e08f807298d8a76a7a3db1ee12b')
+    paddle.startLicensing({ KPADCurrentPrice  => '2.49',
+                            KPADDevName       => 'Eric Henderson',
+                            KPADCurrency      => 'USD',
+                            KPADImage         => 'https://raw.githubusercontent.com/henderea/MemoryTamer/master/resources/Icon.png',
+                            KPADProductName   => 'MemoryTamer',
+                            KPADTrialDuration => '7',
+                            KPADTrialText     => 'Thanks for downloading a trial of MemoryTamer! We hope you enjoy it.',
+                            KPADProductImage  => 'Icon.png' }, timeTrial: true, withWindow: nil)
+    NSNotificationCenter.defaultCenter.addObserver(self, selector: :set_license_display, name: KPADActivated, object: nil)
   end
 
   # noinspection RubyUnusedLocalVariable
@@ -220,7 +218,6 @@ module Util
         if GrowlApplicationBridge.isGrowlRunning
           ep = NSBundle.mainBundle.pathForResource('growlnotify', ofType: '')
           Util.log.debug ep
-          # system("'#{ep}' -n MemoryTamer -a MemoryTamer#{(Persist.store.growl_sticky? ? ' -s' : '')} -m '#{msg}' -t 'MemoryTamer'")
           args = []
           args << '-n'
           args << 'MemoryTamer'
@@ -244,7 +241,7 @@ module Util
         notification                 = NSUserNotification.alloc.init
         notification.title           = 'MemoryTamer'
         notification.informativeText = msg.to_s
-        notification.soundName       = nil #NSUserNotificationDefaultSoundName
+        notification.soundName       = nil
         NSUserNotificationCenter.defaultUserNotificationCenter.scheduleNotification(notification)
       end
     end
@@ -291,17 +288,18 @@ module Util
         Util.log.warn "escalating freeing pressure from #{pressure} to #{np}"
         pressure = np
       end
-      ep = Info.paddle? ? 'memory_pressure' : NSBundle.mainBundle.pathForResource('memory_pressure', ofType: '')
-      Util.log.debug ep
-      IO.popen("'#{ep}' -l #{pressure}") { |pipe|
+      IO.popen("'memory_pressure' -l #{pressure}") { |pipe|
         pipe.sync = true
         pipe.each { |l|
           Util.log.verbose l
           if l.include?('Stabilizing at')
-            Process.kill 'SIGINT', pipe.pid
+            Util.log.verbose 'Found stabilizing line; breaking'
             break
           end
         }
+        Util.log.verbose 'Preparing to kill memory_pressure process'
+        Process.kill 'SIGINT', pipe.pid
+        Util.log.debug 'memory_pressure process ended'
       }
     else
       free_mem_old
@@ -324,7 +322,6 @@ module Util
   end
 
   def constrain_value_list(list, old_value, new_value, default)
-    # puts "#{new_value};#{old_value}"
     (list.include?(new_value)) ? new_value : (list.include?(old_value) ? old_value : default)
   end
 
