@@ -22,7 +22,8 @@ module MenuActions
   end
 
   def setup_support
-    MainMenu[:support].subscribe(:support_ticket) { |_, _| Util.open_link('https://github.com/henderea/MemoryTamer/issues/new') }
+    # MainMenu[:support].subscribe(:support_ticket) { |_, _| Util.open_link('https://github.com/henderea/MemoryTamer/issues/new') }
+    MainMenu[:support].subscribe(:support_feedback) { |_, _| BITHockeyManager.sharedHockeyManager.feedbackManager.showFeedbackWindow }
     # MainMenu[:support].subscribe(:support_usage) { |_, _| Util.open_link('https://github.com/henderea/MemoryTamer/blob/master/USING.md') }
     MainMenu[:support].subscribe(:support_twitter) { |_, _| Util.open_link('https://twitter.com/MemoryTamer') }
   end

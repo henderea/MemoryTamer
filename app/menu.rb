@@ -16,7 +16,8 @@ class MainMenu
     menuItem :license_change, 'Buy / Register'
 
     menuItem :status_support, 'Support', submenu: :support
-    menuItem :support_ticket, 'Submit bug or feature request'
+    # menuItem :support_ticket, 'Submit bug or feature request'
+    menuItem :support_feedback, 'Provide Feedback'
     # menuItem :support_usage, 'Using MemoryTamer'
     menuItem :support_twitter, 'Twitter'
   end
@@ -46,7 +47,8 @@ class MainMenu
     }
 
     menu(:support, 'Support') {
-      support_ticket
+      # support_ticket
+      support_feedback
       # support_usage
       support_twitter
     }
