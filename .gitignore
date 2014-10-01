@@ -18,3 +18,11 @@ ib.xcodeproj
 vendor/*/build-MacOSX
 vendor/Podfile.lock
 vendor/Pods
+manual.synctex.gz
+manual.aux
+manual.fdb_latexmk
+manual.fls
+manual.log
+manual.out
+manual.toc
+manual/manual.pdf
