@@ -105,7 +105,7 @@ class Persist
   validate_map(:refresh_rate) { |_, _, nv| Util.constrain_value_range((1..5), nv, 2) }
   validate_map(:sticky) { |_, _, nv| Util.constrain_value_boolean(nv, false) }
   validate_map(:auto_escalate) { |_, _, nv| Util.constrain_value_boolean(nv, false) }
-  validate_map(:notifications) { |_, ov, nv| Util.constrain_value_list_enable_map({ 'Off' => true, 'Growl' => true, 'Notification Center' => Info.has_nc? }, ov, nv, Persist.store.growl ? 'Growl' : 'Notification Center', 'Growl') }
+  validate_map(:notifications) { |_, ov, nv| Util.constrain_value_list_enable_map({ 'None' => true, 'Growl' => true, 'Notification Center' => Info.has_nc? }, ov, nv, Persist.store.growl ? 'Growl' : 'Notification Center', 'Growl') }
   validate_map(:free_start) { |_, _, nv| Util.constrain_value_boolean(nv, true) }
   validate_map(:free_end) { |_, _, nv| Util.constrain_value_boolean(nv, true) }
   validate_map(:trim_start) { |_, _, nv| Util.constrain_value_boolean(nv, true) }
@@ -204,8 +204,7 @@ class Persist
                      :pressure, :method_pressure, :freeing_method, :auto_escalate,
                      :update_while, :display_what, :mem_places, :refresh_rate,
                      :growl, :sticky, :notifications,
-                     :free_start, :free_end, :trim_start, :trim_end,
-                     :last_version
+                     :free_start, :free_end, :trim_start, :trim_end
     }
   end
 

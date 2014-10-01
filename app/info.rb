@@ -101,11 +101,11 @@ module Info
   end
 
   def last_version
-    @last_version ||= Version.new(nil)
+    @last_version ||= Version.new(self.version.to_s)
   end
 
   def last_version=(last_version)
-    @last_version = Version.new(last_version)
+    @last_version = Version.new(last_version || self.version.to_s)
   end
 
   def os_version
