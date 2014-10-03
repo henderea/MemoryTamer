@@ -60,6 +60,7 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.0.12:** fix a bug that could cause a crash when freeing memory with memory pressure
 * **v1.1:** integrate a feedback form
 * **v1.1.1:** fix notification system "None" not working and fix "Update free memory display while freeing" not working on first launch
+* **v1.1.2:** display MemoryTamer memory usage in menu and add "relaunch" menu item
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.3.zip> (Mavericks-only)
@@ -106,3 +107,4 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.0.12:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.0.12.zip>
 * **v1.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.1.zip>
 * **v1.1.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.1.1.zip>
+* **v1.1.2:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.1.2.zip>

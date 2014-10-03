@@ -4,6 +4,8 @@ class MainMenu
   def self.def_items
     menuItem :status_free, 'Free memory now'
     menuItem :status_trim, 'Trim memory now'
+    menuItem :status_mt_mem, 'memory usage: 0B', image: NSImage.imageNamed('Status'), dynamic_title: -> { "memory usage: #{Info.format_bytes(MemInfo.getMTMemory)}" }
+    menuItem :status_relaunch, 'Relaunch MemoryTamer'
     menuItem :status_update, 'Check for Updates'
     menuItem :status_version, 'Current Version: 0.0'
     menuItem :status_review, 'Write a review'
@@ -26,6 +28,9 @@ class MainMenu
     statusbarMenu(:statusbar, '', status_item_icon: NSImage.imageNamed('Status'), status_item_length: NSVariableStatusItemLength) {
       status_free
       status_trim
+      ___
+      status_mt_mem
+      status_relaunch
       ___
       status_preferences
       ___

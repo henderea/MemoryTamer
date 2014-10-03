@@ -173,13 +173,22 @@ module Util
     Util.log.level = :verbose
   end
 
+  # def update_mt_mem(mtm)
+  #   NSApp.delegate.formatted_mt_mem = "memory usage: #{Info.format_bytes(mtm)}"
+  # end
+
   def freeing_loop
     Thread.start {
       Info.last_free = NSDate.date - 30
       Info.last_trim = NSDate.date
       loop do
-        if MemInfo.getMTMemory > (200 * (1024 ** 2)) && (NSDate.date - @start_time) > 300
-          Util.log.warn "MemoryTamer is using #{format_bytes(MemInfo.getMTMemory, true)}; restarting"
+        mtm = MemInfo.getMTMemory
+        # NSApp.delegate.formatted_mt_mem = "MemoryTamer memory usage: #{Info.format_bytes(mtm)}"
+        # Util.performSelectorOnMainThread('update_mt_mem:', withObject: mtm, waitUntilDone: false)
+        MainMenu[:statusbar].items[:status_mt_mem].updateDynamicTitle
+        # MainMenu[:statusbar].items[:status_mt_mem][:title] = "MemoryTamer memory usage: #{Info.format_bytes(mtm)}"
+        if mtm > (200 * (1024 ** 2)) && (NSDate.date - @start_time) > 300
+          Util.log.warn "MemoryTamer is using #{format_bytes(mtm, true)}; restarting"
           NSApp.relaunchAfterDelay(1)
         end
         cfm = Info.get_free_mem
