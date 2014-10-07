@@ -20,6 +20,7 @@ module MenuActions
   def setup_license
     MainMenu.set_license_display
     MainMenu[:license].subscribe(:license_change) { |_, _| Paddle.sharedInstance.showLicencing }
+    MainMenu[:license].subscribe(:license_deactivate) { |_, _| Paddle.sharedInstance.deactivateLicence }.canExecuteBlock { |_| Paddle.sharedInstance.productActivated }
   end
 
   def setup_support

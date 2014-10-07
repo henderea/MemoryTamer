@@ -142,7 +142,19 @@ module Util
                             KPADTrialDuration => '7',
                             KPADTrialText     => 'Thanks for downloading a trial of MemoryTamer! We hope you enjoy it.',
                             KPADProductImage  => 'Icon.png' }, timeTrial: true, withWindow: nil)
-    NSNotificationCenter.defaultCenter.addObserver(self, selector: :set_license_display, name: KPADActivated, object: nil)
+    NSNotificationCenter.defaultCenter.addObserver(self, selector: 'set_license_display:', name: KPADActivated, object: nil)
+  end
+
+  def log_license
+    paddle = Paddle.sharedInstance
+    activated = paddle.productActivated
+    if activated
+      Util.log.info "MemoryTamer licensed with license #{paddle.activatedLicenceCode}" if Info.license_log_status != :activated
+      Info.license_log_status = :activated
+    else
+      Util.log.info 'MemoryTamer not licensed' if Info.license_log_status != :unactivated
+      Info.license_log_status = :unactivated
+    end
   end
 
   # noinspection RubyUnusedLocalVariable
@@ -162,13 +174,13 @@ module Util
     @file_logger                                        = DDFileLogger.new
     @file_logger.rollingFrequency                       = 60 * 60 * 24
     @file_logger.logFileManager.maximumNumberOfLogFiles = 7
-    Util.log.addLogger @file_logger, withLogLevel: LoggerClassMethods::FLAGS[:verbose]
+    Util.log.addLogger @file_logger, withLogLevel: LoggerClassMethods::LEVELS[:verbose]
 
     tty_logger = DDTTYLogger.sharedInstance
-    Util.log.addLogger tty_logger, withLogLevel: LoggerClassMethods::FLAGS[:verbose]
+    Util.log.addLogger tty_logger, withLogLevel: LoggerClassMethods::LEVELS[:verbose]
 
     asl_logger = DDASLLogger.sharedInstance
-    Util.log.addLogger asl_logger, withLogLevel: LoggerClassMethods::FLAGS[:debug]
+    Util.log.addLogger asl_logger, withLogLevel: LoggerClassMethods::LEVELS[:debug]
 
     Util.log.level = :verbose
   end

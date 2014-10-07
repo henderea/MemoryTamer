@@ -16,6 +16,7 @@ class MainMenu
     menuItem :status_license, 'Registration', submenu: :license
     menuItem :license_display, 'Not Registered'
     menuItem :license_change, 'Buy / Register'
+    menuItem :license_deactivate, 'Deactivate License'
 
     menuItem :status_support, 'Support', submenu: :support
     # menuItem :support_ticket, 'Submit bug or feature request'
@@ -49,6 +50,7 @@ class MainMenu
     menu(:license, 'Registration') {
       license_display
       license_change
+      license_deactivate
     }
 
     menu(:support, 'Support') {
@@ -73,6 +75,7 @@ class MainMenu
         activated                                          = paddle.productActivated
         MainMenu[:license].items[:license_display][:title] = activated ? paddle.activatedEmail : 'Not Registered'
         MainMenu[:license].items[:license_change][:title]  = activated ? 'View Registration' : 'Buy / Register'
+        Util.log_license
       }
     end
   end

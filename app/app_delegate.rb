@@ -8,6 +8,7 @@ class AppDelegate
     BITHockeyManager.sharedHockeyManager.crashManager.setAutoSubmitCrashReport(true)
     BITHockeyManager.sharedHockeyManager.startManager
     Util.setup_paddle
+    Paddle.sharedInstance.setDelegate(self)
     SUUpdater.sharedUpdater
     Info.freeing = false
     Persist.store.load_prefs
@@ -20,6 +21,16 @@ class AppDelegate
     GrowlApplicationBridge.setGrowlDelegate(self)
     MainMenu.status_item.setImage(Persist.store.show_icon? ? NSImage.imageNamed('Status') : nil)
     Util.freeing_loop
+  end
+
+  def licenceDeactivated(deactivated, message: deactivateMessage)
+    if deactivated
+      Util.log.info 'deactivated license'
+      MainMenu.set_license_display
+      Paddle.sharedInstance.showLicencing
+    else
+      Util.log.info "failed to deactivate license: #{deactivateMessage}"
+    end
   end
 
   def getLatestLogFileContent
