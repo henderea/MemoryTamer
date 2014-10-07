@@ -195,6 +195,10 @@ module Util
     }
   end
 
+  def relaunch_app
+    NSApp.performSelectorOnMainThread('relaunchAfterDelay:', withObject: 1, waitUntilDone: true)
+  end
+
   def freeing_loop
     Thread.start {
       Info.start_time ||= NSDate.date
@@ -204,8 +208,8 @@ module Util
         mtm = MemInfo.getMTMemory
         MainMenu[:statusbar].items[:status_mt_mem].updateDynamicTitle
         if mtm > (200 * (1024 ** 2)) && (NSDate.date - Info.start_time) > 300
-          Util.log.warn "MemoryTamer is using #{format_bytes(mtm, true)}; restarting"
-          NSApp.relaunchAfterDelay(1)
+          Util.log.warn "MemoryTamer is using #{Info.format_bytes(mtm, true)}; restarting"
+          relaunch_app
         end
         cfm = Info.get_free_mem
         MainMenu.status_item.setTitle(Persist.store.show_mem? ? Info.format_bytes(cfm) : '') if Persist.store.update_while? || !Info.freeing?
