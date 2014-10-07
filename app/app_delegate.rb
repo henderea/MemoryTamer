@@ -15,11 +15,10 @@ class AppDelegate
     MainMenu.build!
     MenuActions.setup
     MainMenu[:statusbar].items[:status_version][:title] = "Current Version: #{Info.version}"
-    # MainMenu[:statusbar].items[:status_mt_mem][:title] = "memory usage: #{Info.format_bytes(MemInfo.getMTMemory)}"
-    # MainMenu[:statusbar].items[:status_mt_mem].item.bind('title', toObject: self, withKeyPath: 'formatted_mt_mem', options: { 'NSContinuouslyUpdatesValue' => true })
     NSUserNotificationCenter.defaultUserNotificationCenter.setDelegate(self) if Info.has_nc?
     GrowlApplicationBridge.setGrowlDelegate(self)
     MainMenu.status_item.setImage(Persist.store.show_icon? ? NSImage.imageNamed('Status') : nil)
+    Util.time_loop
     Util.freeing_loop
   end
 

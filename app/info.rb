@@ -17,6 +17,14 @@ module Info
     @last_trim = last_trim
   end
 
+  def start_time
+    @start_time
+  end
+
+  def start_time=(start_time)
+    @start_time = start_time
+  end
+
   def dfm
     Persist.store.mem * 1024**2
   end

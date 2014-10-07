@@ -38,12 +38,6 @@ class Prefs < NSWindowController
       slider: -> (f) { f.intValue }
   }
 
-  # PROPERTY_NAMES = {
-  #     list:   :selectedValue,
-  #     bool:   :state,
-  #     slider: :intValue
-  # }
-
   def self.create_instance(tried = false)
     begin
       instance = alloc.initWithWindowNibName 'Prefs'

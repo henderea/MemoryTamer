@@ -5,6 +5,10 @@ class MainMenu
     menuItem :status_free, 'Free memory now'
     menuItem :status_trim, 'Trim memory now'
     menuItem :status_mt_mem, 'memory usage: 0B', image: NSImage.imageNamed('Status'), dynamic_title: -> { "memory usage: #{Info.format_bytes(MemInfo.getMTMemory)}" }
+    menuItem :status_mt_time, 'running since: 0d 0h 0m 0s', image: NSImage.imageNamed('Status'), dynamic_title: -> {
+      diff = (NSDate.date - Info.start_time).to_f
+      "running since #{(diff / (86400.0)).floor}d #{((diff % (86400.0))/(3600.0)).floor}h #{((diff % (3600.0))/60.0).floor}m #{(diff % 60).floor}s"
+    }
     menuItem :status_relaunch, 'Relaunch MemoryTamer'
     menuItem :status_update, 'Check for Updates'
     menuItem :status_version, 'Current Version: 0.0'
@@ -19,9 +23,7 @@ class MainMenu
     menuItem :license_deactivate, 'Deactivate License'
 
     menuItem :status_support, 'Support', submenu: :support
-    # menuItem :support_ticket, 'Submit bug or feature request'
     menuItem :support_feedback, 'Provide Feedback'
-    # menuItem :support_usage, 'Using MemoryTamer'
     menuItem :support_twitter, 'Twitter'
   end
 
@@ -31,6 +33,7 @@ class MainMenu
       status_trim
       ___
       status_mt_mem
+      status_mt_time
       status_relaunch
       ___
       status_preferences
@@ -54,9 +57,7 @@ class MainMenu
     }
 
     menu(:support, 'Support') {
-      # support_ticket
       support_feedback
-      # support_usage
       support_twitter
     }
   end
