@@ -72,9 +72,9 @@ class MainMenu
 
     def set_license_display
       Thread.start {
-        paddle                                             = Paddle.sharedInstance
-        activated                                          = paddle.productActivated
-        MainMenu[:license].items[:license_display][:title] = activated ? paddle.activatedEmail : 'Not Registered'
+        # paddle                                             = Paddle.sharedInstance
+        activated                                          = MotionPaddle.activated?
+        MainMenu[:license].items[:license_display][:title] = activated ? MotionPaddle.activated_email : 'Not Registered'
         MainMenu[:license].items[:license_change][:title]  = activated ? 'View Registration' : 'Buy / Register'
         Util.log_license
       }
