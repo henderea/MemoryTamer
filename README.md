@@ -64,6 +64,7 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.1.3:** add a "Deactivate License" menu item and fix some logging issues
 * **v1.1.4:** display how long it's been since MemoryTamer last launched and fix the auto-relaunch feature
 * **v1.1.4.1:** fix the fix from 1.1.4
+* **v1.2:** Unfortunately, due to a change in the build system I use, MemoryTamer no longer supports OS X 10.7 Lion.  I can still issue bug fixes for Lion, but all new features will require OS X 10.8 Mountain Lion and up.
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.3.zip> (Mavericks-only)
@@ -114,3 +115,4 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.1.3:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.1.3.zip>
 * **v1.1.4:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.1.4.zip>
 * **v1.1.4.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.1.4.1.zip>
+* **v1.2:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.2.zip> (10.8 and up)
