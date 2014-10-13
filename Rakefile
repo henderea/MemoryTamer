@@ -27,16 +27,17 @@ module Motion::Project
 end
 
 Motion::Project::App.setup do |app|
-  app.icon                           = 'Icon.icns'
-  app.info_plist['CFBundleIconFile'] = 'Icon.icns'
-  app.name                           = 'MemoryTamer'
-  app.version                        = '1.1.4.1'
-  app.short_version                  = '1.1.4.1'
-  app.identifier                     = 'us.myepg.MemoryTamer'
-  app.info_plist['NSUIElement']      = 1
-  app.info_plist['SUFeedURL']        = 'https://rink.hockeyapp.net/api/2/apps/128ebd3240db358d4b1ea5f228269de6'
-  app.deployment_target              = '10.7'
-  app.codesign_certificate           = 'Developer ID Application: Eric Henderson (SKWXXEM822)'
+  app.icon                                  = 'Icon.icns'
+  app.info_plist['CFBundleIconFile']        = 'Icon.icns'
+  app.name                                  = 'MemoryTamer'
+  app.version                               = '1.1.5'
+  app.short_version                         = '1.1.5'
+  app.identifier                            = 'us.myepg.MemoryTamer'
+  app.info_plist['NSUIElement']             = 1
+  app.info_plist['SUFeedURL']               = 'https://rink.hockeyapp.net/api/2/apps/128ebd3240db358d4b1ea5f228269de6'
+  app.info_plist['SUEnableSystemProfiling'] = true
+  app.deployment_target                     = '10.7'
+  app.codesign_certificate                  = 'Developer ID Application: Eric Henderson (SKWXXEM822)'
   app.paddle {
     set :product_id, '993'
     set :vendor_id, '1657'
