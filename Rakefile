@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-$:.unshift('/Library/RubyMotion/lib')
+$:.unshift('/Library/RubyMotion2.35/lib')
 require 'motion/project/template/osx'
 
 begin
