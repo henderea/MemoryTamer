@@ -120,3 +120,6 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.2.1/v1.1.5:**
 	* **v1.2.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.2.1.zip> (10.8 and up)
 	* **v1.1.5:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.1.5.zip> (10.7 and up)
+* **v1.2.1.1/v1.1.5.1:**
+	* **v1.2.1.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.2.1.1.zip>
+	* **v1.1.5.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.1.5.1.zip>

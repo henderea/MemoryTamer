@@ -9,7 +9,7 @@ class AppDelegate
     BITHockeyManager.sharedHockeyManager.startManager
     Util.setup_paddle
     # Paddle.sharedInstance.setDelegate(self)
-    SUUpdater.sharedUpdater
+    SUUpdater.sharedUpdater.setDelegate(self)
     Info.freeing = false
     Persist.store.load_prefs
     MainMenu.build!
@@ -20,6 +20,10 @@ class AppDelegate
     MainMenu.status_item.setImage(Persist.store.show_icon? ? NSImage.imageNamed('Status') : nil)
     Util.time_loop
     Util.freeing_loop
+  end
+
+  def feedParametersForUpdater(updater, sendingSystemProfile: sendingProfile)
+    BITSystemProfile.sharedSystemProfile.systemUsageData
   end
 
   # def licenceDeactivated(deactivated, message: deactivateMessage)
