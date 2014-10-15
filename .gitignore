@@ -27,3 +27,4 @@ manual.out
 manual.toc
 manual/manual.pdf
 *.dmg
+*.dSYM
