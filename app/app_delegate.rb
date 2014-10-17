@@ -1,5 +1,5 @@
 class AppDelegate
-  attr_accessor :prefs, :formatted_mt_mem
+  attr_accessor :prefs
 
   # noinspection RubyUnusedLocalVariable
   def applicationDidFinishLaunching(notification)
@@ -8,7 +8,6 @@ class AppDelegate
     BITHockeyManager.sharedHockeyManager.crashManager.setAutoSubmitCrashReport(true)
     BITHockeyManager.sharedHockeyManager.startManager
     Util.setup_paddle
-    # Paddle.sharedInstance.setDelegate(self)
     SUUpdater.sharedUpdater.setDelegate(self)
     Info.freeing = false
     Persist.store.load_prefs
@@ -25,16 +24,6 @@ class AppDelegate
   def feedParametersForUpdater(updater, sendingSystemProfile: sendingProfile)
     BITSystemProfile.sharedSystemProfile.systemUsageData
   end
-
-  # def licenceDeactivated(deactivated, message: deactivateMessage)
-  #   if deactivated
-  #     Util.log.info 'deactivated license'
-  #     MainMenu.set_license_display
-  #     Paddle.sharedInstance.showLicencing
-  #   else
-  #     Util.log.info "failed to deactivate license: #{deactivateMessage}"
-  #   end
-  # end
 
   def getLatestLogFileContent
     description        = ''
