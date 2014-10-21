@@ -130,19 +130,6 @@ module Util
   end
 
   def setup_paddle
-    # paddle = Paddle.sharedInstance
-    # paddle.setProductId('993')
-    # paddle.setVendorId('1657')
-    # paddle.setApiKey('ff308e08f807298d8a76a7a3db1ee12b')
-    # paddle.startLicensing({ KPADCurrentPrice  => '2.49',
-    #                         KPADDevName       => 'Eric Henderson',
-    #                         KPADCurrency      => 'USD',
-    #                         KPADImage         => 'https://raw.githubusercontent.com/henderea/MemoryTamer/master/resources/Icon.png',
-    #                         KPADProductName   => 'MemoryTamer',
-    #                         KPADTrialDuration => '7',
-    #                         KPADTrialText     => 'Thanks for downloading a trial of MemoryTamer! We hope you enjoy it.',
-    #                         KPADProductImage  => 'Icon.png' }, timeTrial: true, withWindow: nil)
-    # NSNotificationCenter.defaultCenter.addObserver(self, selector: 'set_license_display:', name: KPADActivated, object: nil)
     MotionPaddle.setup { |_, _| MainMenu.set_license_display }
     MotionPaddle.listen(:deactivated) { |_, deactivated, deactivateMessage|
       if deactivated
@@ -156,7 +143,6 @@ module Util
   end
 
   def log_license
-    # paddle = Paddle.sharedInstance
     activated = MotionPaddle.activated?
     if activated
       Util.log.info "MemoryTamer licensed with license #{MotionPaddle.activated_license_code}" if Info.license_log_status != :activated
@@ -166,11 +152,6 @@ module Util
       Info.license_log_status = :unactivated
     end
   end
-
-  # noinspection RubyUnusedLocalVariable
-  # def set_license_display(note)
-  #   MainMenu.set_license_display
-  # end
 
   def log
     Motion::Log

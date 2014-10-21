@@ -58,7 +58,6 @@ read_sysctl_int(const char* name)
     mach_msg_type_number_t size = sizeof(info);
     kern_return_t kerr = task_info(mach_task_self(), TASK_BASIC_INFO, (task_info_t)&info, &size);
     if( kerr == KERN_SUCCESS ) {
-        //NSLog(@"rs: %lld ; vs: %lld", (long long)info.resident_size, (long long)info.virtual_size);
         return info.resident_size;
     } else {
         NSLog(@"Error with task_info()");
