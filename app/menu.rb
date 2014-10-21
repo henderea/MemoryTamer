@@ -13,6 +13,7 @@ class MainMenu
     menuItem :status_update, 'Check for Updates'
     menuItem :status_version, 'Current Version: 0.0'
     menuItem :status_review, 'Write a review'
+    menuItem :status_vote, 'Vote on next feature'
     menuItem :status_quit, 'Quit', preset: :quit
 
     menuItem :status_preferences, 'Preferences'
@@ -45,6 +46,7 @@ class MainMenu
       status_update
       status_version
       ___
+      status_vote
       status_review
       ___
       status_quit

@@ -26,3 +26,4 @@ manual.log
 manual.out
 manual.toc
 manual/manual.pdf
+*.dSYM.zip
