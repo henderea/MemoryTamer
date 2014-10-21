@@ -59,7 +59,7 @@ class Prefs < NSWindowController
     notifications_nc.enabled  = Info.has_nc?
     freeing_method_mp.enabled = Info.mavericks?
     link :list, :notifications
-    link :bool, :growl_sticky, :sticky
+    link :bool, :growl_sticky
     link :bool, :free_start
     link :bool, :free_end
     link :bool, :trim_start
@@ -68,7 +68,7 @@ class Prefs < NSWindowController
     link :slider, :trim_slider, :trim_mem, :trim_field
     link :list, :auto_level, :auto_threshold
     link :list, :freeing_method
-    link :list, :freeing_pressure, :pressure
+    link :list, :freeing_pressure
     link :bool, :auto_escalate
     link :list, :display_what
     link :bool, :update_while
@@ -83,6 +83,15 @@ class Prefs < NSWindowController
     self.mem_places_slider.maxValue   = 3
     self.refresh_rate_slider.minValue = 1
     self.refresh_rate_slider.maxValue = 5
+  end
+
+  def link_slider_and_text(slider_name, text_name)
+    slider = send(slider_name)
+    text   = send(text_name)
+    slider.bind('intValue', toObject: text, withKeyPath: 'intValue', options: { 'NSContinuouslyUpdatesValue' => true })
+    text.bind('intValue', toObject: slider, withKeyPath: 'intValue', options: { 'NSContinuouslyUpdatesValue' => true })
+    slider.target     = ActionTarget.new { |sender| text.intValue = sender.intValue }
+    slider.continuous = true
   end
 
   def link(setter_type, field_name, persist_name = field_name, field_name_2 = nil)
