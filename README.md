@@ -67,6 +67,7 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.2:** Unfortunately, due to a change in the build system I use, MemoryTamer no longer supports OS X 10.7 Lion.  I can still issue bug fixes for Lion, but all new features will require OS X 10.8 Mountain Lion and up.
 * **v1.2.1/v1.1.5:** add anonymous tracking of OS version to determine number of users on Lion
 * **v1.2.2:** add a link to vote on the next feature for MemoryTamer
+* **v1.2.3/v1.1.6:** enable cmd+w for closing feedback and preferences windows
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.3.zip> (Mavericks-only)
@@ -125,3 +126,6 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 	* **v1.2.1.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.2.1.1.zip>
 	* **v1.1.5.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.1.5.1.zip>
 * **v1.2.2:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.2.2.dmg>
+* **v1.2.3/v1.1.6:**
+	* **v1.2.3:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.2.3.dmg>
+	* **v1.1.6:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.1.6.dmg>
