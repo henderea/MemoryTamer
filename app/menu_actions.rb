@@ -14,6 +14,7 @@ module MenuActions
     MainMenu[:statusbar].subscribe(:status_preferences) { |_, _| Prefs.shared_instance.show_window }
     MainMenu[:statusbar].subscribe(:status_quit) { |_, _| NSApp.terminate }
     MainMenu[:statusbar].subscribe(:status_update) { |_, sender| SUUpdater.sharedUpdater.checkForUpdates(sender) }
+    MainMenu[:statusbar].subscribe(:status_support_dev) { |_, _| MotionPaddle.psk_show(%w(492767.1 492767.2 492767.3 492767.4 492767.5)) }
     MainMenu[:statusbar].subscribe(:status_vote) { |_, _| Util.open_link('http://tiny.cc/MTNextFeature') }
     MainMenu[:statusbar].subscribe(:status_review) { |_, _| Util.open_link('http://www.macupdate.com/app/mac/51681/memorytamer') }
   end
