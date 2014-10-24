@@ -140,14 +140,6 @@ module Util
         Util.log.info "failed to deactivate license: #{deactivateMessage}"
       end
     }
-    MotionPaddle.listen(:psk_purchase) { |_, receipt|
-      puts 'hi'
-      receipt.verify
-      Util.alert('Thanks for the donation!  You should receive a personal thank you e-mail with coupon code from me as soon as I get a chance.')
-    }
-    MotionPaddle.listen(:psk_error) { |_, error|
-      Util.log.error "Error in PSK: #{error.domain} -> #{error.code}"
-    }
   end
 
   def log_license
@@ -273,11 +265,6 @@ module Util
         NSUserNotificationCenter.defaultUserNotificationCenter.scheduleNotification(notification)
       end
     end
-  end
-
-  def alert(message)
-    alert = NSAlert.alertWithMessageText(message, defaultButton: 'OK', alternateButton: nil, otherButton: nil, informativeTextWithFormat: '')
-    alert.runModal
   end
 
   def free_mem_default

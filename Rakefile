@@ -30,8 +30,8 @@ Motion::Project::App.setup do |app|
   app.icon                                  = 'Icon.icns'
   app.info_plist['CFBundleIconFile']        = 'Icon.icns'
   app.name                                  = 'MemoryTamer'
-  app.version                               = '1.2.4'
-  app.short_version                         = '1.2.4'
+  app.version                               = '1.2.3'
+  app.short_version                         = '1.2.3'
   app.identifier                            = 'us.myepg.MemoryTamer'
   app.info_plist['NSUIElement']             = 1
   app.info_plist['SUFeedURL']               = 'https://rink.hockeyapp.net/api/2/apps/128ebd3240db358d4b1ea5f228269de6'
