@@ -68,6 +68,7 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.2.1/v1.1.5:** add anonymous tracking of OS version to determine number of users on Lion
 * **v1.2.2:** add a link to vote on the next feature for MemoryTamer
 * **v1.2.3/v1.1.6:** enable cmd+w for closing feedback and preferences windows
+* **v1.2.4:** add a menu item for launching on login
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.3.zip> (Mavericks-only)
@@ -129,3 +130,4 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.2.3/v1.1.6:**
 	* **v1.2.3:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.2.3.dmg>
 	* **v1.1.6:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.1.6.dmg>
+* **v1.2.4:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.2.4.dmg>

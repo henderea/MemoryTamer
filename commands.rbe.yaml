@@ -26,3 +26,12 @@ mtbr_sl:
   :sudo: 
   :args: 
   :vars: 
+cdabdlh:
+  :command: cd
+  :sudo: 
+  :args:
+  - MTLaunchHelper/
+  - "&&"
+  - rake
+  - build:development
+  :vars: 

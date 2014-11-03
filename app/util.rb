@@ -129,6 +129,27 @@ module Util
     Util.log.debug 'task launched'
   end
 
+  def login_item_enabled?
+    !SMJobCopyDictionary(KSMDomainUserLaunchd, 'us.myepg.MemoryTamer.MTLaunchHelper').nil?
+  end
+
+  def login_item_set_enabled(enabled)
+    url = NSBundle.mainBundle.bundleURL.URLByAppendingPathComponent('Contents/Library/LoginItems/MTLaunchHelper.app', isDirectory: true)
+
+    status = LSRegisterURL(url, true)
+    unless status
+      Util.log.error NSString.stringWithFormat("Failed to LSRegisterURL '%@': %jd", url, status)
+      return false
+    end
+
+    success = SMLoginItemSetEnabled('us.myepg.MemoryTamer.MTLaunchHelper', enabled)
+    unless success
+      Util.log.error 'Failed to start MemoryTamer launch helper.'
+      return false
+    end
+    true
+  end
+
   def setup_paddle
     MotionPaddle.setup { |_, _| MainMenu.set_license_display }
     MotionPaddle.listen(:deactivated) { |_, deactivated, deactivateMessage|

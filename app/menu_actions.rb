@@ -11,6 +11,10 @@ module MenuActions
     MainMenu[:statusbar].subscribe(:status_free) { |_, _| Util.free_mem_default }.canExecuteBlock { |_| !Info.freeing? }
     MainMenu[:statusbar].subscribe(:status_trim) { |_, _| Util.trim_mem }.canExecuteBlock { |_| !Info.freeing? }
     MainMenu[:statusbar].subscribe(:status_relaunch) { |_, _| Util.relaunch_app }
+    MainMenu[:statusbar].subscribe(:status_login) { |_, _|
+      Util.login_item_set_enabled(MainMenu[:statusbar].items[:status_login][:state] == NSOffState)
+      MainMenu[:statusbar].items[:status_login][:state] = Util.login_item_enabled? ? NSOnState : NSOffState
+    }
     MainMenu[:statusbar].subscribe(:status_preferences) { |_, _| Prefs.shared_instance.show_window }
     MainMenu[:statusbar].subscribe(:status_quit) { |_, _| NSApp.terminate }
     MainMenu[:statusbar].subscribe(:status_update) { |_, sender| SUUpdater.sharedUpdater.checkForUpdates(sender) }
