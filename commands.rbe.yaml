@@ -13,6 +13,8 @@ mtbr_sl:
   - xc{{#xcv}}_nsl
   - bi_nsl
   - dt_sl
+  - cdabdlh_nsl
+  - dt_sl
   - cdablh_nsl
   - dt_sl
   - rpu_nsl
@@ -34,4 +36,13 @@ cdabdlh:
   - "&&"
   - rake
   - build:development
+  :vars: 
+rcalh:
+  :command: cd
+  :sudo: 
+  :args:
+  - MTLaunchHelper/
+  - "&&"
+  - rake
+  - clean:all
   :vars: 
