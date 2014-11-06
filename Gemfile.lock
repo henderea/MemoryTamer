@@ -27,8 +27,7 @@ GEM
     cocoapods-downloader (0.7.2)
     cocoapods-plugins (0.3.2)
       nap
-    cocoapods-trunk (0.3.1)
-      json_pure (~> 1.8)
+    cocoapods-trunk (0.3.2)
       nap (>= 0.8)
       netrc (= 0.7.8)
     cocoapods-try (0.4.2)
