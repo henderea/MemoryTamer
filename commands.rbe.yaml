@@ -23,7 +23,6 @@ mtbr_sl:
   - dt_sl
   - rbr_nsl
   - dt_sl
-  - dmgcreate_nsl
   - cpds_nsl
   :sudo: 
   :args: 
