@@ -18,18 +18,11 @@ class MainMenu
     }
     menuItem :status_relaunch, 'Relaunch MemoryTamer'
     menuItem :status_login, 'Launch on login', state: NSOffState
-    menuItem :status_update, 'Check for Updates'
-    menuItem :status_version, 'Current Version: 0.0'
-    menuItem :status_review, 'Write a review'
+    menuItem :status_version, 'Current Version: 0.0 (Mac App Store)'
     menuItem :status_vote, 'Vote on next feature'
     menuItem :status_quit, 'Quit', preset: :quit
 
     menuItem :status_preferences, 'Preferences'
-
-    menuItem :status_license, 'Registration', submenu: :license
-    menuItem :license_display, 'Not Registered'
-    menuItem :license_change, 'Buy / Register'
-    menuItem :license_deactivate, 'Deactivate License'
 
     menuItem :status_support, 'Support', submenu: :support
     menuItem :support_feedback, 'Provide Feedback'
@@ -59,23 +52,13 @@ class MainMenu
       status_preferences
       status_login
       ___
-      status_license
-      ___
       status_support
       ___
-      status_update
       status_version
       ___
       status_vote
-      status_review
       ___
       status_quit
-    }
-
-    menu(:license, 'Registration') {
-      license_display
-      license_change
-      license_deactivate
     }
 
     menu(:support, 'Support') {
@@ -90,15 +73,6 @@ class MainMenu
   class << self
     def status_item
       MainMenu[:statusbar].statusItem
-    end
-
-    def set_license_display
-      Thread.start {
-        activated                                          = MotionPaddle.activated?
-        MainMenu[:license].items[:license_display][:title] = activated ? MotionPaddle.activated_email : 'Not Registered'
-        MainMenu[:license].items[:license_change][:title]  = activated ? 'View Registration' : 'Buy / Register'
-        Util.log_license
-      }
     end
   end
 end

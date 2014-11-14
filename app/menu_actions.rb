@@ -3,7 +3,6 @@ module MenuActions
 
   def setup
     setup_statusbar
-    setup_license
     setup_support
   end
 
@@ -17,15 +16,7 @@ module MenuActions
     }
     MainMenu[:statusbar].subscribe(:status_preferences) { |_, _| Prefs.shared_instance.show_window }
     MainMenu[:statusbar].subscribe(:status_quit) { |_, _| NSApp.terminate }
-    MainMenu[:statusbar].subscribe(:status_update) { |_, sender| SUUpdater.sharedUpdater.checkForUpdates(sender) }
     MainMenu[:statusbar].subscribe(:status_vote) { |_, _| Util.open_link('http://tiny.cc/MTNextFeature') }
-    MainMenu[:statusbar].subscribe(:status_review) { |_, _| Util.open_link('http://www.macupdate.com/app/mac/51681/memorytamer') }
-  end
-
-  def setup_license
-    MainMenu.set_license_display
-    MainMenu[:license].subscribe(:license_change) { |_, _| MotionPaddle.show_licensing }
-    MainMenu[:license].subscribe(:license_deactivate) { |_, _| MotionPaddle.deactivate_license }.canExecuteBlock { |_| MotionPaddle.activated? }
   end
 
   def setup_support

@@ -130,7 +130,7 @@ module Util
   end
 
   def login_item_enabled?
-    !SMJobCopyDictionary(KSMDomainUserLaunchd, 'us.myepg.MemoryTamer.MTLaunchHelper').nil?
+    !SMJobCopyDictionary(KSMDomainUserLaunchd, 'us.myepg.MemoryTamer.MTLaunchHelperMAS').nil?
   end
 
   def login_item_set_enabled(enabled)
@@ -142,36 +142,12 @@ module Util
       return false
     end
 
-    success = SMLoginItemSetEnabled('us.myepg.MemoryTamer.MTLaunchHelper', enabled)
+    success = SMLoginItemSetEnabled('us.myepg.MemoryTamer.MTLaunchHelperMAS', enabled)
     unless success
       Util.log.error 'Failed to start MemoryTamer launch helper.'
       return false
     end
     true
-  end
-
-  def setup_paddle
-    MotionPaddle.setup { |_, _| MainMenu.set_license_display }
-    MotionPaddle.listen(:deactivated) { |_, deactivated, deactivateMessage|
-      if deactivated
-        Util.log.info 'deactivated license'
-        MainMenu.set_license_display
-        MotionPaddle.show_licensing
-      else
-        Util.log.info "failed to deactivate license: #{deactivateMessage}"
-      end
-    }
-  end
-
-  def log_license
-    activated = MotionPaddle.activated?
-    if activated
-      Util.log.info "MemoryTamer licensed with license #{MotionPaddle.activated_license_code}" if Info.license_log_status != :activated
-      Info.license_log_status = :activated
-    else
-      Util.log.info 'MemoryTamer not licensed' if Info.license_log_status != :unactivated
-      Info.license_log_status = :unactivated
-    end
   end
 
   def log

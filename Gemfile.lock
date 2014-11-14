@@ -44,7 +44,6 @@ GEM
     libxml-ruby (2.7.0)
     motion-cocoapods (1.7.0)
       cocoapods (>= 0.34)
-    motion-paddle (1.1.1)
     multi_json (1.10.1)
     nap (0.8.0)
     netrc (0.7.8)
@@ -64,5 +63,4 @@ DEPENDENCIES
   ib (~> 0.6)
   libxml-ruby (~> 2.7)
   motion-cocoapods (~> 1.7)
-  motion-paddle (~> 1.1, >= 1.1.1)
   rake

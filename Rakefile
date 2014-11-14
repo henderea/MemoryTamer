@@ -27,39 +27,27 @@ module Motion::Project
 end
 
 Motion::Project::App.setup do |app|
-  app.icon                                  = 'Icon.icns'
-  app.name                                  = 'MemoryTamer'
-  app.version                               = '1.2.4'
-  app.short_version                         = '1.2.4'
-  app.identifier                            = 'us.myepg.MemoryTamer'
-  app.info_plist['NSUIElement']             = 1
-  app.info_plist['SUFeedURL']               = 'https://rink.hockeyapp.net/api/2/apps/128ebd3240db358d4b1ea5f228269de6'
-  app.info_plist['SUEnableSystemProfiling'] = true
-  app.deployment_target                     = '10.8'
-  app.codesign_certificate                  = 'Developer ID Application: Eric Henderson (SKWXXEM822)'
-  app.paddle {
-    set :product_id, '993'
-    set :vendor_id, '1657'
-    set :api_key, 'ff308e08f807298d8a76a7a3db1ee12b'
-    set :current_price, '2.49'
-    set :dev_name, 'Eric Henderson'
-    set :currency, 'USD'
-    set :image, 'https://raw.githubusercontent.com/henderea/MemoryTamer/master/resources/Icon.png'
-    set :product_name, 'MemoryTamer'
-    set :trial_duration, '7'
-    set :trial_text, 'Thanks for downloading a trial of MemoryTamer! I hope you enjoy it.'
-    set :product_image, 'Icon.png'
-    set :time_trial, true
-  }
+  app.icon                      = 'Icon.icns'
+  app.name                      = 'MemoryTamer'
+  app.version                   = '1.2.4'
+  app.short_version             = '1.2.4'
+  app.identifier                = 'us.myepg.MemoryTamerMAS'
+  app.info_plist['NSUIElement'] = 1
+  app.deployment_target         = '10.8'
+  app.codesign_certificate      = 'Developer ID Application: Eric Henderson (SKWXXEM822)'
   app.embedded_frameworks << 'vendor/Growl.framework'
-  app.embedded_frameworks << 'vendor/Paddle.framework'
   app.vendor_project('vendor/mem_info', :static)
   app.frameworks << 'ServiceManagement'
+
+  app.entitlements['com.apple.security.app-sandbox']    = true
+  app.entitlements['com.apple.security.network.client'] = true
+  app.release do
+    app.info_plist['AppStoreRelease'] = true
+  end
 
   app.pods do
     pod 'CocoaLumberjack'
     pod 'HockeySDK-Mac', '~> 2.1'
-    pod 'Sparkle'
   end
 end
 
@@ -86,6 +74,8 @@ class Motion::Project::App
       helper_path = File.join("./#{helper_name}", config.versionized_build_dir(platform)[1..-1], "#{helper_name}.app")
       info 'Copy', helper_path
       FileUtils.cp_r helper_path, destination
+
+      system("ruby ./xpc-rename-move.rb 'files/' '#{config.app_bundle(platform)}', '#{config.codesign_certificate}'")
     end
   end
 end

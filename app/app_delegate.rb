@@ -7,23 +7,17 @@ class AppDelegate
     BITHockeyManager.sharedHockeyManager.configureWithIdentifier('128ebd3240db358d4b1ea5f228269de6', delegate: self)
     BITHockeyManager.sharedHockeyManager.crashManager.setAutoSubmitCrashReport(true)
     BITHockeyManager.sharedHockeyManager.startManager
-    Util.setup_paddle
-    SUUpdater.sharedUpdater.setDelegate(self)
     Info.freeing = false
     Persist.store.load_prefs
     MainMenu.build!
     MenuActions.setup
-    MainMenu[:statusbar].items[:status_version][:title] = "Current Version: #{Info.version}"
+    MainMenu[:statusbar].items[:status_version][:title] = "Current Version: #{Info.version} (Mac App Store)"
     MainMenu[:statusbar].items[:status_login][:state] = Util.login_item_enabled? ? NSOnState : NSOffState
     NSUserNotificationCenter.defaultUserNotificationCenter.setDelegate(self) if Info.has_nc?
     GrowlApplicationBridge.setGrowlDelegate(self)
     MainMenu.status_item.setImage(Persist.store.show_icon? ? NSImage.imageNamed('Status') : nil)
     Util.time_loop
     Util.freeing_loop
-  end
-
-  def feedParametersForUpdater(updater, sendingSystemProfile: sendingProfile)
-    BITSystemProfile.sharedSystemProfile.systemUsageData
   end
 
   def getLatestLogFileContent
