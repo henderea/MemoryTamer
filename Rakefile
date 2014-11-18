@@ -73,7 +73,7 @@ class Motion::Project::App
       info 'Copy', helper_path
       FileUtils.cp_r helper_path, destination
 
-      system("ruby ./xpc-rename-move.rb 'files/' '#{config.app_bundle(platform)}', '#{config.codesign_certificate}'")
+      system("ruby ./xpc-rename-move.rb './files/' '#{config.app_bundle(platform)}' '#{config.codesign_certificate}'")
     end
   end
 end
