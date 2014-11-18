@@ -10,8 +10,6 @@ rescue
   exit 1
 end
 
-SKIP_CODESIGN_TIMESTAMP = true
-
 module Motion::Project
   class Builder
     def codesign(config, platform)
@@ -20,7 +18,7 @@ module Motion::Project
       if File.mtime(config.project_file) > File.mtime(app_bundle) or !system("/usr/bin/codesign --verify \"#{app_bundle}\" >& /dev/null")
         App.info 'Codesign', app_bundle
         File.open(entitlements, 'w') { |io| io.write(config.entitlements_data) }
-        sh "/usr/bin/codesign --deep --force --sign \"#{config.codesign_certificate}\"#{SKIP_CODESIGN_TIMESTAMP ? ' --timestamp=none' : ''} --entitlements \"#{entitlements}\" \"#{app_bundle}\""
+        sh "/usr/bin/codesign --deep --force --sign \"#{config.codesign_certificate}\" --entitlements \"#{entitlements}\" \"#{app_bundle}\""
       end
     end
   end
