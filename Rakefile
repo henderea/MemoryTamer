@@ -39,6 +39,7 @@ Motion::Project::App.setup do |app|
 
   app.entitlements['com.apple.security.app-sandbox']    = true
   app.entitlements['com.apple.security.network.client'] = true
+  app.category = 'utility'
   app.release do
     app.info_plist['AppStoreRelease'] = true
   end

@@ -32,6 +32,6 @@ Motion::Project::App.setup do |app|
   app.info_plist['NSUIElement'] = 1
   app.deployment_target    = '10.8'
   app.archs['MacOSX']      = ['x86_64']
-  app.codesign_certificate = 'Developer ID Application: Eric Henderson (SKWXXEM822)'
+  app.codesign_certificate = '3rd Party Mac Developer Application: Eric Henderson (SKWXXEM822)'
   app.entitlements['com.apple.security.app-sandbox'] = true
 end
