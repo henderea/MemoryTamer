@@ -32,7 +32,7 @@ Motion::Project::App.setup do |app|
   app.identifier                = 'us.myepg.MemoryTamerMAS'
   app.info_plist['NSUIElement'] = 1
   app.deployment_target         = '10.8'
-  app.codesign_certificate      = 'Developer ID Application: Eric Henderson (SKWXXEM822)'
+  app.codesign_certificate      = '3rd Party Mac Developer Application: Eric Henderson (SKWXXEM822)'
   app.embedded_frameworks << 'vendor/Growl.framework'
   app.vendor_project('vendor/mem_info', :static)
   app.frameworks << 'ServiceManagement'
