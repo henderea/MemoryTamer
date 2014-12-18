@@ -58,7 +58,7 @@ Motion::Project::App.setup do |app|
 
   app.pods do
     pod 'CocoaLumberjack'
-    pod 'HockeySDK-Mac', '~> 2.1'
+    pod 'HockeySDK-Mac', git: 'https://github.com/bitstadium/HockeySDK-Mac.git'
     pod 'Sparkle'
   end
 end
