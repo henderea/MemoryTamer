@@ -1,7 +1,7 @@
 GEM
   remote: http://rubygems.org/
   specs:
-    rake (10.3.2)
+    rake (10.4.2)
 
 PLATFORMS
   ruby
