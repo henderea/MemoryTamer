@@ -36,6 +36,7 @@ static void __XPC_Peer_Event_Handler(xpc_connection_t connection, xpc_object_t e
         if(strcmp(operation, "purge") == 0) {
             NSTask *purgeTask = [NSTask launchedTaskWithLaunchPath:@"/usr/sbin/purge" arguments:nil];
             [purgeTask waitUntilExit];
+            [purgeTask release];
             responseMessage = "purge complete";
         } else {
             responseMessage = "unknown operation";

@@ -8,7 +8,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B3FBF738E4D81B6EA78FDB0F"
-               BuildableName = "MTPrivilegedHelper"
+               BuildableName = "us.myepg.MemoryTamer.MTPrivilegedHelper"
                BlueprintName = "MTPrivilegedHelper"
                ReferencedContainer = "container:MTPrivilegedHelper.xcodeproj">
             </BuildableReference>
@@ -17,12 +17,12 @@
    </BuildAction>
    <LaunchAction
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Debug">
+      buildConfiguration = "Release">
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B3FBF738E4D81B6EA78FDB0F"
-            BuildableName = "MTPrivilegedHelper"
+            BuildableName = "us.myepg.MemoryTamer.MTPrivilegedHelper"
             BlueprintName = "MTPrivilegedHelper"
             ReferencedContainer = "container:MTPrivilegedHelper.xcodeproj">
          </BuildableReference>

@@ -74,6 +74,7 @@ class Motion::Project::App
     def build(platform, options = {})
 
       helper_name = 'MTLaunchHelper'
+      helper_name2 = 'us.myepg.MemoryTamer.MTPrivilegedHelper'
 
       # First let the normal `build' method perform its work.
       build_before_copy_helper(platform, options)
@@ -86,6 +87,14 @@ class Motion::Project::App
       helper_path = File.join("./#{helper_name}", config.versionized_build_dir(platform)[1..-1], "#{helper_name}.app")
       info 'Copy', helper_path
       FileUtils.cp_r helper_path, destination
+
+      destination2 = File.join(config.app_bundle(platform), 'Library/LaunchServices')
+      info 'Create', destination2
+      FileUtils.mkdir_p destination2
+
+      helper_path2 = "./files/#{helper_name2}"
+      info 'Copy', helper_path2
+      FileUtils.cp_r helper_path2, destination2
     end
   end
 end

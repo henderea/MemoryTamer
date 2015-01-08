@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+ruby '2.1.5'
 
 gem 'rake'
 # Add your dependencies here:
@@ -7,4 +8,4 @@ gem 'ib', '~> 0.6'
 gem 'libxml-ruby', '~> 2.7'
 # gem 'cocoapods', '~> 0.33', '= 0.33.1'
 gem 'motion-cocoapods', '~> 1.7'
-gem 'motion-paddle', '~> 1.1', '>= 1.1.1'
+gem 'motion-paddle', '~> 1.1', '>= 1.1.2'

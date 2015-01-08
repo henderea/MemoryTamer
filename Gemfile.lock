@@ -70,5 +70,5 @@ DEPENDENCIES
   ib (~> 0.6)
   libxml-ruby (~> 2.7)
   motion-cocoapods (~> 1.7)
-  motion-paddle (~> 1.1, >= 1.1.1)
+  motion-paddle (~> 1.1, >= 1.1.2)
   rake
