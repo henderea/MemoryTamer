@@ -198,7 +198,7 @@ module Util
   end
 
   def time_loop
-    Thread.start {
+    Dispatch::Queue.new('us.myepg.MemoryTamer.time_loop').async {
       Info.start_time ||= NSDate.date
       loop do
         MainMenu[:statusbar].items[:status_mt_time].updateDynamicTitle
@@ -212,7 +212,7 @@ module Util
   end
 
   def freeing_loop
-    Thread.start {
+    Dispatch::Queue.new('us.myepg.MemoryTamer.freeing_loop').async {
       Info.start_time ||= NSDate.date
       Info.last_free = NSDate.date - 30
       Info.last_trim = NSDate.date
@@ -289,7 +289,7 @@ module Util
   end
 
   def free_mem_default
-    Thread.start {
+    Dispatch::Queue.new('us.myepg.MemoryTamer.free_mem_default').async {
       cfm          = Info.get_free_mem
       Info.freeing = true
       notify 'Beginning memory freeing', :free_start
@@ -303,7 +303,7 @@ module Util
   end
 
   def trim_mem
-    Thread.start {
+    Dispatch::Queue.new('us.myepg.MemoryTamer.trim_mem').async {
       cfm          = Info.get_free_mem
       Info.freeing = true
       notify 'Beginning memory trimming', :trim_start

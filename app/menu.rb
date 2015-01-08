@@ -93,10 +93,12 @@ class MainMenu
     end
 
     def set_license_display
-      Thread.start {
+      Dispatch::Queue.new('us.myepg.MemoryTamer.set_license_display').async {
         activated                                          = MotionPaddle.activated?
-        MainMenu[:license].items[:license_display][:title] = activated ? MotionPaddle.activated_email : 'Not Registered'
-        MainMenu[:license].items[:license_change][:title]  = activated ? 'View Registration' : 'Buy / Register'
+        Dispatch::Queue.main.sync {
+          MainMenu[:license].items[:license_display][:title] = activated ? MotionPaddle.activated_email : 'Not Registered'
+          MainMenu[:license].items[:license_change][:title]  = activated ? 'View Registration' : 'Buy / Register'
+        }
         Util.log_license
       }
     end
