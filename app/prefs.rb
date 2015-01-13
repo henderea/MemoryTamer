@@ -144,7 +144,7 @@ class Prefs < NSWindowController
   outlet :auto_escalate, NSButton
 
   def suggest_threshold(sender)
-    Dispatch::Queue.new('us.myepg.MemoryTamer.suggest_threshold').async {
+    Threads.run_async('us.myepg.MemoryTamer.suggest_threshold') {
       Info.freeing                          = true
       self.suggest_threshold_button.enabled = false
       Util.free_mem(Persist.store.pressure)

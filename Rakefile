@@ -54,7 +54,9 @@ Motion::Project::App.setup do |app|
   app.embedded_frameworks << 'vendor/Growl.framework'
   app.embedded_frameworks << 'vendor/Paddle.framework'
   app.vendor_project('vendor/mem_info', :static)
+  app.vendor_project('vendor/privileged_helper', :static)
   app.frameworks << 'ServiceManagement'
+  app.frameworks << 'Security'
 
   app.pods do
     pod 'CocoaLumberjack'
