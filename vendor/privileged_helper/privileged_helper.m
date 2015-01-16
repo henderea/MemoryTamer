@@ -42,7 +42,7 @@
     PrivilegedHelper *ph = [[PrivilegedHelper alloc] init];
     [ph setUtilCallback: utilCallback];
 
-    xpc_connection_t connection = xpc_connection_create_mach_service("com.apple.bsd.SMJobBlessHelper", NULL, XPC_CONNECTION_MACH_SERVICE_PRIVILEGED);
+    xpc_connection_t connection = xpc_connection_create_mach_service("us.myepg.MemoryTamer.MTPrivilegedHelper", NULL, XPC_CONNECTION_MACH_SERVICE_PRIVILEGED);
 
     if (!connection) {
         [ph logError:@"Failed to create XPC connection."];

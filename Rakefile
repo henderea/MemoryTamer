@@ -57,7 +57,7 @@ Motion::Project::App.setup do |app|
   app.vendor_project('vendor/privileged_helper', :static)
   app.frameworks << 'ServiceManagement'
   app.frameworks << 'Security'
-  app.info_plist['SMPrivilegedExecutables'] = { 'us.myepg.MemoryTamer.MTPrivilegedHelper' => 'identifier us.myepg.MemoryTamer and certificate leaf[subject.CN] = &quot;Developer ID Application: Eric Henderson (SKWXXEM822)&quot;' }
+  app.info_plist['SMPrivilegedExecutables'] = { 'us.myepg.MemoryTamer.MTPrivilegedHelper' => 'identifier us.myepg.MemoryTamer.MTPrivilegedHelper and certificate leaf[subject.CN] = "Developer ID Application: Eric Henderson (SKWXXEM822)"' }
 
   app.pods do
     pod 'CocoaLumberjack'
