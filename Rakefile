@@ -57,10 +57,11 @@ Motion::Project::App.setup do |app|
   app.vendor_project('vendor/privileged_helper', :static)
   app.frameworks << 'ServiceManagement'
   app.frameworks << 'Security'
+  app.info_plist['SMPrivilegedExecutables'] = { 'us.myepg.MemoryTamer.MTPrivilegedHelper' => 'identifier us.myepg.MemoryTamer and certificate leaf[subject.CN] = &quot;Developer ID Application: Eric Henderson (SKWXXEM822)&quot;' }
 
   app.pods do
     pod 'CocoaLumberjack'
-    pod 'HockeySDK-Mac', git: 'https://github.com/bitstadium/HockeySDK-Mac.git'
+    pod 'HockeySDK-Mac'
     pod 'Sparkle'
   end
 end
@@ -75,7 +76,7 @@ class Motion::Project::App
 
     def build(platform, options = {})
 
-      helper_name = 'MTLaunchHelper'
+      helper_name  = 'MTLaunchHelper'
       helper_name2 = 'us.myepg.MemoryTamer.MTPrivilegedHelper'
 
       # First let the normal `build' method perform its work.

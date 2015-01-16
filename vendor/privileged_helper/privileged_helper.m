@@ -20,17 +20,17 @@
 	/* Obtain the right to install privileged helper tools (kSMRightBlessPrivilegedHelper). */
 	OSStatus status = AuthorizationCreate(&authRights, kAuthorizationEmptyEnvironment, flags, &authRef);
 	if (status != errAuthorizationSuccess) {
-        *error = [NSString stringWithFormat:@"Failed to create AuthorizationRef. Error code: %ld", status]];
+        *error = [NSString stringWithFormat:@"Failed to create AuthorizationRef. Error code: %d", (int)status];
 	} else {
 		/* This does all the work of verifying the helper tool against the application
 		 * and vice-versa. Once verification has passed, the embedded launchd.plist
 		 * is extracted and placed in /Library/LaunchDaemons and then loaded. The
 		 * executable is placed in /Library/PrivilegedHelperTools.
 		 */
-		NSError error2 = nil;
+		NSError *error2 = nil;
 		result = SMJobBless(kSMDomainSystemLaunchd, (CFStringRef)label, authRef, (CFErrorRef *)&error2);
 		if(!result) {
-		    *error = [NSString stringWithFormat:@"Failed to bless helper. Error: %@", error];
+		    *error = [NSString stringWithFormat:@"Failed to bless helper. Error: %@", error2];
 		}
 	}
 
@@ -38,14 +38,14 @@
 }
 
 + (PrivilegedHelper *) createHelperConnection: (NSString *) label
-                                    utilClass: (id) utilClass {
+                                    utilCallback: (id) utilCallback {
     PrivilegedHelper *ph = [[PrivilegedHelper alloc] init];
-    [ph setUtilClass: utilClass];
+    [ph setUtilCallback: utilCallback];
 
     xpc_connection_t connection = xpc_connection_create_mach_service("com.apple.bsd.SMJobBlessHelper", NULL, XPC_CONNECTION_MACH_SERVICE_PRIVILEGED);
 
     if (!connection) {
-        [self appendLog:@"Failed to create XPC connection."];
+        [ph logError:@"Failed to create XPC connection."];
         return nil;
     }
 
@@ -78,23 +78,25 @@
 }
 
 - (void) executeOperation: (char*) operation {
+    xpc_connection_t connection = [self connection];
     xpc_object_t message = xpc_dictionary_create(NULL, NULL, 0);
     const char* request = operation;
     xpc_dictionary_set_string(message, "operation", request);
 
     [self logDebug:[NSString stringWithFormat:@"Sending request: %s", request]];
 
+
     xpc_connection_send_message_with_reply(connection, message, dispatch_get_main_queue(), ^(xpc_object_t event) {
         const char* response = xpc_dictionary_get_string(event, "result");
         [self logDebug:[NSString stringWithFormat:@"Received response: %s.", response]];
-        [[self utilClass] privileged_helper_response: response];
+        [[self utilCallback] privileged_helper_response: response];
     });
 }
 
 - (void) logError: (NSString *) message {
-    [[[self utilClass] log] error: message];
+    [[self utilCallback] error: message];
 }
 - (void) logDebug: (NSString *) message {
-    [[[self utilClass] log] debug: message];
+    [[self utilCallback] debug: message];
 }
 @end

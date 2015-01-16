@@ -243,20 +243,28 @@ module Util
   end
 
   def purge
-    error_ref = Pointer.new(NSString)
-    result = PrivilegedHelper.blessHelperWithLabel('', error: error_ref)
+    error_ref = Pointer.new(:object)
+    result = PrivilegedHelper.blessHelperWithLabel('us.myepg.MemoryTamer.MTPrivilegedHelper', error: error_ref)
     unless result
       Util.log.error(error_ref[0])
       notify('Error in setting up helper', :error)
       return
     end
-    @privileged_helper_instance ||= PrivilegedHelper.createHelperConnection('us.myepg.MemoryTamer.MTPrivilegedHelper', utilClass: Util)
+    @privileged_helper_instance ||= PrivilegedHelper.createHelperConnection('us.myepg.MemoryTamer.MTPrivilegedHelper', utilCallback: PrivilegedHelperCallback.new)
     notify('Beginning purge', :free_start)
     @privileged_helper_instance.executeOperation('purge')
   end
 
-  def privileged_helper_response(response_text)
-    notify(response_text, :free_end)
+  class PrivilegedHelperCallback
+    def debug(message)
+      Util.log.debug(message)
+    end
+    def error(message)
+      Util.log.error(message)
+    end
+    def privileged_helper_response(response_text)
+      Util.notify(response_text, :free_end)
+    end
   end
 
   def nn_str(nn)
