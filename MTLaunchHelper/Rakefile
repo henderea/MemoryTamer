@@ -32,7 +32,7 @@ Motion::Project::App.setup do |app|
   app.short_version        = '1.0.0'
   app.identifier           = 'us.myepg.MemoryTamer.MTLaunchHelper'
   app.info_plist['NSUIElement'] = 1
-  app.deployment_target    = '10.8'
+  app.deployment_target    = '10.9'
   app.archs['MacOSX']      = ['x86_64']
   app.codesign_certificate = 'Developer ID Application: Eric Henderson (SKWXXEM822)'
 end
