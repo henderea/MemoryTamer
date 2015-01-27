@@ -38,7 +38,7 @@ Motion::Project::App.setup do |app|
   app.deployment_target                     = '10.9'
   app.codesign_certificate                  = 'Developer ID Application: Eric Henderson (SKWXXEM822)'
   app.paddle {
-    set :product_id, '993'
+    set :product_id, '492767'
     set :vendor_id, '1657'
     set :api_key, 'ff308e08f807298d8a76a7a3db1ee12b'
     set :current_price, '2.49'
