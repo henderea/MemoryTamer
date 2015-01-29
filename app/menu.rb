@@ -9,6 +9,7 @@ class MainMenu
 
     menuItem :services_item, 'Services', preset: :services
 
+    menuItem :status_mem_pressure_percent, 'Memory pressure: 0%', dynamic_title: -> { "Memory pressure: #{Info.get_memory_pressure_percent}%" }
     menuItem :status_free, 'Free memory now'
     menuItem :status_trim, 'Trim memory now'
     menuItem :status_mt_mem, 'memory usage: 0B', image: NSImage.imageNamed('Status'), dynamic_title: -> { "memory usage: #{Info.format_bytes(MemInfo.getMTMemory)}" }
@@ -49,6 +50,8 @@ class MainMenu
     }
 
     statusbarMenu(:statusbar, '', status_item_icon: NSImage.imageNamed('Status'), status_item_length: NSVariableStatusItemLength) {
+      status_mem_pressure_percent
+      ___
       status_free
       status_trim
       ___

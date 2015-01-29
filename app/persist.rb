@@ -96,16 +96,16 @@ class Persist
   validate_map(:trim_mem) { |_, _, nv| Util.constrain_value_range((0..MemInfo.getTotalMemory), nv, 0) }
   validate_map(:auto_threshold) { |_, ov, nv| Util.constrain_value_list(%w(low high), ov, nv, 'low') }
   validate_map(:pressure) { |_, ov, nv| Util.constrain_value_list(%w(warn critical), ov, nv, 'warn') }
-  validate_map(:growl) { |_, _, nv| Util.constrain_value_boolean(nv, false, Info.has_nc?, false) }
-  validate_map(:method_pressure) { |_, _, nv| Util.constrain_value_boolean(nv, true, Info.mavericks?) }
-  validate_map(:freeing_method) { |_, ov, nv| Util.constrain_value_list_enable_map({ 'memory pressure' => Info.mavericks?, 'plain allocation' => true }, ov, nv, Persist.store.method_pressure? ? 'memory pressure' : 'plain allocation', 'plain allocation') }
+  validate_map(:growl) { |_, _, nv| Util.constrain_value_boolean(nv, false) }
+  validate_map(:method_pressure) { |_, _, nv| Util.constrain_value_boolean(nv, true) }
+  validate_map(:freeing_method) { |_, ov, nv| Util.constrain_value_list(['memory pressure', 'plain allocation'], ov, nv, 'memory pressure') }
   validate_map(:update_while) { |_, _, nv| Util.constrain_value_boolean(nv, false, Info.last_version >= '1.0b6') }
   validate_map(:display_what) { |_, ov, nv| Util.constrain_value_list(['Show Icon + Free Memory', 'Show Icon', 'Show Free Memory'], ov, nv, (Persist.store['show_mem'].nil? || Persist.store['show_mem?']) ? 'Show Icon + Free Memory' : 'Show Icon') }
   validate_map(:mem_places) { |_, _, nv| Util.constrain_value_range((0..3), nv, 2) }
   validate_map(:refresh_rate) { |_, _, nv| Util.constrain_value_range((1..5), nv, 2) }
   validate_map(:sticky) { |_, _, nv| Util.constrain_value_boolean(nv, false) }
   validate_map(:auto_escalate) { |_, _, nv| Util.constrain_value_boolean(nv, false) }
-  validate_map(:notifications) { |_, ov, nv| Util.constrain_value_list_enable_map({ 'None' => true, 'Growl' => true, 'Notification Center' => Info.has_nc? }, ov, nv, Persist.store.growl ? 'Growl' : 'Notification Center', 'Growl') }
+  validate_map(:notifications) { |_, ov, nv| Util.constrain_value_list(['None', 'Growl', 'Notification Center'], ov, nv, 'Notification Center') }
   validate_map(:free_start) { |_, _, nv| Util.constrain_value_boolean(nv, true) }
   validate_map(:free_end) { |_, _, nv| Util.constrain_value_boolean(nv, true) }
   validate_map(:trim_start) { |_, _, nv| Util.constrain_value_boolean(nv, true) }

@@ -1,10 +1,3 @@
-#import <sys/sysctl.h>
-#import <mach/host_info.h>
-#import <mach/mach_host.h>
-#import <mach/task_info.h>
-#import <mach/task.h>
-#import <math.h>
-
 @interface MemInfo : NSObject
 + (long long) getPageSize;
 + (int) getPagesFree;
@@ -13,4 +6,5 @@
 + (long long) getTotalMemory;
 + (long long) getMTMemory;
 + (NSString *) getOSVersion;
++ (int) getMemoryPressurePercent;
 @end

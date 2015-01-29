@@ -1,3 +1,12 @@
+#import <sys/sysctl.h>
+#include <sys/syscall.h>
+#include <unistd.h>
+#import <mach/host_info.h>
+#import <mach/mach_host.h>
+#import <mach/task_info.h>
+#import <mach/task.h>
+#import <math.h>
+
 #import "mem_info.h"
 
 static unsigned long long
@@ -14,6 +23,20 @@ read_sysctl_int(const char* name)
 		exit(-1);
 	}
 	return var;
+}
+
+static int
+get_percent_free(unsigned int* level)
+{
+	int error;
+
+	error = syscall(SYS_memorystatus_get_level, level);
+
+	if( error ) {
+		perror("memorystatus_get_level failed:");
+		exit(-1);
+	}
+	return error;
 }
 
 @implementation MemInfo
@@ -70,5 +93,11 @@ read_sysctl_int(const char* name)
     size_t size = sizeof(str);
     int ret = sysctlbyname("kern.osrelease", str, &size, NULL, 0);
     return [NSString stringWithUTF8String: str];
+}
+
++ (int) getMemoryPressurePercent {
+    unsigned int current_percent = 0;
+    get_percent_free(&current_percent);
+    return 100-current_percent;
 }
 @end

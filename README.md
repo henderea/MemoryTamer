@@ -73,6 +73,7 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
     * Update Paddle purchasing framework to latest version
     * Change minimum OS X version requirement to 10.9 Mavericks.  Almost no MemoryTamer users are still running 10.8 Mountain Lion, so removing support for it allows the compiler to make a more optimized and potentially more stable executable.
 * **v1.2.4.2:** Fix a minor problem in the integration with the new Paddle framework version
+* **v1.2.5:** Add a menu item for displaying memory pressure percentage
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.3.zip> (Mavericks-only)
@@ -137,3 +138,4 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.2.4:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.2.4.dmg> (10.8 and up)
 * **v1.2.4.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.2.4.1.dmg> (10.9 and up)
 * **v1.2.4.2:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.2.4.2.dmg>
+* **v1.2.5:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.2.5.dmg>

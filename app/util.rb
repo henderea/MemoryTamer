@@ -219,6 +219,7 @@ module Util
       loop do
         mtm = MemInfo.getMTMemory
         MainMenu[:statusbar].items[:status_mt_mem].updateDynamicTitle
+        MainMenu[:statusbar].items[:status_mem_pressure_percent].updateDynamicTitle
         if mtm > (200 * (1024 ** 2)) && (NSDate.date - Info.start_time) > 300
           Util.log.warn "MemoryTamer is using #{Info.format_bytes(mtm, true)}; restarting"
           relaunch_app

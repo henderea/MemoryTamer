@@ -56,8 +56,6 @@ class Prefs < NSWindowController
   end
 
   def setup!
-    notifications_nc.enabled  = Info.has_nc?
-    freeing_method_mp.enabled = Info.mavericks?
     link :list, :notifications
     link :bool, :growl_sticky
     link :bool, :free_start

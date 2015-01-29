@@ -44,6 +44,10 @@ module Info
     MemInfo.getMemoryPressure
   end
 
+  def get_memory_pressure_percent
+    MemInfo.getMemoryPressurePercent
+  end
+
   def get_total_memory
     MemInfo.getTotalMemory
   end
@@ -118,27 +122,6 @@ module Info
 
   def os_version
     @os_version ||= Version.new(MemInfo.getOSVersion)
-  end
-
-  class Supports
-    attr_reader :nc, :mavericks
-
-    def initialize
-      @nc        = (NSClassFromString('NSUserNotificationCenter')!=nil)
-      @mavericks = Info.os_version >= '13'
-    end
-  end
-
-  def supports
-    @supports ||= Supports.new
-  end
-
-  def has_nc?
-    supports.nc
-  end
-
-  def mavericks?
-    supports.mavericks
   end
 
   def license_log_status
