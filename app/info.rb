@@ -40,6 +40,30 @@ module Info
     page_size * pages_free + page_size * pages_inactive * inactive_multiplier
   end
 
+  def get_file_cache_mem
+    page_size      = MemInfo.getPageSize
+    pages_file_cache = MemInfo.getPagesFileCache
+    page_size * pages_file_cache
+  end
+
+  def get_app_mem
+    page_size    = MemInfo.getPageSize
+    pages_app = MemInfo.getPagesAppMemory
+    page_size * pages_app
+  end
+
+  def get_wired_mem
+    page_size   = MemInfo.getPageSize
+    pages_wired = MemInfo.getPagesWired
+    page_size * pages_wired
+  end
+
+  def get_compressed_mem
+    page_size        = MemInfo.getPageSize
+    pages_compressed = MemInfo.getPagesCompressed
+    page_size * pages_compressed
+  end
+
   def get_memory_pressure
     MemInfo.getMemoryPressure
   end

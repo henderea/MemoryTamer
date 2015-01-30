@@ -214,12 +214,16 @@ module Util
   def freeing_loop
     Thread.start {
       Info.start_time ||= NSDate.date
-      Info.last_free = NSDate.date - 30
-      Info.last_trim = NSDate.date
+      Info.last_free  = NSDate.date - 30
+      Info.last_trim  = NSDate.date
       loop do
         mtm = MemInfo.getMTMemory
         MainMenu[:statusbar].items[:status_mt_mem].updateDynamicTitle
         MainMenu[:statusbar].items[:status_mem_pressure_percent].updateDynamicTitle
+        MainMenu[:statusbar].items[:status_mem_app_mem].updateDynamicTitle
+        MainMenu[:statusbar].items[:status_mem_file_cache].updateDynamicTitle
+        MainMenu[:statusbar].items[:status_mem_wired].updateDynamicTitle
+        MainMenu[:statusbar].items[:status_mem_compressed].updateDynamicTitle
         if mtm > (200 * (1024 ** 2)) && (NSDate.date - Info.start_time) > 300
           Util.log.warn "MemoryTamer is using #{Info.format_bytes(mtm, true)}; restarting"
           relaunch_app

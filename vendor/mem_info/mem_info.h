@@ -2,6 +2,10 @@
 + (long long) getPageSize;
 + (int) getPagesFree;
 + (int) getPagesInactive;
++ (int) getPagesFileCache;
++ (int) getPagesAppMemory;
++ (int) getPagesWired;
++ (int) getPagesCompressed;
 + (long long) getMemoryPressure;
 + (long long) getTotalMemory;
 + (long long) getMTMemory;

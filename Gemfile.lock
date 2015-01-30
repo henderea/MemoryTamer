@@ -35,7 +35,7 @@ GEM
     cocoapods-try (0.4.3)
     colored (1.2)
     escape (0.0.4)
-    everyday-menu (1.4.0)
+    everyday-menu (1.4.1)
     fuzzy_match (2.0.4)
     i18n (0.7.0)
     ib (0.7.2)
@@ -67,7 +67,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  everyday-menu (~> 1.4)
+  everyday-menu (~> 1.4, >= 1.4.1)
   ib (~> 0.7, >= 0.7.2)
   libxml-ruby (~> 2.8)
   motion-cocoapods (~> 1.7)

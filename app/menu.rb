@@ -10,13 +10,18 @@ class MainMenu
     menuItem :services_item, 'Services', preset: :services
 
     menuItem :status_mem_pressure_percent, 'Memory pressure: 0%', dynamic_title: -> { "Memory pressure: #{Info.get_memory_pressure_percent}%" }
+    menuItem :status_mem_app_mem, 'App Memory: 0B', dynamic_title: -> { "App Memory: #{Info.format_bytes(Info.get_app_mem)}" }
+    menuItem :status_mem_file_cache, 'File Cache: 0B', dynamic_title: -> { "File Cache: #{Info.format_bytes(Info.get_file_cache_mem)}" }
+    menuItem :status_mem_wired, 'Wired Memory: 0B', dynamic_title: -> { "Wired Memory: #{Info.format_bytes(Info.get_wired_mem)}" }
+    menuItem :status_mem_compressed, 'Compressed: 0B', dynamic_title: -> { "Compressed: #{Info.format_bytes(Info.get_compressed_mem)}" }
+    menuItem :status_mem_total, 'Total Memory: 0B'
     menuItem :status_free, 'Free memory now'
     menuItem :status_trim, 'Trim memory now'
     menuItem :status_mt_mem, 'memory usage: 0B', image: NSImage.imageNamed('Status'), dynamic_title: -> { "memory usage: #{Info.format_bytes(MemInfo.getMTMemory)}" }
     menuItem :status_mt_time, 'running since: 0d 0h 0m 0s', image: NSImage.imageNamed('Status'), dynamic_title: -> {
-      diff = (NSDate.date - Info.start_time).to_f
-      "running since #{(diff / (86400.0)).floor}d #{((diff % (86400.0))/(3600.0)).floor}h #{((diff % (3600.0))/60.0).floor}m #{(diff % 60).floor}s"
-    }
+                              diff = (NSDate.date - Info.start_time).to_f
+                              "running since #{(diff / (86400.0)).floor}d #{((diff % (86400.0))/(3600.0)).floor}h #{((diff % (3600.0))/60.0).floor}m #{(diff % 60).floor}s"
+                            }
     menuItem :status_relaunch, 'Relaunch MemoryTamer'
     menuItem :status_login, 'Launch on login', state: NSOffState
     menuItem :status_update, 'Check for Updates'
@@ -51,6 +56,13 @@ class MainMenu
 
     statusbarMenu(:statusbar, '', status_item_icon: NSImage.imageNamed('Status'), status_item_length: NSVariableStatusItemLength) {
       status_mem_pressure_percent
+      ___
+      status_mem_app_mem
+      status_mem_file_cache
+      status_mem_wired
+      status_mem_compressed
+      ___
+      status_mem_total
       ___
       status_free
       status_trim

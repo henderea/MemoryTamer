@@ -1,6 +1,6 @@
 #import <sys/sysctl.h>
-#include <sys/syscall.h>
-#include <unistd.h>
+#import <sys/syscall.h>
+#import <unistd.h>
 #import <mach/host_info.h>
 #import <mach/mach_host.h>
 #import <mach/task_info.h>
@@ -45,27 +45,75 @@ get_percent_free(unsigned int* level)
 }
 
 + (int) getPagesFree {
-    mach_msg_type_number_t count = HOST_VM_INFO_COUNT;
+    mach_msg_type_number_t count = HOST_VM_INFO64_COUNT;
 
-    vm_statistics_data_t vmstat;
-    if(host_statistics(mach_host_self(), HOST_VM_INFO,(host_info_t) &vmstat, &count) != KERN_SUCCESS)
+    vm_statistics64_data_t vmstat;
+    if(host_statistics64(mach_host_self(), HOST_VM_INFO64,(host_info_t) &vmstat, &count) != KERN_SUCCESS)
     {
-        fprintf(stderr, "Failed to get VM statistics.");
+        fprintf(stderr, "Failed to get VM statistics.\n");
     }
 
     return vmstat.free_count;
 }
 
 + (int) getPagesInactive {
-    mach_msg_type_number_t count = HOST_VM_INFO_COUNT;
+    mach_msg_type_number_t count = HOST_VM_INFO64_COUNT;
 
-    vm_statistics_data_t vmstat;
-    if(host_statistics(mach_host_self(), HOST_VM_INFO,(host_info_t) &vmstat, &count) != KERN_SUCCESS)
+    vm_statistics64_data_t vmstat;
+    if(host_statistics64(mach_host_self(), HOST_VM_INFO64,(host_info_t) &vmstat, &count) != KERN_SUCCESS)
     {
-        fprintf(stderr, "Failed to get VM statistics.");
+        fprintf(stderr, "Failed to get VM statistics.\n");
     }
 
     return vmstat.inactive_count;
+}
+
++ (int) getPagesFileCache {
+    mach_msg_type_number_t count = HOST_VM_INFO64_COUNT;
+
+    vm_statistics64_data_t vmstat;
+    if(host_statistics64(mach_host_self(), HOST_VM_INFO64,(host_info_t) &vmstat, &count) != KERN_SUCCESS)
+    {
+        fprintf(stderr, "Failed to get VM statistics.\n");
+    }
+
+    return vmstat.external_page_count;
+}
+
++ (int) getPagesAppMemory {
+    mach_msg_type_number_t count = HOST_VM_INFO64_COUNT;
+
+    vm_statistics64_data_t vmstat;
+    if(host_statistics64(mach_host_self(), HOST_VM_INFO64,(host_info_t) &vmstat, &count) != KERN_SUCCESS)
+    {
+        fprintf(stderr, "Failed to get VM statistics.\n");
+    }
+
+    return vmstat.internal_page_count;
+}
+
++ (int) getPagesWired {
+    mach_msg_type_number_t count = HOST_VM_INFO64_COUNT;
+
+    vm_statistics64_data_t vmstat;
+    if(host_statistics64(mach_host_self(), HOST_VM_INFO64,(host_info_t) &vmstat, &count) != KERN_SUCCESS)
+    {
+        fprintf(stderr, "Failed to get VM statistics.\n");
+    }
+
+    return vmstat.wire_count;
+}
+
++ (int) getPagesCompressed {
+    mach_msg_type_number_t count = HOST_VM_INFO64_COUNT;
+
+    vm_statistics64_data_t vmstat;
+    if(host_statistics64(mach_host_self(), HOST_VM_INFO64,(host_info_t) &vmstat, &count) != KERN_SUCCESS)
+    {
+        fprintf(stderr, "Failed to get VM statistics.\n");
+    }
+
+    return vmstat.compressor_page_count;
 }
 
 + (long long) getMemoryPressure {
