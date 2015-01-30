@@ -219,6 +219,9 @@ module Util
       loop do
         mtm = MemInfo.getMTMemory
         MainMenu[:statusbar].items[:status_mt_mem].updateDynamicTitle
+        MainMenu[:statusbar].items[:status_mem_used].updateDynamicTitle
+        MainMenu[:statusbar].items[:status_mem_virtual].updateDynamicTitle
+        MainMenu[:statusbar].items[:status_mem_swap].updateDynamicTitle
         MainMenu[:statusbar].items[:status_mem_pressure_percent].updateDynamicTitle
         MainMenu[:statusbar].items[:status_mem_app_mem].updateDynamicTitle
         MainMenu[:statusbar].items[:status_mem_file_cache].updateDynamicTitle

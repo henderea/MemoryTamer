@@ -10,11 +10,14 @@ class MainMenu
     menuItem :services_item, 'Services', preset: :services
 
     menuItem :status_mem_pressure_percent, 'Memory pressure: 0%', dynamic_title: -> { "Memory pressure: #{Info.get_memory_pressure_percent}%" }
+    menuItem :status_mem_physical, 'Physical Memory: 0B'
+    menuItem :status_mem_used, 'Memory Used: 0B', dynamic_title: -> { "Memory Used: #{Info.format_bytes(Info.get_total_memory-Info.get_free_mem)}" }
+    menuItem :status_mem_virtual, 'Virtual Memory: 0B', dynamic_title: -> { "Virtual Memory: #{Info.format_bytes(Info.get_total_memory+Info.get_compressor_mem)}" }
+    menuItem :status_mem_swap, 'Swap Used: 0B', dynamic_title: -> { "Swap Used: #{Info.format_bytes(Info.get_swap_mem)}" }
     menuItem :status_mem_app_mem, 'App Memory: 0B', dynamic_title: -> { "App Memory: #{Info.format_bytes(Info.get_app_mem)}" }
     menuItem :status_mem_file_cache, 'File Cache: 0B', dynamic_title: -> { "File Cache: #{Info.format_bytes(Info.get_file_cache_mem)}" }
     menuItem :status_mem_wired, 'Wired Memory: 0B', dynamic_title: -> { "Wired Memory: #{Info.format_bytes(Info.get_wired_mem)}" }
     menuItem :status_mem_compressed, 'Compressed: 0B', dynamic_title: -> { "Compressed: #{Info.format_bytes(Info.get_compressed_mem)}" }
-    menuItem :status_mem_total, 'Total Memory: 0B'
     menuItem :status_free, 'Free memory now'
     menuItem :status_trim, 'Trim memory now'
     menuItem :status_mt_mem, 'memory usage: 0B', image: NSImage.imageNamed('Status'), dynamic_title: -> { "memory usage: #{Info.format_bytes(MemInfo.getMTMemory)}" }
@@ -55,14 +58,17 @@ class MainMenu
     }
 
     statusbarMenu(:statusbar, '', status_item_icon: NSImage.imageNamed('Status'), status_item_length: NSVariableStatusItemLength) {
+      status_mem_physical
+      status_mem_used
+      status_mem_virtual
+      status_mem_swap
+      ___
       status_mem_pressure_percent
       ___
       status_mem_app_mem
       status_mem_file_cache
       status_mem_wired
       status_mem_compressed
-      ___
-      status_mem_total
       ___
       status_free
       status_trim

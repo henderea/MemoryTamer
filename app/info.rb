@@ -62,6 +62,18 @@ module Info
     page_size        = MemInfo.getPageSize
     pages_compressed = MemInfo.getPagesCompressed
     page_size * pages_compressed
+    end
+
+  def get_compressor_mem
+    page_size        = MemInfo.getPageSize
+    pages_in_compressor = MemInfo.getPagesInCompressor
+    page_size * pages_in_compressor
+    end
+
+  def get_swap_mem
+    page_size        = MemInfo.getPageSize
+    pages_in_swap = MemInfo.getPagesInSwap
+    page_size * pages_in_swap
   end
 
   def get_memory_pressure

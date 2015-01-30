@@ -116,6 +116,30 @@ get_percent_free(unsigned int* level)
     return vmstat.compressor_page_count;
 }
 
++ (int) getPagesInCompressor {
+    mach_msg_type_number_t count = HOST_VM_INFO64_COUNT;
+
+    vm_statistics64_data_t vmstat;
+    if(host_statistics64(mach_host_self(), HOST_VM_INFO64,(host_info_t) &vmstat, &count) != KERN_SUCCESS)
+    {
+        fprintf(stderr, "Failed to get VM statistics.\n");
+    }
+
+    return vmstat.total_uncompressed_pages_in_compressor;
+}
+
++ (int) getPagesInSwap {
+    mach_msg_type_number_t count = HOST_VM_INFO64_COUNT;
+
+    vm_statistics64_data_t vmstat;
+    if(host_statistics64(mach_host_self(), HOST_VM_INFO64,(host_info_t) &vmstat, &count) != KERN_SUCCESS)
+    {
+        fprintf(stderr, "Failed to get VM statistics.\n");
+    }
+
+    return vmstat.swapouts;
+}
+
 + (long long) getMemoryPressure {
     return read_sysctl_int("kern.memorystatus_vm_pressure_level");
 }
