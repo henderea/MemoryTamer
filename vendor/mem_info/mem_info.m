@@ -56,6 +56,18 @@ get_percent_free(unsigned int* level)
     return vmstat.free_count;
 }
 
++ (int) getPagesUsed {
+    mach_msg_type_number_t count = HOST_VM_INFO64_COUNT;
+
+    vm_statistics64_data_t vmstat;
+    if(host_statistics64(mach_host_self(), HOST_VM_INFO64,(host_info_t) &vmstat, &count) != KERN_SUCCESS)
+    {
+        fprintf(stderr, "Failed to get VM statistics.\n");
+    }
+
+    return vmstat.external_page_count + vmstat.internal_page_count + vmstat.wire_count + vmstat.compressor_page_count;
+}
+
 + (int) getPagesInactive {
     mach_msg_type_number_t count = HOST_VM_INFO64_COUNT;
 

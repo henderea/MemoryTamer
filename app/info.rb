@@ -34,20 +34,25 @@ module Info
   end
 
   def get_free_mem(inactive_multiplier = 0)
-    page_size      = MemInfo.getPageSize
-    pages_free     = MemInfo.getPagesFree
-    pages_inactive = MemInfo.getPagesInactive
-    page_size * pages_free + page_size * pages_inactive * inactive_multiplier
+    mem_free       = get_total_memory - get_used_mem
+    mem_file_cache = get_file_cache_mem
+    mem_free + mem_file_cache * inactive_multiplier
+  end
+
+  def get_used_mem
+    page_size  = MemInfo.getPageSize
+    pages_used = MemInfo.getPagesUsed
+    page_size * pages_used
   end
 
   def get_file_cache_mem
-    page_size      = MemInfo.getPageSize
+    page_size        = MemInfo.getPageSize
     pages_file_cache = MemInfo.getPagesFileCache
     page_size * pages_file_cache
   end
 
   def get_app_mem
-    page_size    = MemInfo.getPageSize
+    page_size = MemInfo.getPageSize
     pages_app = MemInfo.getPagesAppMemory
     page_size * pages_app
   end
@@ -62,16 +67,16 @@ module Info
     page_size        = MemInfo.getPageSize
     pages_compressed = MemInfo.getPagesCompressed
     page_size * pages_compressed
-    end
+  end
 
   def get_compressor_mem
-    page_size        = MemInfo.getPageSize
+    page_size           = MemInfo.getPageSize
     pages_in_compressor = MemInfo.getPagesInCompressor
     page_size * pages_in_compressor
-    end
+  end
 
   def get_swap_mem
-    page_size        = MemInfo.getPageSize
+    page_size     = MemInfo.getPageSize
     pages_in_swap = MemInfo.getPagesInSwap
     page_size * pages_in_swap
   end

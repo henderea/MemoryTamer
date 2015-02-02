@@ -1,6 +1,7 @@
 @interface MemInfo : NSObject
 + (long long) getPageSize;
 + (int) getPagesFree;
++ (int) getPagesUsed;
 + (int) getPagesInactive;
 + (int) getPagesFileCache;
 + (int) getPagesAppMemory;

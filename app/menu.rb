@@ -11,7 +11,7 @@ class MainMenu
 
     menuItem :status_mem_pressure_percent, 'Memory pressure: 0%', dynamic_title: -> { "Memory pressure: #{Info.get_memory_pressure_percent}%" }
     menuItem :status_mem_physical, 'Physical Memory: 0B'
-    menuItem :status_mem_used, 'Memory Used: 0B', dynamic_title: -> { "Memory Used: #{Info.format_bytes(Info.get_total_memory-Info.get_free_mem)}" }
+    menuItem :status_mem_used, 'Memory Used: 0B', dynamic_title: -> { "Memory Used: #{Info.format_bytes(Info.get_used_mem)}" }
     menuItem :status_mem_virtual, 'Virtual Memory: 0B', dynamic_title: -> { "Virtual Memory: #{Info.format_bytes(Info.get_total_memory+Info.get_compressor_mem)}" }
     menuItem :status_mem_swap, 'Swap Used: 0B', dynamic_title: -> { "Swap Used: #{Info.format_bytes(Info.get_swap_mem)}" }
     menuItem :status_mem_app_mem, 'App Memory: 0B', dynamic_title: -> { "App Memory: #{Info.format_bytes(Info.get_app_mem)}" }

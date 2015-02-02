@@ -75,6 +75,7 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.2.4.2:** Fix a minor problem in the integration with the new Paddle framework version
 * **v1.2.5:** Add a menu item for displaying memory pressure percentage
 * **v1.3.0:** Add some memory stats like Activity Monitor and fix a bug causing some display-only menu items to be clickable
+* **v1.3.1:** Add the rest of the memory stats from Activity monitor and fix a bug causing incorrect free memory amounts
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.3.zip> (Mavericks-only)
@@ -141,3 +142,4 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.2.4.2:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.2.4.2.dmg>
 * **v1.2.5:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.2.5.dmg>
 * **v1.3.0:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.3.0.dmg>
+* **v1.3.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.3.1.dmg>
