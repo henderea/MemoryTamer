@@ -29,12 +29,14 @@ end
 Motion::Project::App.setup do |app|
   app.icon                                  = 'Icon.icns'
   app.name                                  = 'MemoryTamer'
-  app.version                               = '1.3.1.1'
-  app.short_version                         = '1.3.1.1'
+  app.version                               = '1.4.0'
+  app.short_version                         = '1.4.0'
   app.identifier                            = 'us.myepg.MemoryTamer'
-  app.info_plist['NSUIElement']             = 1
+  app.info_plist['NSUIElement']             = true
   app.info_plist['SUFeedURL']               = 'https://rink.hockeyapp.net/api/2/apps/128ebd3240db358d4b1ea5f228269de6'
   app.info_plist['SUEnableSystemProfiling'] = true
+  app.info_plist['NSAppleScriptEnabled']    = true
+  app.info_plist['CFBundleURLTypes']        = { 'CFBundleURLSchemes' => ['us.myepg.MemoryTamer'] }
   app.deployment_target                     = '10.9'
   app.codesign_certificate                  = 'Developer ID Application: Eric Henderson (SKWXXEM822)'
   app.paddle {
@@ -49,11 +51,12 @@ Motion::Project::App.setup do |app|
     set :trial_duration, '7'
     set :trial_text, 'Thanks for downloading a trial of MemoryTamer! I hope you enjoy it.'
     set :product_image, 'Icon.png'
-    set :time_trial, true
+    set :time_trial, false
   }
   app.embedded_frameworks << 'vendor/Growl.framework'
   app.vendor_project('vendor/mem_info', :static)
   app.frameworks << 'ServiceManagement'
+  app.libs << '/usr/lib/libcrypto.dylib'
 
   app.pods do
     pod 'CocoaLumberjack'

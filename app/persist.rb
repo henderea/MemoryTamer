@@ -81,7 +81,8 @@ class Persist
            :update_while, :display_what, :mem_places, :refresh_rate,
            :growl, :sticky, :notifications,
            :free_start, :free_end, :trim_start, :trim_end,
-           :last_version
+           :last_version,
+           :product_key, :product_name, :trial_start
 
   alias_property pressure: :freeing_pressure,
                  sticky:   :growl_sticky

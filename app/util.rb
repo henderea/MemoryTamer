@@ -150,7 +150,8 @@ module Util
     true
   end
 
-  def setup_paddle
+  def setup_licensing
+    MotionPaddle.will_show_licensing_window = false
     MotionPaddle.setup { |_, _| MainMenu.set_license_display }
     MotionPaddle.listen(:deactivated) { |_, deactivated, deactivateMessage|
       if deactivated
@@ -161,6 +162,106 @@ module Util
         Util.log.info "failed to deactivate license: #{deactivateMessage}"
       end
     }
+    @licensing_listener = LicensingListener.new { |notification|
+      licenseWindowController = Util.shared_licensing_window_controller
+      Util.show_licensing_window(nil)
+
+      isValidLicense = Util.verify_license
+
+      @licensed_cocoafob = isValidLicense
+
+      licenseWindowController.showLicensedStatus(isValidLicense)
+    }
+    NSNotificationCenter.defaultCenter.addObserver(@licensing_listener, selector: 'registrationChanged:', name: 'XMDidChangeRegistrationNotification', object: nil)
+    if self.verify_license
+      Util.log.info('Application is registered.')
+      self.shared_licensing_window_controller.isLicensed = true
+      @licensed_cocoafob                                 = true
+    else
+      Util.log.info('Application not registered.')
+      self.shared_licensing_window_controller.isLicensed = false
+      @licensed_cocoafob                                 = false
+    end
+  end
+
+  def check_trial
+    tsd = Info.trial_start
+    unless tsd.nil?
+    end
+  end
+
+  def licensed?
+    self.licensed_paddle? || self.licensed_cocoafob?
+  end
+
+  def licensed_paddle?
+    MotionPaddle.activated?
+  end
+
+  def licensed_cocoafob?
+    @licensed_cocoafob
+  end
+
+  class LicensingListener
+    def initialize(&block)
+      @block = block
+    end
+
+    def registrationChanged(notification)
+      @block.call(notification)
+    end
+  end
+
+  def show_licensing_window(sender)
+    self.shared_licensing_window_controller.window.makeKeyAndOrderFront(nil)
+    self.shared_licensing_window_controller.window.orderFrontRegardless
+  end
+
+  def verify_license
+    regCode = Persist.store.product_key
+    name    = Persist.store.product_name
+
+    # Here we match CocoaFob 's licensekey.rb "productname,username" format
+    regName = "MemoryTamer,#{name}"
+
+    publicKey = ''
+    publicKey << 'MIHxMIGpBgcqhkjOOAQBM'
+    publicKey << 'IGdAkEAoLPCAaL6VEQ'
+    publicKey << 'lYpsX7vf9'
+    publicKey << 'jpQY40Uj5b'
+    publicKey << "UhmvNZ\njjcq2lTSlCnqBq"
+    publicKey << 'v4nxhwROI'
+    publicKey << 'UUj7wl3t'
+    publicKey << 'AjKghnwDMv4VTIOXI+'
+    publicKey << "QIVAPMOL+3NJ/iv\nVbwt"
+    publicKey << 'HVNOiUvfUMWNAkEAkDashtS4IDsN+OsIwIElIxSVM1V'
+    publicKey << "2rXgR+DqEfWNP4Kvy\n4hiQyTHMXl3JfSGhK+h5Y"
+    publicKey << 'qE4w'
+    publicKey << "P4SiqzyPoaRiPoL0gNDAAJASXVReQ4G3CCMVNTW\njY"
+    publicKey << '052YGRF4qchbLtQk7ws7LnSh+cmqZAKc3fEW'
+    publicKey << 'QZINC3d'
+    publicKey << 'uCOsiM4'
+    publicKey << "UuvwO6ZCDE9s\ndQ6W0Q==\n"
+
+    publicKey = CFobLicVerifier.completePublicKeyPEM(publicKey)
+
+    verifier = CFobLicVerifier.verifierWithPublicKey(publicKey)
+
+    verifier.regName = regName
+    verifier.regCode = regCode
+    Util.log.debug("publicKey #{publicKey}\nregCode: #{verifier.regCode}\nregName: #{verifier.regName}")
+
+    if verifier.verify
+      Util.log.info("Yes #{verifier}")
+      true
+    else
+      Util.log.info("No #{verifier}")
+      false
+    end
+  end
+
+  def shared_licensing_window_controller
+    XMLicensingWindowController.sharedLicensingWindowController
   end
 
   def log_license

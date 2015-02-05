@@ -76,11 +76,29 @@ module Info
   end
 
   def get_swap_mem
-    r = `/usr/sbin/sysctl 'vm.swapusage' | awk '{print $7;}'`.chomp
+    r    = `/usr/sbin/sysctl 'vm.swapusage' | awk '{print $7;}'`.chomp
     unit = r[-1]
-    rf = r[0...-1].to_f
-    ind = %w(B K M G T).find_index(unit.upcase).to_f
+    rf   = r[0...-1].to_f
+    ind  = %w(B K M G T).find_index(unit.upcase).to_f
     rf * (1024.0 ** ind)
+  end
+
+  def trial_start
+    ts = Persist.store.trial_start
+    if Util.licensed?
+      nil
+    else
+      ts = self.set_trial_start if ts.nil? || ts == 0.0
+      NSDate.dateWithTimeIntervalSinceReferenceDate(ts)
+    end
+  end
+
+  def set_trial_start
+    Persist.store.trial_start = NSDate.date.timeIntervalSinceReferenceDate
+  end
+
+  def reset_trial_start
+    Persist.store.trial_start = 0.0
   end
 
   def get_memory_pressure
