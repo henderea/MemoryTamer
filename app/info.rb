@@ -76,9 +76,11 @@ module Info
   end
 
   def get_swap_mem
-    page_size     = MemInfo.getPageSize
-    pages_in_swap = MemInfo.getPagesInSwap
-    page_size * pages_in_swap
+    r = `/usr/sbin/sysctl 'vm.swapusage' | awk '{print $7;}'`.chomp
+    unit = r[-1]
+    rf = r[0...-1].to_f
+    ind = %w(B K M G T).find_index(unit.upcase).to_f
+    rf * (1024.0 ** ind)
   end
 
   def get_memory_pressure
