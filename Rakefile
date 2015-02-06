@@ -62,6 +62,7 @@ Motion::Project::App.setup do |app|
     pod 'CocoaLumberjack'
     pod 'HockeySDK-Mac'
     pod 'Sparkle'
+    pod 'FsprgEmbeddedStoreMac'
   end
 end
 

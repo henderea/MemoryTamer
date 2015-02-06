@@ -185,8 +185,11 @@ module Util
   end
 
   def check_trial
-    tsd = Info.trial_start
-    unless tsd.nil?
+    ted = Info.trial_end
+    if ted.nil?
+      nil
+    else
+      ted - Date.date
     end
   end
 
@@ -319,6 +322,10 @@ module Util
       Info.last_trim  = NSDate.date
       loop do
         mtm = MemInfo.getMTMemory
+        if mtm > (200 * (1024 ** 2)) && (NSDate.date - Info.start_time) > 300
+          Util.log.warn "MemoryTamer is using #{Info.format_bytes(mtm, true)}; restarting"
+          relaunch_app
+        end
         MainMenu[:statusbar].items[:status_mt_mem].updateDynamicTitle
         MainMenu[:statusbar].items[:status_mem_used].updateDynamicTitle
         MainMenu[:statusbar].items[:status_mem_virtual].updateDynamicTitle
@@ -328,22 +335,20 @@ module Util
         MainMenu[:statusbar].items[:status_mem_file_cache].updateDynamicTitle
         MainMenu[:statusbar].items[:status_mem_wired].updateDynamicTitle
         MainMenu[:statusbar].items[:status_mem_compressed].updateDynamicTitle
-        if mtm > (200 * (1024 ** 2)) && (NSDate.date - Info.start_time) > 300
-          Util.log.warn "MemoryTamer is using #{Info.format_bytes(mtm, true)}; restarting"
-          relaunch_app
-        end
         cfm = Info.get_free_mem
         MainMenu.status_item.setTitle(Persist.store.show_mem? ? Info.format_bytes(cfm) : '') if Persist.store.update_while? || !Info.freeing?
-        diff   = (NSDate.date - Info.last_free)
-        diff_t = (NSDate.date - Info.last_trim)
-        if cfm <= Info.dfm && diff >= 60 && diff_t >= 30 && !Info.freeing?
-          Util.log.info "seconds since last full freeing: #{diff}"
-          Util.log.info "seconds since last trim: #{diff_t}"
-          Util.free_mem_default
-        elsif cfm <= Info.dtm && diff >= 30 && diff_t >= 30 && !Info.freeing?
-          Util.log.info "seconds since last full freeing: #{diff}"
-          Util.log.info "seconds since last trim: #{diff_t}"
-          Util.trim_mem
+        if Util.licensed? || Util.check_trial > 0
+          diff   = (NSDate.date - Info.last_free)
+          diff_t = (NSDate.date - Info.last_trim)
+          if cfm <= Info.dfm && diff >= 60 && diff_t >= 30 && !Info.freeing?
+            Util.log.info "seconds since last full freeing: #{diff}"
+            Util.log.info "seconds since last trim: #{diff_t}"
+            Util.free_mem_default
+          elsif cfm <= Info.dtm && diff >= 30 && diff_t >= 30 && !Info.freeing?
+            Util.log.info "seconds since last full freeing: #{diff}"
+            Util.log.info "seconds since last trim: #{diff_t}"
+            Util.trim_mem
+          end
         end
         sleep(Persist.store.refresh_rate)
       end
@@ -398,69 +403,77 @@ module Util
   end
 
   def free_mem_default
-    Thread.start {
-      cfm          = Info.get_free_mem
-      Info.freeing = true
-      notify 'Beginning memory freeing', :free_start
-      free_mem(Persist.store.pressure)
-      nfm = Info.get_free_mem
-      Util.log.info "Freed #{Info.format_bytes(nfm - cfm, true)}"
-      notify "Finished freeing #{Info.format_bytes(nfm - cfm)}", :free_end
-      Info.freeing   = false
-      Info.last_free = NSDate.date
-    }
+    if Util.licensed? || Util.check_trial > 0
+      Thread.start {
+        cfm          = Info.get_free_mem
+        Info.freeing = true
+        notify 'Beginning memory freeing', :free_start
+        free_mem(Persist.store.pressure)
+        nfm = Info.get_free_mem
+        Util.log.info "Freed #{Info.format_bytes(nfm - cfm, true)}"
+        notify "Finished freeing #{Info.format_bytes(nfm - cfm)}", :free_end
+        Info.freeing   = false
+        Info.last_free = NSDate.date
+      }
+    end
   end
 
   def trim_mem
-    Thread.start {
-      cfm          = Info.get_free_mem
-      Info.freeing = true
-      notify 'Beginning memory trimming', :trim_start
-      free_mem_old(true)
-      nfm = Info.get_free_mem
-      notify "Finished trimming #{Info.format_bytes(nfm - cfm)}", :trim_end
-      Util.log.info "Freed #{Info.format_bytes(nfm - cfm, true)}"
-      Info.freeing   = false
-      Info.last_trim = NSDate.date
-    }
+    if Util.licensed? || Util.check_trial > 0
+      Thread.start {
+        cfm          = Info.get_free_mem
+        Info.freeing = true
+        notify 'Beginning memory trimming', :trim_start
+        free_mem_old(true)
+        nfm = Info.get_free_mem
+        notify "Finished trimming #{Info.format_bytes(nfm - cfm)}", :trim_end
+        Util.log.info "Freed #{Info.format_bytes(nfm - cfm, true)}"
+        Info.freeing   = false
+        Info.last_trim = NSDate.date
+      }
+    end
   end
 
   def free_mem(pressure)
-    if Persist.store.freeing_method == 'memory pressure'
-      cmp = Info.get_memory_pressure
-      if cmp >= 4
-        notify 'Memory Pressure too high! Running not a good idea.', :error
-        return
-      end
-      dmp = pressure == 'normal' ? 1 : (pressure == 'warn' ? 2 : 4)
-      if cmp >= dmp && Persist.store.auto_escalate?
-        np = cmp == 1 ? 'warn' : 'critical'
-        Util.log.warn "escalating freeing pressure from #{pressure} to #{np}"
-        pressure = np
-      end
-      IO.popen("'memory_pressure' -l #{pressure}") { |pipe|
-        pipe.sync = true
-        pipe.each { |l|
-          Util.log.verbose l
-          if l.include?('Stabilizing at')
-            Util.log.verbose 'Found stabilizing line; breaking'
-            break
-          end
+    if Util.licensed? || Util.check_trial > 0
+      if Persist.store.freeing_method == 'memory pressure'
+        cmp = Info.get_memory_pressure
+        if cmp >= 4
+          notify 'Memory Pressure too high! Running not a good idea.', :error
+          return
+        end
+        dmp = pressure == 'normal' ? 1 : (pressure == 'warn' ? 2 : 4)
+        if cmp >= dmp && Persist.store.auto_escalate?
+          np = cmp == 1 ? 'warn' : 'critical'
+          Util.log.warn "escalating freeing pressure from #{pressure} to #{np}"
+          pressure = np
+        end
+        IO.popen("'memory_pressure' -l #{pressure}") { |pipe|
+          pipe.sync = true
+          pipe.each { |l|
+            Util.log.verbose l
+            if l.include?('Stabilizing at')
+              Util.log.verbose 'Found stabilizing line; breaking'
+              break
+            end
+          }
+          Util.log.verbose 'Preparing to kill memory_pressure process'
+          Process.kill 'SIGINT', pipe.pid
+          Util.log.debug 'memory_pressure process ended'
         }
-        Util.log.verbose 'Preparing to kill memory_pressure process'
-        Process.kill 'SIGINT', pipe.pid
-        Util.log.debug 'memory_pressure process ended'
-      }
-    else
-      free_mem_old
+      else
+        free_mem_old
+      end
     end
   end
 
   def free_mem_old(trim = false)
-    mtf = trim ? [Info.get_free_mem(1) * 0.75, Info.get_free_mem(0.5)].min : Info.get_free_mem(0.9)
-    ep  = NSBundle.mainBundle.pathForResource('inactive', ofType: '')
-    Util.log.debug "'#{ep}' '#{mtf.to_s}'"
-    run_task(ep, mtf.to_s)
+    if Util.licensed? || Util.check_trial > 0
+      mtf = trim ? [Info.get_free_mem(1) * 0.75, Info.get_free_mem(0.5)].min : Info.get_free_mem(0.9)
+      ep  = NSBundle.mainBundle.pathForResource('inactive', ofType: '')
+      Util.log.debug "'#{ep}' '#{mtf.to_s}'"
+      run_task(ep, mtf.to_s)
+    end
   end
 
   def open_link(link)

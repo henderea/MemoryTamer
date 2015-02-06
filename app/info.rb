@@ -93,6 +93,11 @@ module Info
     end
   end
 
+  def trial_end
+    tsd = self.trial_start
+    tsd && (tsd + (7*24*60*60))
+  end
+
   def set_trial_start
     Persist.store.trial_start = NSDate.date.timeIntervalSinceReferenceDate
   end
