@@ -48,7 +48,7 @@ GEM
     molinillo (0.1.2)
     motion-cocoapods (1.7.0)
       cocoapods (>= 0.34)
-    motion-paddle (1.1.4)
+    motion-paddle (1.1.4.1)
       motion-cocoapods (~> 1.7)
     nap (0.8.0)
     netrc (0.7.8)
@@ -71,5 +71,5 @@ DEPENDENCIES
   ib (~> 0.7, >= 0.7.2)
   libxml-ruby (~> 2.8)
   motion-cocoapods (~> 1.7)
-  motion-paddle (~> 1.1, >= 1.1.4)
+  motion-paddle (~> 1.1, >= 1.1.4.1)
   rake
