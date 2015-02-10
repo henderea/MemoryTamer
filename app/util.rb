@@ -152,6 +152,7 @@ module Util
 
   def setup_licensing
     MotionPaddle.will_show_licensing_window = false
+    MotionPaddle.will_continue_at_trial_end = true
     MotionPaddle.setup { |_, _| MainMenu.set_license_display }
     MotionPaddle.listen(:deactivated) { |_, deactivated, deactivateMessage|
       if deactivated
