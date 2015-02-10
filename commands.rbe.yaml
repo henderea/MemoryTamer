@@ -1,4 +1,13 @@
 ---
+cdabdlh:
+  :command: cd
+  :sudo: 
+  :args:
+  - MTLaunchHelper/
+  - "&&"
+  - rake
+  - build:development
+  :vars: 
 cdablh:
   :command: cd
   :sudo: 
@@ -28,15 +37,6 @@ mtbr_sl:
   - cpdmg_nsl
   :sudo: 
   :args: 
-  :vars: 
-cdabdlh:
-  :command: cd
-  :sudo: 
-  :args:
-  - MTLaunchHelper/
-  - "&&"
-  - rake
-  - build:development
   :vars: 
 rcalh:
   :command: cd
