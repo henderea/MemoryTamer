@@ -78,6 +78,7 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.3.1:** Add the rest of the memory stats from Activity monitor and fix a bug causing incorrect free memory amounts
 * **v1.3.1.1:** Fix the value for Swap Used
 * **v1.3.1.2:** Update to latest version of Paddle selling and licensing framework
+* **v1.3.1.3:** Because of some recent issues with Paddle activation, MemoryTamer will now not block you from using the app when your trial runs out.  This is temporary while a solution gets worked out, but it should help those who are having trouble activating their copy.
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.3.zip> (Mavericks-only)
@@ -147,3 +148,4 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.3.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.3.1.dmg>
 * **v1.3.1.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.3.1.1.dmg>
 * **v1.3.1.2:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.3.1.2.dmg>
+* **v1.3.1.3:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.3.1.3.dmg>
