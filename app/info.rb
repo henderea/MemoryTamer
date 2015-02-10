@@ -189,13 +189,4 @@ module Info
   def os_version
     @os_version ||= Version.new(MemInfo.getOSVersion)
   end
-
-  def license_log_status
-    @license_log_status ||= :not_logged
-  end
-
-  def license_log_status=(status)
-    @license_log_status = status
-  end
-
 end

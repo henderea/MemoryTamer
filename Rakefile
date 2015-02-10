@@ -36,7 +36,7 @@ Motion::Project::App.setup do |app|
   app.info_plist['SUFeedURL']               = 'https://rink.hockeyapp.net/api/2/apps/128ebd3240db358d4b1ea5f228269de6'
   app.info_plist['SUEnableSystemProfiling'] = true
   app.info_plist['NSAppleScriptEnabled']    = true
-  app.info_plist['CFBundleURLTypes']        = { 'CFBundleURLSchemes' => ['us.myepg.MemoryTamer'] }
+  app.info_plist['CFBundleURLTypes']        = [{ 'CFBundleURLIconFile' => 'Icon.icns', 'CFBundleURLName' => 'MemoryTamer automatic licensing', 'CFBundleURLSchemes' => ['memorytamer'] }]
   app.deployment_target                     = '10.9'
   app.codesign_certificate                  = 'Developer ID Application: Eric Henderson (SKWXXEM822)'
   app.paddle {
@@ -55,6 +55,7 @@ Motion::Project::App.setup do |app|
   }
   app.embedded_frameworks << 'vendor/Growl.framework'
   app.vendor_project('vendor/mem_info', :static)
+  app.vendor_project('vendor/cocoafob', :static)
   app.frameworks << 'ServiceManagement'
   app.libs << '/usr/lib/libcrypto.dylib'
 
@@ -62,7 +63,7 @@ Motion::Project::App.setup do |app|
     pod 'CocoaLumberjack'
     pod 'HockeySDK-Mac'
     pod 'Sparkle'
-    pod 'FsprgEmbeddedStoreMac'
+    # pod 'FsprgEmbeddedStoreMac'
   end
 end
 

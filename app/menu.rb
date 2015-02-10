@@ -23,7 +23,7 @@ class MainMenu
     menuItem :status_mt_mem, 'memory usage: 0B', image: NSImage.imageNamed('Status'), dynamic_title: -> { "memory usage: #{Info.format_bytes(MemInfo.getMTMemory)}" }
     menuItem :status_mt_time, 'running since: 0d 0h 0m 0s', image: NSImage.imageNamed('Status'), dynamic_title: -> {
                               diff = (NSDate.date - Info.start_time).to_f
-                              "running since #{(diff / (86400.0)).floor}d #{((diff % (86400.0))/(3600.0)).floor}h #{((diff % (3600.0))/60.0).floor}m #{(diff % 60).floor}s"
+                              "running since #{MainMenu.get_time_display(diff)}"
                             }
     menuItem :status_relaunch, 'Relaunch MemoryTamer'
     menuItem :status_login, 'Launch on login', state: NSOffState
@@ -36,9 +36,18 @@ class MainMenu
     menuItem :status_preferences, 'Preferences'
 
     menuItem :status_license, 'Registration', submenu: :license
-    menuItem :license_display, 'Not Registered'
-    menuItem :license_change, 'Buy / Register'
-    menuItem :license_deactivate, 'Deactivate License'
+    menuItem :license_trial, 'Trial Days Left: 7', dynamic_title: -> {
+                             tdr = Util.check_trial
+                             tdr.nil? ? 'Licensed' : (tdr < 0 ? 'Trial expired' : "Trial time remaining: #{MainMenu.get_time_display(tdr)}")
+                           }
+    menuItem :license_paddle, 'Paddle', submenu: :license_paddle
+    menuItem :license_paddle_display, 'Not Registered'
+    menuItem :license_paddle_change, 'Buy / Register'
+    menuItem :license_paddle_deactivate, 'Deactivate License'
+    menuItem :license_fastspring, 'FastSpring', submenu: :license_fastspring
+    menuItem :license_fastspring_display, 'Not Registered'
+    menuItem :license_fastspring_change, 'Register'
+    menuItem :license_fastspring_webstore, 'Web Store'
 
     menuItem :status_support, 'Support', submenu: :support
     menuItem :support_feedback, 'Provide Feedback'
@@ -94,9 +103,23 @@ class MainMenu
     }
 
     menu(:license, 'Registration') {
-      license_display
-      license_change
-      license_deactivate
+      license_trial
+      ___
+      license_paddle
+      ___
+      license_fastspring
+    }
+
+    menu(:license_paddle, 'Paddle') {
+      license_paddle_display
+      license_paddle_change
+      license_paddle_deactivate
+    }
+
+    menu(:license_fastspring, 'FastSpring') {
+      license_fastspring_display
+      license_fastspring_change
+      license_fastspring_webstore
     }
 
     menu(:support, 'Support') {
@@ -115,11 +138,18 @@ class MainMenu
 
     def set_license_display
       Thread.start {
-        activated                                          = MotionPaddle.activated?
-        MainMenu[:license].items[:license_display][:title] = activated ? MotionPaddle.activated_email : 'Not Registered'
-        MainMenu[:license].items[:license_change][:title]  = activated ? 'View Registration' : 'Buy / Register'
-        Util.log_license
+        activated_paddle                                                         = Util.licensed_paddle?
+        MainMenu[:license_paddle].items[:license_paddle_display][:title]         = activated_paddle ? MotionPaddle.activated_email : 'Not Registered'
+        MainMenu[:license_paddle].items[:license_paddle_change][:title]          = activated_paddle ? 'View Registration' : 'Buy / Register'
+        activated_fastspring                                                     = Util.licensed_cocoafob?
+        MainMenu[:license_fastspring].items[:license_fastspring_display][:title] = activated_fastspring ? Persist.store.product_name : 'Not Registered'
+        MainMenu[:license_fastspring].items[:license_fastspring_change][:title]  = activated_fastspring ? 'View Registration' : 'Buy / Register'
+        MainMenu[:license].items[:license_trial].updateDynamicTitle
       }
+    end
+
+    def get_time_display(diff)
+      "#{(diff / (86400.0)).floor}d #{((diff % (86400.0))/(3600.0)).floor}h #{((diff % (3600.0))/60.0).floor}m #{(diff % 60).floor}s"
     end
   end
 end

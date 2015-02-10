@@ -249,34 +249,18 @@ module Util
 
     publicKey = CFobLicVerifier.completePublicKeyPEM(publicKey)
 
-    verifier = CFobLicVerifier.verifierWithPublicKey(publicKey)
+    verifier = CFobLicVerifier.alloc.init
+    verifier.setPublicKey(publicKey, error: nil)
 
-    verifier.regName = regName
-    verifier.regCode = regCode
-    Util.log.debug("publicKey #{publicKey}\nregCode: #{verifier.regCode}\nregName: #{verifier.regName}")
+    # verifier.regName = regName
+    # verifier.regCode = regCode
+    # Util.log.debug("publicKey #{publicKey}\nregCode: #{verifier.regCode}\nregName: #{verifier.regName}")
 
-    if verifier.verify
-      Util.log.info("Yes #{verifier}")
-      true
-    else
-      Util.log.info("No #{verifier}")
-      false
-    end
+    verifier.verifyRegCode(regCode, forName: regName, error: nil)
   end
 
   def shared_licensing_window_controller
     XMLicensingWindowController.sharedLicensingWindowController
-  end
-
-  def log_license
-    activated = MotionPaddle.activated?
-    if activated
-      Util.log.info "MemoryTamer licensed with license #{MotionPaddle.activated_license_code}" if Info.license_log_status != :activated
-      Info.license_log_status = :activated
-    else
-      Util.log.info 'MemoryTamer not licensed' if Info.license_log_status != :unactivated
-      Info.license_log_status = :unactivated
-    end
   end
 
   def log
@@ -306,6 +290,7 @@ module Util
     Thread.start {
       Info.start_time ||= NSDate.date
       loop do
+        MainMenu[:license].items[:license_trial].updateDynamicTitle
         MainMenu[:statusbar].items[:status_mt_time].updateDynamicTitle
         sleep(0.5)
       end

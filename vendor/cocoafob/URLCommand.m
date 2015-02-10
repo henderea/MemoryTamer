@@ -17,6 +17,7 @@
 
 #import "URLCommand.h"
 #import "NSString+PECrypt.h"
+#import "XMArgumentKeys.h"
 
 @interface URLCommand ()
 
@@ -54,7 +55,11 @@
 	NSString *serial = (NSString *)[userNameAndSerialNumber objectAtIndex:1];
 	NSLog(@"Serial: %@", serial);
 	// TODO: Save registration to preferences.
+	NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+	[defaults setValue: serial forKey:kXMRegCode];
+	[defaults setValue: username forKey:kXMRegName];
 	// TODO: Broadcast notification of a changed registration information.
+	[[NSNotificationCenter defaultCenter] postNotificationName:XMDidChangeRegistrationNotification object:self];
 	return nil;
 }
 
