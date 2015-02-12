@@ -164,23 +164,31 @@ module Util
       end
     }
     @licensing_listener = LicensingListener.new { |notification|
-      licenseWindowController = Util.shared_licensing_window_controller
-      Util.show_licensing_window(nil)
+      # licenseWindowController = Util.shared_licensing_window_controller
+      # Util.show_licensing_window(nil)
 
       isValidLicense = Util.verify_license
 
       @licensed_cocoafob = isValidLicense
 
-      licenseWindowController.showLicensedStatus(isValidLicense)
+      if isValidLicense
+        alert = NSAlert.alertWithMessageText('Thank you for registering.', defaultButton: 'OK', alternateButton: nil, otherButton: nil, informativeTextWithFormat: '')
+        alert.runModal
+      else
+        alert = NSAlert.alertWithMessageText('License not valid.', defaultButton: 'OK', alternateButton: nil, otherButton: nil, informativeTextWithFormat: '')
+        alert.runModal
+      end
+
+      # licenseWindowController.showLicensedStatus(isValidLicense)
     }
     NSNotificationCenter.defaultCenter.addObserver(@licensing_listener, selector: 'registrationChanged:', name: 'XMDidChangeRegistrationNotification', object: nil)
     if self.verify_license
-      Util.log.info('Application is registered.')
-      self.shared_licensing_window_controller.isLicensed = true
+      # Util.log.info('Application is registered.')
+      # self.shared_licensing_window_controller.isLicensed = true
       @licensed_cocoafob                                 = true
     else
-      Util.log.info('Application not registered.')
-      self.shared_licensing_window_controller.isLicensed = false
+      # Util.log.info('Application not registered.')
+      # self.shared_licensing_window_controller.isLicensed = false
       @licensed_cocoafob                                 = false
     end
   end
@@ -216,10 +224,10 @@ module Util
     end
   end
 
-  def show_licensing_window(sender)
-    self.shared_licensing_window_controller.window.makeKeyAndOrderFront(nil)
-    self.shared_licensing_window_controller.window.orderFrontRegardless
-  end
+  # def show_licensing_window(sender)
+  #   self.shared_licensing_window_controller.window.makeKeyAndOrderFront(nil)
+  #   self.shared_licensing_window_controller.window.orderFrontRegardless
+  # end
 
   def verify_license
     regCode = Persist.store.product_key
@@ -259,9 +267,9 @@ module Util
     verifier.verifyRegCode(regCode, forName: regName, error: nil)
   end
 
-  def shared_licensing_window_controller
-    XMLicensingWindowController.sharedLicensingWindowController
-  end
+  # def shared_licensing_window_controller
+  #   XMLicensingWindowController.sharedLicensingWindowController
+  # end
 
   def log
     Motion::Log

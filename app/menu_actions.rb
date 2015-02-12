@@ -26,7 +26,7 @@ module MenuActions
     MainMenu.set_license_display
     MainMenu[:license_paddle].subscribe(:license_paddle_change) { |_, _| MotionPaddle.show_licensing }
     MainMenu[:license_paddle].subscribe(:license_paddle_deactivate) { |_, _| MotionPaddle.deactivate_license }.canExecuteBlock { |_| MotionPaddle.activated? }
-    MainMenu[:license_fastspring].subscribe(:license_fastspring_change) { |_, _| Util.show_licensing_window(nil) }
+    # MainMenu[:license_fastspring].subscribe(:license_fastspring_change) { |_, _| Util.show_licensing_window(nil) }
     MainMenu[:license_fastspring].subscribe(:license_fastspring_webstore) { |_, _| Util.open_link('http://sites.fastspring.com/memorytamer/product/memorytamer') }
   end
 
