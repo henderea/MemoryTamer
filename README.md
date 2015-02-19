@@ -1,7 +1,9 @@
 MemoryTamer
 ===========
 
-As of version 0.7.2, Memory Tamer is now a paid app.  Please visit <https://pay.paddle.com/checkout/492767> to get a license.  You can also buy in-app.
+As of version 0.7.2, MemoryTamer is now a paid app.  Please visit <https://pay.paddle.com/checkout/492767> to get a Paddle license.  You can also buy in-app.
+
+As of version 1.4.0, MemoryTamer now supports FastSpring as an alternate payment provider.  Please visit <http://sites.fastspring.com/memorytamer/product/memorytamer> to purchase a license through FastSpring.
 
 Thank you to everyone who has bought MemoryTamer so far.  I've added a lot of features in the time since I put it up for sale at $1.99, and I feel that MemoryTamer is worth a bit more than when it started out.  As such, I have increased the price to $2.49.
 
@@ -79,6 +81,7 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.3.1.1:** Fix the value for Swap Used
 * **v1.3.1.2:** Update to latest version of Paddle selling and licensing framework
 * **v1.3.1.3:** Because of some recent issues with Paddle activation, MemoryTamer will now not block you from using the app when your trial runs out.  This is temporary while a solution gets worked out, but it should help those who are having trouble activating their copy.
+* **v1.4.0:** Now supports FastSpring as an alternate payment provider.  Due to some issues in the licensing dialog, currently the FastSpring license can only be activated via the link you get in the delivery information email.  You will need to have MemoryTamer already installed before you click the link.  You may need to allow it to open/run.
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.3.zip> (Mavericks-only)
@@ -149,3 +152,4 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.3.1.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.3.1.1.dmg>
 * **v1.3.1.2:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.3.1.2.dmg>
 * **v1.3.1.3:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.3.1.3.dmg>
+* **v1.4.0:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.4.0.dmg>
