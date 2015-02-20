@@ -310,8 +310,8 @@ module Util
   end
 
   def freeing_loop
+    Info.start_time ||= NSDate.date
     Thread.start {
-      Info.start_time ||= NSDate.date
       Info.last_free  = NSDate.date - 30
       Info.last_trim  = NSDate.date
       loop do
