@@ -198,7 +198,7 @@ module Util
     if ted.nil?
       nil
     else
-      ted - Date.date
+      ted - NSDate.date
     end
   end
 
