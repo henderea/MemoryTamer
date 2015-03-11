@@ -84,6 +84,7 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.4.0:** Now supports FastSpring as an alternate payment provider.  Due to some issues in the licensing dialog, currently the FastSpring license can only be activated via the link you get in the delivery information email.  You will need to have MemoryTamer already installed before you click the link.  You may need to allow it to open/run.
 * **v1.4.1:** Hopefully fix a startup crash
 * **v1.4.1.1:** Fix a crash related to the trial system
+* **v1.4.2:** Update the Paddle framework to hopefully fix some issues
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.3.zip> (Mavericks-only)
@@ -157,3 +158,4 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.4.0:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.4.0.dmg>
 * **v1.4.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.4.1.dmg>
 * **v1.4.1.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.4.1.1.dmg>
+* **v1.4.2:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.4.2.dmg>
