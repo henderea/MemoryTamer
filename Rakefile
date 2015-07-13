@@ -29,8 +29,8 @@ end
 Motion::Project::App.setup do |app|
   app.icon                                  = 'Icon.icns'
   app.name                                  = 'MemoryTamer'
-  app.version                               = '1.4.2.1'
-  app.short_version                         = '1.4.2.1'
+  app.version                               = '1.4.3'
+  app.short_version                         = '1.4.3'
   app.identifier                            = 'us.myepg.MemoryTamer'
   app.info_plist['NSUIElement']             = true
   app.info_plist['SUFeedURL']               = 'https://rink.hockeyapp.net/api/2/apps/128ebd3240db358d4b1ea5f228269de6'
@@ -51,7 +51,7 @@ Motion::Project::App.setup do |app|
     set :trial_duration, '7'
     set :trial_text, 'Thanks for downloading a trial of MemoryTamer! I hope you enjoy it.'
     set :product_image, 'Icon.png'
-    set :time_trial, false
+    set :time_trial, true
   }
   app.embedded_frameworks << 'vendor/Growl.framework'
   app.vendor_project('vendor/mem_info', :static)

@@ -9,21 +9,21 @@ class MainMenu
 
     menuItem :services_item, 'Services', preset: :services
 
-    menuItem :status_mem_pressure_percent, 'Memory pressure: 0%', dynamic_title: -> { "Memory pressure: #{Info.get_memory_pressure_percent}%" }
+    menuItem :status_mem_pressure_percent, 'Memory pressure: 0%', dynamic_title: -> { "Memory pressure: #{Info.get_memory_pressure_percent}%".to_weak }
     menuItem :status_mem_physical, 'Physical Memory: 0B'
-    menuItem :status_mem_used, 'Memory Used: 0B', dynamic_title: -> { "Memory Used: #{Info.format_bytes(Info.get_used_mem)}" }
-    menuItem :status_mem_virtual, 'Virtual Memory: 0B', dynamic_title: -> { "Virtual Memory: #{Info.format_bytes(Info.get_total_memory+Info.get_compressor_mem)}" }
-    menuItem :status_mem_swap, 'Swap Used: 0B', dynamic_title: -> { "Swap Used: #{Info.format_bytes(Info.get_swap_mem)}" }
-    menuItem :status_mem_app_mem, 'App Memory: 0B', dynamic_title: -> { "App Memory: #{Info.format_bytes(Info.get_app_mem)}" }
-    menuItem :status_mem_file_cache, 'File Cache: 0B', dynamic_title: -> { "File Cache: #{Info.format_bytes(Info.get_file_cache_mem)}" }
-    menuItem :status_mem_wired, 'Wired Memory: 0B', dynamic_title: -> { "Wired Memory: #{Info.format_bytes(Info.get_wired_mem)}" }
-    menuItem :status_mem_compressed, 'Compressed: 0B', dynamic_title: -> { "Compressed: #{Info.format_bytes(Info.get_compressed_mem)}" }
+    menuItem :status_mem_used, 'Memory Used: 0B', dynamic_title: -> { "Memory Used: #{Info.format_bytes(Info.get_used_mem).to_weak}".to_weak }
+    menuItem :status_mem_virtual, 'Virtual Memory: 0B', dynamic_title: -> { "Virtual Memory: #{Info.format_bytes(Info.get_total_memory+Info.get_compressor_mem).to_weak}".to_weak }
+    menuItem :status_mem_swap, 'Swap Used: 0B', dynamic_title: -> { "Swap Used: #{Info.format_bytes(Info.get_swap_mem).to_weak}".to_weak }
+    menuItem :status_mem_app_mem, 'App Memory: 0B', dynamic_title: -> { "App Memory: #{Info.format_bytes(Info.get_app_mem).to_weak}".to_weak }
+    menuItem :status_mem_file_cache, 'File Cache: 0B', dynamic_title: -> { "File Cache: #{Info.format_bytes(Info.get_file_cache_mem).to_weak}".to_weak }
+    menuItem :status_mem_wired, 'Wired Memory: 0B', dynamic_title: -> { "Wired Memory: #{Info.format_bytes(Info.get_wired_mem).to_weak}".to_weak }
+    menuItem :status_mem_compressed, 'Compressed: 0B', dynamic_title: -> { "Compressed: #{Info.format_bytes(Info.get_compressed_mem).to_weak}".to_weak }
     menuItem :status_free, 'Free memory now'
     menuItem :status_trim, 'Trim memory now'
-    menuItem :status_mt_mem, 'memory usage: 0B', image: NSImage.imageNamed('Status'), dynamic_title: -> { "memory usage: #{Info.format_bytes(MemInfo.getMTMemory)}" }
+    menuItem :status_mt_mem, 'memory usage: 0B', image: NSImage.imageNamed('Status'), dynamic_title: -> { "memory usage: #{Info.format_bytes(MemInfo.getMTMemory).to_weak}".to_weak }
     menuItem :status_mt_time, 'running since: 0d 0h 0m 0s', image: NSImage.imageNamed('Status'), dynamic_title: -> {
                               diff = (NSDate.date - Info.start_time).to_f
-                              "running since #{MainMenu.get_time_display(diff)}"
+                              "running since #{MainMenu.get_time_display(diff).to_weak}".to_weak
                             }
     menuItem :status_relaunch, 'Relaunch MemoryTamer'
     menuItem :status_login, 'Launch on login', state: NSOffState
@@ -38,7 +38,7 @@ class MainMenu
     menuItem :status_license, 'Registration', submenu: :license
     menuItem :license_trial, 'Trial Days Left: 7', dynamic_title: -> {
                              tdr = Util.check_trial
-                             tdr.nil? ? 'Licensed' : (tdr < 0 ? 'Trial expired' : "Trial time remaining: #{MainMenu.get_time_display(tdr)}")
+                             tdr.nil? ? 'Licensed' : (tdr < 0 ? 'Trial expired' : "Trial Days Left: #{tdr}".to_weak)
                            }
     menuItem :license_paddle, 'Paddle', submenu: :license_paddle
     menuItem :license_paddle_display, 'Not Registered'
@@ -139,17 +139,17 @@ class MainMenu
     def set_license_display
       Thread.start {
         activated_paddle                                                         = Util.licensed_paddle?
-        MainMenu[:license_paddle].items[:license_paddle_display][:title]         = activated_paddle ? MotionPaddle.activated_email : 'Not Registered'
-        MainMenu[:license_paddle].items[:license_paddle_change][:title]          = activated_paddle ? 'View Registration' : 'Buy / Register'
+        MainMenu[:license_paddle].items[:license_paddle_display][:title]         = activated_paddle ? MotionPaddle.activated_email.to_weak : 'Not Registered'.to_weak
+        MainMenu[:license_paddle].items[:license_paddle_change][:title]          = activated_paddle ? 'View Registration'.to_weak : 'Buy / Register'.to_weak
         activated_fastspring                                                     = Util.licensed_cocoafob?
-        MainMenu[:license_fastspring].items[:license_fastspring_display][:title] = activated_fastspring ? Persist.store.product_name : 'Not Registered'
-        MainMenu[:license_fastspring].items[:license_fastspring_change][:title]  = activated_fastspring ? 'View Registration' : 'Buy / Register'
+        MainMenu[:license_fastspring].items[:license_fastspring_display][:title] = activated_fastspring ? Persist.store.product_name.to_weak : 'Not Registered'.to_weak
+        MainMenu[:license_fastspring].items[:license_fastspring_change][:title]  = activated_fastspring ? 'View Registration'.to_weak : 'Buy / Register'.to_weak
         MainMenu[:license].items[:license_trial].updateDynamicTitle
       }
     end
 
     def get_time_display(diff)
-      "#{(diff / (86400.0)).floor}d #{((diff % (86400.0))/(3600.0)).floor}h #{((diff % (3600.0))/60.0).floor}m #{(diff % 60).floor}s"
+      "#{(diff / (86400.0)).floor}d #{((diff % (86400.0))/(3600.0)).floor}h #{((diff % (3600.0))/60.0).floor}m #{(diff % 60).floor}s".to_weak
     end
   end
 end

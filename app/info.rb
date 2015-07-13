@@ -83,29 +83,6 @@ module Info
     rf * (1024.0 ** ind)
   end
 
-  def trial_start
-    ts = Persist.store.trial_start
-    if Util.licensed?
-      nil
-    else
-      ts = self.set_trial_start if ts.nil? || ts == 0.0
-      NSDate.dateWithTimeIntervalSinceReferenceDate(ts)
-    end
-  end
-
-  def trial_end
-    tsd = self.trial_start
-    tsd && (tsd + (7*24*60*60))
-  end
-
-  def set_trial_start
-    Persist.store.trial_start = NSDate.date.timeIntervalSinceReferenceDate
-  end
-
-  def reset_trial_start
-    Persist.store.trial_start = 0.0
-  end
-
   def get_memory_pressure
     MemInfo.getMemoryPressure
   end
@@ -119,10 +96,10 @@ module Info
   end
 
   def format_bytes(bytes, show_raw = false)
-    return "#{bytes} B" if bytes.abs <= 1
+    return "#{bytes} B".to_weak if bytes.abs <= 1
     lg   = (Math.log(bytes.abs)/Math.log(1024)).floor.to_f
-    unit = %w(B KB MB GB TB PB EB ZB YB)[lg]
-    "#{"%.#{show_raw ? '3' : Persist.store.mem_places.to_s}f" % (bytes.to_f / 1024.0**lg)} #{unit}#{show_raw ? " (#{bytes} B)" : ''}"
+    unit = %w(B KB MB GB TB PB EB ZB YB)[lg].to_weak
+    "#{"%.#{show_raw ? '3'.to_weak : Persist.store.mem_places.to_s.to_weak}f".to_weak % (bytes.to_f / 1024.0**lg)} #{unit}#{show_raw ? " (#{bytes} B)".to_weak : ''.to_weak}".to_weak
   end
 
   def freeing=(freeing)

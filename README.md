@@ -86,6 +86,7 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.4.1.1:** Fix a crash related to the trial system
 * **v1.4.2:** Update the Paddle framework to hopefully fix some issues
 * **v1.4.2.1:** Update some dependencies to hopefully reduce problems
+* **v1.4.3:** Update some dependencies and make Paddle licensing the default again.
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.3.zip> (Mavericks-only)

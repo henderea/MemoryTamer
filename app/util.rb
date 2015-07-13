@@ -151,7 +151,16 @@ module Util
   end
 
   def setup_licensing
-    MotionPaddle.will_show_licensing_window = false
+    if self.verify_license
+      # Util.log.info('Application is registered.')
+      # self.shared_licensing_window_controller.isLicensed = true
+      @licensed_cocoafob = true
+    else
+      # Util.log.info('Application not registered.')
+      # self.shared_licensing_window_controller.isLicensed = false
+      @licensed_cocoafob = false
+    end
+    MotionPaddle.will_show_licensing_window = !@licensed_cocoafob
     MotionPaddle.will_continue_at_trial_end = true
     MotionPaddle.setup { |_, _| MainMenu.set_license_display }
     MotionPaddle.listen(:deactivated) { |_, deactivated, deactivateMessage|
@@ -182,23 +191,13 @@ module Util
       # licenseWindowController.showLicensedStatus(isValidLicense)
     }
     NSNotificationCenter.defaultCenter.addObserver(@licensing_listener, selector: 'registrationChanged:', name: 'XMDidChangeRegistrationNotification', object: nil)
-    if self.verify_license
-      # Util.log.info('Application is registered.')
-      # self.shared_licensing_window_controller.isLicensed = true
-      @licensed_cocoafob                                 = true
-    else
-      # Util.log.info('Application not registered.')
-      # self.shared_licensing_window_controller.isLicensed = false
-      @licensed_cocoafob                                 = false
-    end
   end
 
   def check_trial
-    ted = Info.trial_end
-    if ted.nil?
+    if self.licensed?
       nil
     else
-      ted - NSDate.date
+      MotionPaddle.trial_days_left
     end
   end
 
@@ -312,12 +311,12 @@ module Util
   def freeing_loop
     Info.start_time ||= NSDate.date
     Thread.start {
-      Info.last_free  = NSDate.date - 30
-      Info.last_trim  = NSDate.date
+      Info.last_free = NSDate.date - 30
+      Info.last_trim = NSDate.date
       loop do
         mtm = MemInfo.getMTMemory
         if mtm > (200 * (1024 ** 2)) && (NSDate.date - Info.start_time) > 300
-          Util.log.warn "MemoryTamer is using #{Info.format_bytes(mtm, true)}; restarting"
+          Util.log.warn "MemoryTamer is using #{Info.format_bytes(mtm, true).to_weak}; restarting".to_weak
           relaunch_app
         end
         MainMenu[:statusbar].items[:status_mt_mem].updateDynamicTitle
@@ -330,17 +329,17 @@ module Util
         MainMenu[:statusbar].items[:status_mem_wired].updateDynamicTitle
         MainMenu[:statusbar].items[:status_mem_compressed].updateDynamicTitle
         cfm = Info.get_free_mem
-        MainMenu.status_item.setTitle(Persist.store.show_mem? ? Info.format_bytes(cfm) : '') if Persist.store.update_while? || !Info.freeing?
+        MainMenu.status_item.setTitle(Persist.store.show_mem? ? Info.format_bytes(cfm).to_weak : ''.to_weak) if Persist.store.update_while? || !Info.freeing?
         if Util.licensed? || Util.check_trial > 0
           diff   = (NSDate.date - Info.last_free)
           diff_t = (NSDate.date - Info.last_trim)
           if cfm <= Info.dfm && diff >= 60 && diff_t >= 30 && !Info.freeing?
-            Util.log.info "seconds since last full freeing: #{diff}"
-            Util.log.info "seconds since last trim: #{diff_t}"
+            Util.log.info "seconds since last full freeing: #{diff}".to_weak
+            Util.log.info "seconds since last trim: #{diff_t}".to_weak
             Util.free_mem_default
           elsif cfm <= Info.dtm && diff >= 30 && diff_t >= 30 && !Info.freeing?
-            Util.log.info "seconds since last full freeing: #{diff}"
-            Util.log.info "seconds since last trim: #{diff_t}"
+            Util.log.info "seconds since last full freeing: #{diff}".to_weak
+            Util.log.info "seconds since last trim: #{diff_t}".to_weak
             Util.trim_mem
           end
         end
@@ -361,7 +360,7 @@ module Util
 
   def notify(msg, nn)
     enabled = nn == :error || Persist.store["#{nn}?"]
-    Util.log.info "Notification (#{nn}=#{enabled.inspect}): #{msg}"
+    Util.log.info "Notification (#{nn}=#{enabled.inspect}): #{msg}".to_weak
     if enabled
       if Persist.store.notifications == 'Growl'
         if GrowlApplicationBridge.isGrowlRunning
@@ -404,8 +403,8 @@ module Util
         notify 'Beginning memory freeing', :free_start
         free_mem(Persist.store.pressure)
         nfm = Info.get_free_mem
-        Util.log.info "Freed #{Info.format_bytes(nfm - cfm, true)}"
-        notify "Finished freeing #{Info.format_bytes(nfm - cfm)}", :free_end
+        Util.log.info "Freed #{Info.format_bytes(nfm - cfm, true)}".to_weak
+        notify "Finished freeing #{Info.format_bytes(nfm - cfm)}".to_weak, :free_end
         Info.freeing   = false
         Info.last_free = NSDate.date
       }
@@ -420,8 +419,8 @@ module Util
         notify 'Beginning memory trimming', :trim_start
         free_mem_old(true)
         nfm = Info.get_free_mem
-        notify "Finished trimming #{Info.format_bytes(nfm - cfm)}", :trim_end
-        Util.log.info "Freed #{Info.format_bytes(nfm - cfm, true)}"
+        Util.log.info "Freed #{Info.format_bytes(nfm - cfm, true)}".to_weak
+        notify "Finished trimming #{Info.format_bytes(nfm - cfm)}".to_weak, :trim_end
         Info.freeing   = false
         Info.last_trim = NSDate.date
       }
@@ -433,13 +432,13 @@ module Util
       if Persist.store.freeing_method == 'memory pressure'
         cmp = Info.get_memory_pressure
         if cmp >= 4
-          notify 'Memory Pressure too high! Running not a good idea.', :error
+          notify 'Memory Pressure too high! Running not a good idea.'.to_weak, :error
           return
         end
         dmp = pressure == 'normal' ? 1 : (pressure == 'warn' ? 2 : 4)
         if cmp >= dmp && Persist.store.auto_escalate?
           np = cmp == 1 ? 'warn' : 'critical'
-          Util.log.warn "escalating freeing pressure from #{pressure} to #{np}"
+          Util.log.warn "escalating freeing pressure from #{pressure} to #{np}".to_weak
           pressure = np
         end
         IO.popen("'memory_pressure' -l #{pressure}") { |pipe|

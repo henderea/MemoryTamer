@@ -82,7 +82,7 @@ class Persist
            :growl, :sticky, :notifications,
            :free_start, :free_end, :trim_start, :trim_end,
            :last_version,
-           :product_key, :product_name, :trial_start
+           :product_key, :product_name
 
   alias_property pressure: :freeing_pressure,
                  sticky:   :growl_sticky
