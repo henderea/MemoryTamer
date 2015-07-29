@@ -8,6 +8,10 @@ module MenuActions
   end
 
   def setup_statusbar
+    MainMenu[:statusbar].subscribe(:status_pause) { |_, _|
+      Info.paused = MainMenu[:statusbar].items[:status_pause][:state] == NSOffState
+      MainMenu[:statusbar].items[:status_pause][:state] = Info.paused? ? NSOnState : NSOffState
+    }
     MainMenu[:statusbar].subscribe(:status_free) { |_, _| Util.free_mem_default }.canExecuteBlock { |_| !Info.freeing? && (Util.licensed? || Util.check_trial > 0) }
     MainMenu[:statusbar].subscribe(:status_trim) { |_, _| Util.trim_mem }.canExecuteBlock { |_| !Info.freeing? && (Util.licensed? || Util.check_trial > 0) }
     MainMenu[:statusbar].subscribe(:status_relaunch) { |_, _| Util.relaunch_app }

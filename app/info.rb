@@ -1,6 +1,14 @@
 module Info
   module_function
 
+  def paused?
+    @paused
+  end
+
+  def paused=(paused)
+    @paused = paused
+  end
+
   def last_free
     @last_free
   end

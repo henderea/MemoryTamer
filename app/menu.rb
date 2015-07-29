@@ -18,6 +18,7 @@ class MainMenu
     menuItem :status_mem_file_cache, 'File Cache: 0B', dynamic_title: -> { "File Cache: #{Info.format_bytes(Info.get_file_cache_mem).to_weak}".to_weak }
     menuItem :status_mem_wired, 'Wired Memory: 0B', dynamic_title: -> { "Wired Memory: #{Info.format_bytes(Info.get_wired_mem).to_weak}".to_weak }
     menuItem :status_mem_compressed, 'Compressed: 0B', dynamic_title: -> { "Compressed: #{Info.format_bytes(Info.get_compressed_mem).to_weak}".to_weak }
+    menuItem :status_pause, 'Pause automatic freeing/trimming', state: NSOffState
     menuItem :status_free, 'Free memory now'
     menuItem :status_trim, 'Trim memory now'
     menuItem :status_mt_mem, 'memory usage: 0B', image: NSImage.imageNamed('Status'), dynamic_title: -> { "memory usage: #{Info.format_bytes(MemInfo.getMTMemory).to_weak}".to_weak }
@@ -79,6 +80,7 @@ class MainMenu
       status_mem_wired
       status_mem_compressed
       ___
+      status_pause
       status_free
       status_trim
       ___

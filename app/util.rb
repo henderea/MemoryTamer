@@ -333,11 +333,11 @@ module Util
         if Util.licensed? || Util.check_trial > 0
           diff   = (NSDate.date - Info.last_free)
           diff_t = (NSDate.date - Info.last_trim)
-          if cfm <= Info.dfm && diff >= 60 && diff_t >= 30 && !Info.freeing?
+          if cfm <= Info.dfm && diff >= 60 && diff_t >= 30 && !Info.freeing? && !Info.paused?
             Util.log.info "seconds since last full freeing: #{diff}".to_weak
             Util.log.info "seconds since last trim: #{diff_t}".to_weak
             Util.free_mem_default
-          elsif cfm <= Info.dtm && diff >= 30 && diff_t >= 30 && !Info.freeing?
+          elsif cfm <= Info.dtm && diff >= 30 && diff_t >= 30 && !Info.freeing? && !Info.paused?
             Util.log.info "seconds since last full freeing: #{diff}".to_weak
             Util.log.info "seconds since last trim: #{diff_t}".to_weak
             Util.trim_mem
