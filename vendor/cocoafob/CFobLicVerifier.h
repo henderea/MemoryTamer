@@ -4,12 +4,12 @@
 //
 //  Created by Gleb Dolgich on 06/02/2009.
 //  Follow me on Twitter @glebd.
-//  Copyright 2009-2012 PixelEspresso. All rights reserved.
+//  Copyright 2009-2015 PixelEspresso. All rights reserved.
 //  Licensed under BSD license.
 //
 
 #import <Foundation/Foundation.h>
-#import <openssl/dsa.h>
+#import <Security/Security.h>
 
 /*!
 	@class       CFobLicVerifier
@@ -18,25 +18,11 @@
 	@discussion  Verifies CocoaFob-style registration key given licensing information (for example, application name, user name, and number of copies as suggested in Potion Store) and signature in human-readable format. A signature is a base32-encoded bignum with padding removed and dashes inserted.
 */
 @interface CFobLicVerifier : NSObject {
-	DSA *_dsa;
+	SecKeyRef _publicKey;
 	NSArray *_blacklist;
 }
 
 @property (nonatomic, copy) NSArray *blacklist;
-
-/*!
-    @method     initOpenSSL
-    @abstract   Inits OpenSSL library
-    @discussion Must be called before any other calls to the class methods. The current implementation calls this method automatically when the class is instantiated for the first time.
- */
-+ (void)initOpenSSL;
-
-/*!
-    @method     shutdownOpenSSL
-    @abstract   Shuts down OpenSSL library
-    @discussion Must be called on app exit. Be careful not to call this method while OpenSSL library is still being used.
- */
-+ (void)shutdownOpenSSL;
 
 /*!
 	@method     completePublicKeyPEM:
