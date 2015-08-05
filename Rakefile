@@ -29,13 +29,13 @@ end
 Motion::Project::App.setup do |app|
   app.icon                                  = 'Icon.icns'
   app.name                                  = 'MemoryTamer'
-  app.version                               = '1.2.5'
-  app.short_version                         = '1.2.5'
+  app.version                               = '1.2.4'
+  app.short_version                         = '1.2.4'
   app.identifier                            = 'us.myepg.MemoryTamer'
   app.info_plist['NSUIElement']             = 1
   app.info_plist['SUFeedURL']               = 'https://rink.hockeyapp.net/api/2/apps/128ebd3240db358d4b1ea5f228269de6'
   app.info_plist['SUEnableSystemProfiling'] = true
-  app.deployment_target                     = '10.9'
+  app.deployment_target                     = '10.8'
   app.codesign_certificate                  = 'Developer ID Application: Eric Henderson (SKWXXEM822)'
   app.paddle {
     set :product_id, '993'
@@ -54,14 +54,11 @@ Motion::Project::App.setup do |app|
   app.embedded_frameworks << 'vendor/Growl.framework'
   app.embedded_frameworks << 'vendor/Paddle.framework'
   app.vendor_project('vendor/mem_info', :static)
-  app.vendor_project('vendor/privileged_helper', :static)
   app.frameworks << 'ServiceManagement'
-  app.frameworks << 'Security'
-  app.info_plist['SMPrivilegedExecutables'] = { 'us.myepg.MemoryTamer.MTPrivilegedHelper' => 'identifier us.myepg.MemoryTamer.MTPrivilegedHelper and certificate leaf[subject.CN] = "Developer ID Application: Eric Henderson (SKWXXEM822)"' }
 
   app.pods do
     pod 'CocoaLumberjack'
-    pod 'HockeySDK-Mac'
+    pod 'HockeySDK-Mac', git: 'https://github.com/bitstadium/HockeySDK-Mac.git'
     pod 'Sparkle'
   end
 end
@@ -76,8 +73,7 @@ class Motion::Project::App
 
     def build(platform, options = {})
 
-      helper_name  = 'MTLaunchHelper'
-      helper_name2 = 'us.myepg.MemoryTamer.MTPrivilegedHelper'
+      helper_name = 'MTLaunchHelper'
 
       # First let the normal `build' method perform its work.
       build_before_copy_helper(platform, options)
@@ -90,14 +86,6 @@ class Motion::Project::App
       helper_path = File.join("./#{helper_name}", config.versionized_build_dir(platform)[1..-1], "#{helper_name}.app")
       info 'Copy', helper_path
       FileUtils.cp_r helper_path, destination
-
-      destination2 = File.join(config.app_bundle(platform), 'Library/LaunchServices')
-      info 'Create', destination2
-      FileUtils.mkdir_p destination2
-
-      helper_path2 = "./files/#{helper_name2}"
-      info 'Copy', helper_path2
-      FileUtils.cp_r helper_path2, destination2
     end
   end
 end

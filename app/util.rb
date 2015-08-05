@@ -198,7 +198,7 @@ module Util
   end
 
   def time_loop
-    Threads.run_async('us.myepg.MemoryTamer.time_loop') {
+    Thread.start {
       Info.start_time ||= NSDate.date
       loop do
         MainMenu[:statusbar].items[:status_mt_time].updateDynamicTitle
@@ -208,12 +208,11 @@ module Util
   end
 
   def relaunch_app
-    # NSApp.performSelectorOnMainThread('relaunchAfterDelay:', withObject: 1, waitUntilDone: true)
-    Threads.run_sync { NSApp.relaunchAfterDelay(1) }
+    NSApp.performSelectorOnMainThread('relaunchAfterDelay:', withObject: 1, waitUntilDone: true)
   end
 
   def freeing_loop
-    Threads.run_async('us.myepg.MemoryTamer.freeing_loop') {
+    Thread.start {
       Info.start_time ||= NSDate.date
       Info.last_free = NSDate.date - 30
       Info.last_trim = NSDate.date
@@ -240,31 +239,6 @@ module Util
         sleep(Persist.store.refresh_rate)
       end
     }
-  end
-
-  def purge
-    error_ref = Pointer.new(:object)
-    result = PrivilegedHelper.blessHelperWithLabel('us.myepg.MemoryTamer.MTPrivilegedHelper', error: error_ref)
-    unless result
-      Util.log.error(error_ref[0])
-      notify('Error in setting up helper', :error)
-      return
-    end
-    @privileged_helper_instance ||= PrivilegedHelper.createHelperConnection('us.myepg.MemoryTamer.MTPrivilegedHelper', utilCallback: PrivilegedHelperCallback.new)
-    notify('Beginning purge', :free_start)
-    @privileged_helper_instance.executeOperation('purge')
-  end
-
-  class PrivilegedHelperCallback
-    def debug(message)
-      Util.log.debug(message)
-    end
-    def error(message)
-      Util.log.error(message)
-    end
-    def privileged_helper_response(response_text)
-      Util.notify(response_text, :free_end)
-    end
   end
 
   def nn_str(nn)
@@ -315,7 +289,7 @@ module Util
   end
 
   def free_mem_default
-    Threads.run_async('us.myepg.MemoryTamer.free_mem_default') {
+    Thread.start {
       cfm          = Info.get_free_mem
       Info.freeing = true
       notify 'Beginning memory freeing', :free_start
@@ -329,7 +303,7 @@ module Util
   end
 
   def trim_mem
-    Threads.run_async('us.myepg.MemoryTamer.trim_mem') {
+    Thread.start {
       cfm          = Info.get_free_mem
       Info.freeing = true
       notify 'Beginning memory trimming', :trim_start

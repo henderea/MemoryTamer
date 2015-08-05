@@ -16,13 +16,12 @@ class MainMenu
       diff = (NSDate.date - Info.start_time).to_f
       "running since #{(diff / (86400.0)).floor}d #{((diff % (86400.0))/(3600.0)).floor}h #{((diff % (3600.0))/60.0).floor}m #{(diff % 60).floor}s"
     }
-    menuItem :status_purge, 'Purge inactive memory'
     menuItem :status_relaunch, 'Relaunch MemoryTamer'
     menuItem :status_login, 'Launch on login', state: NSOffState
     menuItem :status_update, 'Check for Updates'
     menuItem :status_version, 'Current Version: 0.0'
     menuItem :status_review, 'Write a review'
-    # menuItem :status_vote, 'Vote on next feature'
+    menuItem :status_vote, 'Vote on next feature'
     menuItem :status_quit, 'Quit', preset: :quit
 
     menuItem :status_preferences, 'Preferences'
@@ -53,8 +52,6 @@ class MainMenu
       status_free
       status_trim
       ___
-      status_purge
-      ___
       status_mt_mem
       status_mt_time
       status_relaunch
@@ -69,7 +66,7 @@ class MainMenu
       status_update
       status_version
       ___
-      # status_vote
+      status_vote
       status_review
       ___
       status_quit
@@ -96,12 +93,10 @@ class MainMenu
     end
 
     def set_license_display
-      Threads.run_async('us.myepg.MemoryTamer.set_license_display') {
+      Thread.start {
         activated                                          = MotionPaddle.activated?
-        Threads.run_sync {
-          MainMenu[:license].items[:license_display][:title] = activated ? MotionPaddle.activated_email : 'Not Registered'
-          MainMenu[:license].items[:license_change][:title]  = activated ? 'View Registration' : 'Buy / Register'
-        }
+        MainMenu[:license].items[:license_display][:title] = activated ? MotionPaddle.activated_email : 'Not Registered'
+        MainMenu[:license].items[:license_change][:title]  = activated ? 'View Registration' : 'Buy / Register'
         Util.log_license
       }
     end
