@@ -29,16 +29,18 @@ end
 Motion::Project::App.setup do |app|
   app.icon                                  = 'Icon.icns'
   app.name                                  = 'MemoryTamer'
-  app.version                               = '1.2.4'
-  app.short_version                         = '1.2.4'
+  app.version                               = '1.4.3'
+  app.short_version                         = '1.4.3'
   app.identifier                            = 'us.myepg.MemoryTamer'
-  app.info_plist['NSUIElement']             = 1
+  app.info_plist['NSUIElement']             = true
   app.info_plist['SUFeedURL']               = 'https://rink.hockeyapp.net/api/2/apps/128ebd3240db358d4b1ea5f228269de6'
   app.info_plist['SUEnableSystemProfiling'] = true
-  app.deployment_target                     = '10.8'
+  app.info_plist['NSAppleScriptEnabled']    = true
+  app.info_plist['CFBundleURLTypes']        = [{ 'CFBundleURLIconFile' => 'Icon.icns', 'CFBundleURLName' => 'MemoryTamer automatic licensing', 'CFBundleURLSchemes' => ['memorytamer'] }]
+  app.deployment_target                     = '10.9'
   app.codesign_certificate                  = 'Developer ID Application: Eric Henderson (SKWXXEM822)'
   app.paddle {
-    set :product_id, '993'
+    set :product_id, '492767'
     set :vendor_id, '1657'
     set :api_key, 'ff308e08f807298d8a76a7a3db1ee12b'
     set :current_price, '2.49'
@@ -52,14 +54,16 @@ Motion::Project::App.setup do |app|
     set :time_trial, true
   }
   app.embedded_frameworks << 'vendor/Growl.framework'
-  app.embedded_frameworks << 'vendor/Paddle.framework'
   app.vendor_project('vendor/mem_info', :static)
+  app.vendor_project('vendor/cocoafob', :static)
   app.frameworks << 'ServiceManagement'
+  app.libs << '/usr/lib/libcrypto.dylib'
 
   app.pods do
     pod 'CocoaLumberjack'
-    pod 'HockeySDK-Mac', git: 'https://github.com/bitstadium/HockeySDK-Mac.git'
+    pod 'HockeySDK-Mac'
     pod 'Sparkle'
+    # pod 'FsprgEmbeddedStoreMac'
   end
 end
 

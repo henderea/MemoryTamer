@@ -1,7 +1,9 @@
 MemoryTamer
 ===========
 
-As of version 0.7.2, Memory Tamer is now a paid app.  Please visit <https://pay.paddle.com/checkout/492767> to get a license.  You can also buy in-app.
+As of version 0.7.2, MemoryTamer is now a paid app.  Please visit <https://pay.paddle.com/checkout/492767> to get a Paddle license.  You can also buy in-app.
+
+As of version 1.4.0, MemoryTamer now supports FastSpring as an alternate payment provider.  Please visit <http://sites.fastspring.com/memorytamer/product/memorytamer> to purchase a license through FastSpring.
 
 Thank you to everyone who has bought MemoryTamer so far.  I've added a lot of features in the time since I put it up for sale at $1.99, and I feel that MemoryTamer is worth a bit more than when it started out.  As such, I have increased the price to $2.49.
 
@@ -69,6 +71,22 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.2.2:** add a link to vote on the next feature for MemoryTamer
 * **v1.2.3/v1.1.6:** enable cmd+w for closing feedback and preferences windows
 * **v1.2.4:** add a menu item for launching on login
+* **v1.2.4.1:**
+    * Update Paddle purchasing framework to latest version
+    * Change minimum OS X version requirement to 10.9 Mavericks.  Almost no MemoryTamer users are still running 10.8 Mountain Lion, so removing support for it allows the compiler to make a more optimized and potentially more stable executable.
+* **v1.2.4.2:** Fix a minor problem in the integration with the new Paddle framework version
+* **v1.2.5:** Add a menu item for displaying memory pressure percentage
+* **v1.3.0:** Add some memory stats like Activity Monitor and fix a bug causing some display-only menu items to be clickable
+* **v1.3.1:** Add the rest of the memory stats from Activity monitor and fix a bug causing incorrect free memory amounts
+* **v1.3.1.1:** Fix the value for Swap Used
+* **v1.3.1.2:** Update to latest version of Paddle selling and licensing framework
+* **v1.3.1.3:** Because of some recent issues with Paddle activation, MemoryTamer will now not block you from using the app when your trial runs out.  This is temporary while a solution gets worked out, but it should help those who are having trouble activating their copy.
+* **v1.4.0:** Now supports FastSpring as an alternate payment provider.  Due to some issues in the licensing dialog, currently the FastSpring license can only be activated via the link you get in the delivery information email.  You will need to have MemoryTamer already installed before you click the link.  You may need to allow it to open/run.
+* **v1.4.1:** Hopefully fix a startup crash
+* **v1.4.1.1:** Fix a crash related to the trial system
+* **v1.4.2:** Update the Paddle framework to hopefully fix some issues
+* **v1.4.2.1:** Update some dependencies to hopefully reduce problems
+* **v1.4.3:** Update some dependencies and make Paddle licensing the default again.  Also, add an option to pause automatic freeing and trimming
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.3.zip> (Mavericks-only)
@@ -130,4 +148,18 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.2.3/v1.1.6:**
 	* **v1.2.3:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.2.3.dmg>
 	* **v1.1.6:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.1.6.dmg>
-* **v1.2.4:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.2.4.dmg>
+* **v1.2.4:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.2.4.dmg> (10.8 and up)
+* **v1.2.4.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.2.4.1.dmg> (10.9 and up)
+* **v1.2.4.2:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.2.4.2.dmg>
+* **v1.2.5:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.2.5.dmg>
+* **v1.3.0:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.3.0.dmg>
+* **v1.3.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.3.1.dmg>
+* **v1.3.1.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.3.1.1.dmg>
+* **v1.3.1.2:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.3.1.2.dmg>
+* **v1.3.1.3:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.3.1.3.dmg>
+* **v1.4.0:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.4.0.dmg>
+* **v1.4.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.4.1.dmg>
+* **v1.4.1.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.4.1.1.dmg>
+* **v1.4.2:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.4.2.dmg>
+* **v1.4.2.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.4.2.1.dmg>
+* **v1.4.3:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.4.3.dmg>

@@ -150,7 +150,18 @@ module Util
     true
   end
 
-  def setup_paddle
+  def setup_licensing
+    if self.verify_license
+      # Util.log.info('Application is registered.')
+      # self.shared_licensing_window_controller.isLicensed = true
+      @licensed_cocoafob = true
+    else
+      # Util.log.info('Application not registered.')
+      # self.shared_licensing_window_controller.isLicensed = false
+      @licensed_cocoafob = false
+    end
+    MotionPaddle.will_show_licensing_window = !@licensed_cocoafob
+    MotionPaddle.will_continue_at_trial_end = true
     MotionPaddle.setup { |_, _| MainMenu.set_license_display }
     MotionPaddle.listen(:deactivated) { |_, deactivated, deactivateMessage|
       if deactivated
@@ -161,18 +172,103 @@ module Util
         Util.log.info "failed to deactivate license: #{deactivateMessage}"
       end
     }
+    @licensing_listener = LicensingListener.new { |notification|
+      # licenseWindowController = Util.shared_licensing_window_controller
+      # Util.show_licensing_window(nil)
+
+      isValidLicense = Util.verify_license
+
+      @licensed_cocoafob = isValidLicense
+
+      if isValidLicense
+        alert = NSAlert.alertWithMessageText('Thank you for registering.', defaultButton: 'OK', alternateButton: nil, otherButton: nil, informativeTextWithFormat: '')
+        alert.runModal
+      else
+        alert = NSAlert.alertWithMessageText('License not valid.', defaultButton: 'OK', alternateButton: nil, otherButton: nil, informativeTextWithFormat: '')
+        alert.runModal
+      end
+
+      # licenseWindowController.showLicensedStatus(isValidLicense)
+    }
+    NSNotificationCenter.defaultCenter.addObserver(@licensing_listener, selector: 'registrationChanged:', name: 'XMDidChangeRegistrationNotification', object: nil)
   end
 
-  def log_license
-    activated = MotionPaddle.activated?
-    if activated
-      Util.log.info "MemoryTamer licensed with license #{MotionPaddle.activated_license_code}" if Info.license_log_status != :activated
-      Info.license_log_status = :activated
+  def check_trial
+    if self.licensed?
+      nil
     else
-      Util.log.info 'MemoryTamer not licensed' if Info.license_log_status != :unactivated
-      Info.license_log_status = :unactivated
+      MotionPaddle.trial_days_left
     end
   end
+
+  def licensed?
+    self.licensed_paddle? || self.licensed_cocoafob?
+  end
+
+  def licensed_paddle?
+    MotionPaddle.activated?
+  end
+
+  def licensed_cocoafob?
+    @licensed_cocoafob
+  end
+
+  class LicensingListener
+    def initialize(&block)
+      @block = block
+    end
+
+    def registrationChanged(notification)
+      @block.call(notification)
+    end
+  end
+
+  # def show_licensing_window(sender)
+  #   self.shared_licensing_window_controller.window.makeKeyAndOrderFront(nil)
+  #   self.shared_licensing_window_controller.window.orderFrontRegardless
+  # end
+
+  def verify_license
+    regCode = Persist.store.product_key
+    name    = Persist.store.product_name
+
+    # Here we match CocoaFob 's licensekey.rb "productname,username" format
+    regName = "MemoryTamer,#{name}"
+
+    publicKey = ''
+    publicKey << 'MIHxMIGpBgcqhkjOOAQBM'
+    publicKey << 'IGdAkEAoLPCAaL6VEQ'
+    publicKey << 'lYpsX7vf9'
+    publicKey << 'jpQY40Uj5b'
+    publicKey << "UhmvNZ\njjcq2lTSlCnqBq"
+    publicKey << 'v4nxhwROI'
+    publicKey << 'UUj7wl3t'
+    publicKey << 'AjKghnwDMv4VTIOXI+'
+    publicKey << "QIVAPMOL+3NJ/iv\nVbwt"
+    publicKey << 'HVNOiUvfUMWNAkEAkDashtS4IDsN+OsIwIElIxSVM1V'
+    publicKey << "2rXgR+DqEfWNP4Kvy\n4hiQyTHMXl3JfSGhK+h5Y"
+    publicKey << 'qE4w'
+    publicKey << "P4SiqzyPoaRiPoL0gNDAAJASXVReQ4G3CCMVNTW\njY"
+    publicKey << '052YGRF4qchbLtQk7ws7LnSh+cmqZAKc3fEW'
+    publicKey << 'QZINC3d'
+    publicKey << 'uCOsiM4'
+    publicKey << "UuvwO6ZCDE9s\ndQ6W0Q==\n"
+
+    publicKey = CFobLicVerifier.completePublicKeyPEM(publicKey)
+
+    verifier = CFobLicVerifier.alloc.init
+    verifier.setPublicKey(publicKey, error: nil)
+
+    # verifier.regName = regName
+    # verifier.regCode = regCode
+    # Util.log.debug("publicKey #{publicKey}\nregCode: #{verifier.regCode}\nregName: #{verifier.regName}")
+
+    verifier.verifyRegCode(regCode, forName: regName, error: nil)
+  end
+
+  # def shared_licensing_window_controller
+  #   XMLicensingWindowController.sharedLicensingWindowController
+  # end
 
   def log
     Motion::Log
@@ -201,6 +297,7 @@ module Util
     Thread.start {
       Info.start_time ||= NSDate.date
       loop do
+        MainMenu[:license].items[:license_trial].updateDynamicTitle
         MainMenu[:statusbar].items[:status_mt_time].updateDynamicTitle
         sleep(0.5)
       end
@@ -212,29 +309,39 @@ module Util
   end
 
   def freeing_loop
+    Info.start_time ||= NSDate.date
     Thread.start {
-      Info.start_time ||= NSDate.date
       Info.last_free = NSDate.date - 30
       Info.last_trim = NSDate.date
       loop do
         mtm = MemInfo.getMTMemory
-        MainMenu[:statusbar].items[:status_mt_mem].updateDynamicTitle
         if mtm > (200 * (1024 ** 2)) && (NSDate.date - Info.start_time) > 300
-          Util.log.warn "MemoryTamer is using #{Info.format_bytes(mtm, true)}; restarting"
+          Util.log.warn "MemoryTamer is using #{Info.format_bytes(mtm, true).to_weak}; restarting".to_weak
           relaunch_app
         end
+        MainMenu[:statusbar].items[:status_mt_mem].updateDynamicTitle
+        MainMenu[:statusbar].items[:status_mem_used].updateDynamicTitle
+        MainMenu[:statusbar].items[:status_mem_virtual].updateDynamicTitle
+        MainMenu[:statusbar].items[:status_mem_swap].updateDynamicTitle
+        MainMenu[:statusbar].items[:status_mem_pressure_percent].updateDynamicTitle
+        MainMenu[:statusbar].items[:status_mem_app_mem].updateDynamicTitle
+        MainMenu[:statusbar].items[:status_mem_file_cache].updateDynamicTitle
+        MainMenu[:statusbar].items[:status_mem_wired].updateDynamicTitle
+        MainMenu[:statusbar].items[:status_mem_compressed].updateDynamicTitle
         cfm = Info.get_free_mem
-        MainMenu.status_item.setTitle(Persist.store.show_mem? ? Info.format_bytes(cfm) : '') if Persist.store.update_while? || !Info.freeing?
-        diff   = (NSDate.date - Info.last_free)
-        diff_t = (NSDate.date - Info.last_trim)
-        if cfm <= Info.dfm && diff >= 60 && diff_t >= 30 && !Info.freeing?
-          Util.log.info "seconds since last full freeing: #{diff}"
-          Util.log.info "seconds since last trim: #{diff_t}"
-          Util.free_mem_default
-        elsif cfm <= Info.dtm && diff >= 30 && diff_t >= 30 && !Info.freeing?
-          Util.log.info "seconds since last full freeing: #{diff}"
-          Util.log.info "seconds since last trim: #{diff_t}"
-          Util.trim_mem
+        MainMenu.status_item.setTitle(Persist.store.show_mem? ? Info.format_bytes(cfm).to_weak : ''.to_weak) if Persist.store.update_while? || !Info.freeing?
+        if Util.licensed? || Util.check_trial > 0
+          diff   = (NSDate.date - Info.last_free)
+          diff_t = (NSDate.date - Info.last_trim)
+          if cfm <= Info.dfm && diff >= 60 && diff_t >= 30 && !Info.freeing? && !Info.paused?
+            Util.log.info "seconds since last full freeing: #{diff}".to_weak
+            Util.log.info "seconds since last trim: #{diff_t}".to_weak
+            Util.free_mem_default
+          elsif cfm <= Info.dtm && diff >= 30 && diff_t >= 30 && !Info.freeing? && !Info.paused?
+            Util.log.info "seconds since last full freeing: #{diff}".to_weak
+            Util.log.info "seconds since last trim: #{diff_t}".to_weak
+            Util.trim_mem
+          end
         end
         sleep(Persist.store.refresh_rate)
       end
@@ -253,7 +360,7 @@ module Util
 
   def notify(msg, nn)
     enabled = nn == :error || Persist.store["#{nn}?"]
-    Util.log.info "Notification (#{nn}=#{enabled.inspect}): #{msg}"
+    Util.log.info "Notification (#{nn}=#{enabled.inspect}): #{msg}".to_weak
     if enabled
       if Persist.store.notifications == 'Growl'
         if GrowlApplicationBridge.isGrowlRunning
@@ -289,69 +396,77 @@ module Util
   end
 
   def free_mem_default
-    Thread.start {
-      cfm          = Info.get_free_mem
-      Info.freeing = true
-      notify 'Beginning memory freeing', :free_start
-      free_mem(Persist.store.pressure)
-      nfm = Info.get_free_mem
-      Util.log.info "Freed #{Info.format_bytes(nfm - cfm, true)}"
-      notify "Finished freeing #{Info.format_bytes(nfm - cfm)}", :free_end
-      Info.freeing   = false
-      Info.last_free = NSDate.date
-    }
+    if Util.licensed? || Util.check_trial > 0
+      Thread.start {
+        cfm          = Info.get_free_mem
+        Info.freeing = true
+        notify 'Beginning memory freeing', :free_start
+        free_mem(Persist.store.pressure)
+        nfm = Info.get_free_mem
+        Util.log.info "Freed #{Info.format_bytes(nfm - cfm, true)}".to_weak
+        notify "Finished freeing #{Info.format_bytes(nfm - cfm)}".to_weak, :free_end
+        Info.freeing   = false
+        Info.last_free = NSDate.date
+      }
+    end
   end
 
   def trim_mem
-    Thread.start {
-      cfm          = Info.get_free_mem
-      Info.freeing = true
-      notify 'Beginning memory trimming', :trim_start
-      free_mem_old(true)
-      nfm = Info.get_free_mem
-      notify "Finished trimming #{Info.format_bytes(nfm - cfm)}", :trim_end
-      Util.log.info "Freed #{Info.format_bytes(nfm - cfm, true)}"
-      Info.freeing   = false
-      Info.last_trim = NSDate.date
-    }
+    if Util.licensed? || Util.check_trial > 0
+      Thread.start {
+        cfm          = Info.get_free_mem
+        Info.freeing = true
+        notify 'Beginning memory trimming', :trim_start
+        free_mem_old(true)
+        nfm = Info.get_free_mem
+        Util.log.info "Freed #{Info.format_bytes(nfm - cfm, true)}".to_weak
+        notify "Finished trimming #{Info.format_bytes(nfm - cfm)}".to_weak, :trim_end
+        Info.freeing   = false
+        Info.last_trim = NSDate.date
+      }
+    end
   end
 
   def free_mem(pressure)
-    if Persist.store.freeing_method == 'memory pressure'
-      cmp = Info.get_memory_pressure
-      if cmp >= 4
-        notify 'Memory Pressure too high! Running not a good idea.', :error
-        return
-      end
-      dmp = pressure == 'normal' ? 1 : (pressure == 'warn' ? 2 : 4)
-      if cmp >= dmp && Persist.store.auto_escalate?
-        np = cmp == 1 ? 'warn' : 'critical'
-        Util.log.warn "escalating freeing pressure from #{pressure} to #{np}"
-        pressure = np
-      end
-      IO.popen("'memory_pressure' -l #{pressure}") { |pipe|
-        pipe.sync = true
-        pipe.each { |l|
-          Util.log.verbose l
-          if l.include?('Stabilizing at')
-            Util.log.verbose 'Found stabilizing line; breaking'
-            break
-          end
+    if Util.licensed? || Util.check_trial > 0
+      if Persist.store.freeing_method == 'memory pressure'
+        cmp = Info.get_memory_pressure
+        if cmp >= 4
+          notify 'Memory Pressure too high! Running not a good idea.'.to_weak, :error
+          return
+        end
+        dmp = pressure == 'normal' ? 1 : (pressure == 'warn' ? 2 : 4)
+        if cmp >= dmp && Persist.store.auto_escalate?
+          np = cmp == 1 ? 'warn' : 'critical'
+          Util.log.warn "escalating freeing pressure from #{pressure} to #{np}".to_weak
+          pressure = np
+        end
+        IO.popen("'memory_pressure' -l #{pressure}") { |pipe|
+          pipe.sync = true
+          pipe.each { |l|
+            Util.log.verbose l
+            if l.include?('Stabilizing at')
+              Util.log.verbose 'Found stabilizing line; breaking'
+              break
+            end
+          }
+          Util.log.verbose 'Preparing to kill memory_pressure process'
+          Process.kill 'SIGINT', pipe.pid
+          Util.log.debug 'memory_pressure process ended'
         }
-        Util.log.verbose 'Preparing to kill memory_pressure process'
-        Process.kill 'SIGINT', pipe.pid
-        Util.log.debug 'memory_pressure process ended'
-      }
-    else
-      free_mem_old
+      else
+        free_mem_old
+      end
     end
   end
 
   def free_mem_old(trim = false)
-    mtf = trim ? [Info.get_free_mem(1) * 0.75, Info.get_free_mem(0.5)].min : Info.get_free_mem(0.9)
-    ep  = NSBundle.mainBundle.pathForResource('inactive', ofType: '')
-    Util.log.debug "'#{ep}' '#{mtf.to_s}'"
-    run_task(ep, mtf.to_s)
+    if Util.licensed? || Util.check_trial > 0
+      mtf = trim ? [Info.get_free_mem(1) * 0.75, Info.get_free_mem(0.5)].min : Info.get_free_mem(0.9)
+      ep  = NSBundle.mainBundle.pathForResource('inactive', ofType: '')
+      Util.log.debug "'#{ep}' '#{mtf.to_s}'"
+      run_task(ep, mtf.to_s)
+    end
   end
 
   def open_link(link)

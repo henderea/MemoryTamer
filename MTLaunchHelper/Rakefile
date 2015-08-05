@@ -26,13 +26,13 @@ module Motion::Project
 end
 
 Motion::Project::App.setup do |app|
-  app.icon                 = 'Icon.icns'
-  app.name                 = 'MTLaunchHelper'
-  app.version              = '1.0.0'
-  app.short_version        = '1.0.0'
-  app.identifier           = 'us.myepg.MemoryTamer.MTLaunchHelper'
+  app.icon                      = 'Icon.icns'
+  app.name                      = 'MTLaunchHelper'
+  app.version                   = '1.0.1'
+  app.short_version             = '1.0.1'
+  app.identifier                = 'us.myepg.MemoryTamer.MTLaunchHelper'
   app.info_plist['NSUIElement'] = 1
-  app.deployment_target    = '10.8'
-  app.archs['MacOSX']      = ['x86_64']
-  app.codesign_certificate = 'Developer ID Application: Eric Henderson (SKWXXEM822)'
+  app.deployment_target         = '10.9'
+  app.archs['MacOSX']           = ['x86_64']
+  app.codesign_certificate      = 'Developer ID Application: Eric Henderson (SKWXXEM822)'
 end

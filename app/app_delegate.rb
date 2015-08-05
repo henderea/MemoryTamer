@@ -7,15 +7,16 @@ class AppDelegate
     BITHockeyManager.sharedHockeyManager.configureWithIdentifier('128ebd3240db358d4b1ea5f228269de6', delegate: self)
     BITHockeyManager.sharedHockeyManager.crashManager.setAutoSubmitCrashReport(true)
     BITHockeyManager.sharedHockeyManager.startManager
-    Util.setup_paddle
+    Util.setup_licensing
     SUUpdater.sharedUpdater.setDelegate(self)
     Info.freeing = false
     Persist.store.load_prefs
     MainMenu.build!
     MenuActions.setup
-    MainMenu[:statusbar].items[:status_version][:title] = "Current Version: #{Info.version}"
-    MainMenu[:statusbar].items[:status_login][:state] = Util.login_item_enabled? ? NSOnState : NSOffState
-    NSUserNotificationCenter.defaultUserNotificationCenter.setDelegate(self) if Info.has_nc?
+    MainMenu[:statusbar].items[:status_version][:title]      = "Current Version: #{Info.version}"
+    MainMenu[:statusbar].items[:status_mem_physical][:title] = "Physical Memory: #{Info.format_bytes(Info.get_total_memory)}"
+    MainMenu[:statusbar].items[:status_login][:state]        = Util.login_item_enabled? ? NSOnState : NSOffState
+    NSUserNotificationCenter.defaultUserNotificationCenter.setDelegate(self)
     GrowlApplicationBridge.setGrowlDelegate(self)
     MainMenu.status_item.setImage(Persist.store.show_icon? ? NSImage.imageNamed('Status') : nil)
     Util.time_loop
