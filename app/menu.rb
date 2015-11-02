@@ -27,6 +27,7 @@ class MainMenu
                               diff = (NSDate.date - Info.start_time).to_f
                               "running since #{MainMenu.get_time_display(diff).to_weak}".to_weak
                             }
+    menuItem :status_purge, 'Purge inactive memory'
     menuItem :status_relaunch, 'Relaunch MemoryTamer'
     menuItem :status_login, 'Launch on login', state: NSOffState
     menuItem :status_update, 'Check for Updates'
@@ -84,6 +85,8 @@ class MainMenu
       status_pause
       status_free
       status_trim
+      ___
+      status_purge
       ___
       status_mt_mem
       status_mtc_mem

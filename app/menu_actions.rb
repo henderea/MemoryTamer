@@ -14,6 +14,7 @@ module MenuActions
     }
     MainMenu[:statusbar].subscribe(:status_free) { |_, _| Util.free_mem_default }.canExecuteBlock { |_| !Info.freeing? && (Util.licensed? || Util.check_trial > 0) }
     MainMenu[:statusbar].subscribe(:status_trim) { |_, _| Util.trim_mem }.canExecuteBlock { |_| !Info.freeing? && (Util.licensed? || Util.check_trial > 0) }
+    MainMenu[:statusbar].subscribe(:status_purge) { |_, _| Util.purge }.canExecuteBlock { |_| !Info.freeing? }
     MainMenu[:statusbar].subscribe(:status_relaunch) { |_, _| Util.relaunch_app }
     MainMenu[:statusbar].subscribe(:status_login) { |_, _|
       Util.login_item_set_enabled(MainMenu[:statusbar].items[:status_login][:state] == NSOffState)
