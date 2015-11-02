@@ -12,6 +12,7 @@
 + (long long) getMemoryPressure;
 + (long long) getTotalMemory;
 + (long long) getMTMemory;
++ (long long) getMTCompressedMemory;
 + (NSString *) getOSVersion;
 + (int) getMemoryPressurePercent;
 @end

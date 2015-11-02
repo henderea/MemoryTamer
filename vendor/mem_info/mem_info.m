@@ -89,7 +89,7 @@ get_percent_free(unsigned int* level)
         fprintf(stderr, "Failed to get VM statistics.\n");
     }
 
-    return vmstat.external_page_count;
+    return vmstat.external_page_count + vmstat.purgeable_count;
 }
 
 + (int) getPagesAppMemory {
@@ -101,7 +101,7 @@ get_percent_free(unsigned int* level)
         fprintf(stderr, "Failed to get VM statistics.\n");
     }
 
-    return vmstat.internal_page_count;
+    return vmstat.internal_page_count - vmstat.purgeable_count;
 }
 
 + (int) getPagesWired {
@@ -161,11 +161,23 @@ get_percent_free(unsigned int* level)
 }
 
 + (long long) getMTMemory {
-    struct task_basic_info info;
+    struct task_vm_info info;
     mach_msg_type_number_t size = sizeof(info);
-    kern_return_t kerr = task_info(mach_task_self(), TASK_BASIC_INFO, (task_info_t)&info, &size);
+    kern_return_t kerr = task_info(mach_task_self(), TASK_VM_INFO, (task_info_t)&info, &size);
     if( kerr == KERN_SUCCESS ) {
         return info.resident_size;
+    } else {
+        NSLog(@"Error with task_info()");
+        return -1;
+    }
+}
+
++ (long long) getMTCompressedMemory {
+    struct task_vm_info info;
+    mach_msg_type_number_t size = sizeof(info);
+    kern_return_t kerr = task_info(mach_task_self(), TASK_VM_INFO, (task_info_t)&info, &size);
+    if( kerr == KERN_SUCCESS ) {
+        return info.compressed;
     } else {
         NSLog(@"Error with task_info()");
         return -1;

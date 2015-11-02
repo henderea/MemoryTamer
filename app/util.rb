@@ -315,11 +315,17 @@ module Util
       Info.last_trim = NSDate.date
       loop do
         mtm = MemInfo.getMTMemory
+        mtcm = MemInfo.getMTCompressedMemory
         if mtm > (200 * (1024 ** 2)) && (NSDate.date - Info.start_time) > 300
           Util.log.warn "MemoryTamer is using #{Info.format_bytes(mtm, true).to_weak}; restarting".to_weak
           relaunch_app
         end
+        if mtcm > (100 * (1024 ** 2)) && (NSDate.date - Info.start_time) > 300
+          Util.log.warn "MemoryTamer is using #{Info.format_bytes(mtcm, true).to_weak} compressed; restarting".to_weak
+          relaunch_app
+        end
         MainMenu[:statusbar].items[:status_mt_mem].updateDynamicTitle
+        MainMenu[:statusbar].items[:status_mtc_mem].updateDynamicTitle
         MainMenu[:statusbar].items[:status_mem_used].updateDynamicTitle
         MainMenu[:statusbar].items[:status_mem_virtual].updateDynamicTitle
         MainMenu[:statusbar].items[:status_mem_swap].updateDynamicTitle
