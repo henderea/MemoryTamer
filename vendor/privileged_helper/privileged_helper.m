@@ -37,66 +37,14 @@
 	return result;
 }
 
-+ (PrivilegedHelper *) createHelperConnection: (NSString *) label
-                                    utilCallback: (id) utilCallback {
++ (PrivilegedHelper *) createHelperConnection: (NSString *) label {
     PrivilegedHelper *ph = [[PrivilegedHelper alloc] init];
-    [ph setUtilCallback: utilCallback];
 
-    xpc_connection_t connection = xpc_connection_create_mach_service("us.myepg.MemoryTamer.MTPrivilegedHelper", NULL, XPC_CONNECTION_MACH_SERVICE_PRIVILEGED);
+    NSConnection *c = [NSConnection connectionWithRegisteredName:@"us.myepg.MemoryTamer.MTPrivilegedHelper.mach" host:nil]; 
+    PrivilegedObject *proxy = (PrivilegedObject *)[c rootProxy];
 
-    if (!connection) {
-        [ph logError:@"Failed to create XPC connection."];
-        return nil;
-    }
-
-    xpc_connection_set_event_handler(connection, ^(xpc_object_t event) {
-        xpc_type_t type = xpc_get_type(event);
-
-        if (type == XPC_TYPE_ERROR) {
-
-            if (event == XPC_ERROR_CONNECTION_INTERRUPTED) {
-                [ph logError:@"XPC connection interrupted."];
-
-            } else if (event == XPC_ERROR_CONNECTION_INVALID) {
-                [ph logError:@"XPC connection invalid, releasing."];
-                xpc_release(connection);
-
-            } else {
-                [ph logError:@"Unexpected XPC connection error."];
-            }
-
-        } else {
-            [ph logError:@"Unexpected XPC connection event."];
-        }
-    });
-
-    xpc_connection_resume(connection);
-
-    [ph setConnection: connection];
+    [ph setProxy: proxy];
 
     return ph;
-}
-
-- (void) executeOperation: (char*) operation {
-    xpc_connection_t connection = [self connection];
-    xpc_object_t message = xpc_dictionary_create(NULL, NULL, 0);
-    const char* request = operation;
-    xpc_dictionary_set_string(message, "operation", request);
-
-    [self logDebug:[NSString stringWithFormat:@"Sending request: %s", request]];
-
-
-    xpc_connection_send_message_with_reply(connection, message, dispatch_get_main_queue(), ^(xpc_object_t event) {
-        const char* response = xpc_dictionary_get_string(event, "result");
-        [self logDebug:[NSString stringWithFormat:@"Received response: %s.", response]];
-        [[self utilCallback] privileged_helper_response: response];
-    });
-}
-
-- (void) logError: (NSString *) message {
-    [[self utilCallback] error: message];
-}
-- (void) logDebug: (NSString *) message {
-    [[self utilCallback] debug: message];
 }
 @end

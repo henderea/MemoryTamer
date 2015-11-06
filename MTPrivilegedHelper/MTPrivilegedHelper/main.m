@@ -12,13 +12,13 @@
 
 @interface PrivilegedObject : NSObject
 
-- (int)purge;
+- (void)purge;
 
 @end
 
 @implementation PrivilegedObject
 
-- (int)purge
+- (void)purge
 {
     NSTask *task = [[NSTask alloc] init];
     [task setLaunchPath: @"/usr/sbin/purge"];

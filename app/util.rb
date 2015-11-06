@@ -362,9 +362,9 @@ module Util
       notify('Error in setting up helper', :error)
       return
     end
-    @privileged_helper_instance ||= PrivilegedHelper.createHelperConnection('us.myepg.MemoryTamer.MTPrivilegedHelper', utilCallback: PrivilegedHelperCallback.new)
+    @privileged_helper_instance ||= PrivilegedHelper.createHelperConnection('us.myepg.MemoryTamer.MTPrivilegedHelper')
     notify('Beginning purge', :free_start)
-    @privileged_helper_instance.executeOperation('purge')
+    @privileged_helper_instance.proxy.purge
   end
 
   class PrivilegedHelperCallback
