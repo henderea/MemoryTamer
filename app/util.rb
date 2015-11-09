@@ -326,6 +326,9 @@ module Util
         end
         MainMenu[:statusbar].items[:status_mt_mem].updateDynamicTitle
         MainMenu[:statusbar].items[:status_mtc_mem].updateDynamicTitle
+        MainMenu[:statusbar].items[:status_mtd_mem].updateDynamicTitle
+        MainMenu[:statusbar].items[:status_mti_mem].updateDynamicTitle
+        MainMenu[:statusbar].items[:status_mte_mem].updateDynamicTitle
         MainMenu[:statusbar].items[:status_mem_used].updateDynamicTitle
         MainMenu[:statusbar].items[:status_mem_virtual].updateDynamicTitle
         MainMenu[:statusbar].items[:status_mem_swap].updateDynamicTitle

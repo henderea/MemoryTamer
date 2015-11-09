@@ -23,6 +23,9 @@ class MainMenu
     menuItem :status_trim, 'Trim memory now'
     menuItem :status_mt_mem, 'memory usage: 0B', image: NSImage.imageNamed('Status'), dynamic_title: -> { "memory usage: #{Info.format_bytes(MemInfo.getMTMemory).to_weak}".to_weak }
     menuItem :status_mtc_mem, 'compressed memory: 0B', image: NSImage.imageNamed('Status'), dynamic_title: -> { "compressed memory: #{Info.format_bytes(MemInfo.getMTCompressedMemory).to_weak}".to_weak }
+    menuItem :status_mtd_mem, 'device memory: 0B', image: NSImage.imageNamed('Status'), dynamic_title: -> { "device memory: #{Info.format_bytes(MemInfo.getMTDeviceMemory).to_weak}".to_weak }, opt: true
+    menuItem :status_mti_mem, 'internal memory: 0B', image: NSImage.imageNamed('Status'), dynamic_title: -> { "internal memory: #{Info.format_bytes(MemInfo.getMTInternalMemory).to_weak}".to_weak }, opt: true
+    menuItem :status_mte_mem, 'external memory: 0B', image: NSImage.imageNamed('Status'), dynamic_title: -> { "external memory: #{Info.format_bytes(MemInfo.getMTExternalMemory).to_weak}".to_weak }, opt: true
     menuItem :status_mt_time, 'running since: 0d 0h 0m 0s', image: NSImage.imageNamed('Status'), dynamic_title: -> {
                               diff = (NSDate.date - Info.start_time).to_f
                               "running since #{MainMenu.get_time_display(diff).to_weak}".to_weak
@@ -87,6 +90,9 @@ class MainMenu
       ___
       status_mt_mem
       status_mtc_mem
+      status_mtd_mem
+      status_mti_mem
+      status_mte_mem
       status_mt_time
       status_relaunch
       ___

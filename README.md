@@ -96,6 +96,7 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
     * Display the compressed memory for MemoryTamer and relaunch if it gets over 100MB
 * **v1.4.5.1:** fix downloading of updates (hopefully)
 * **v1.4.5.2:** update dependencies, including a new version of the Paddle library with some fixes and improvements
+* **v1.4.5.3:** fix the value of the MemoryTamer memory usage to match Activity Monitor and add some extra MemoryTamer memory usage stats that can be shown by holding down the Option key when opening the menu
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.3.zip> (Mavericks-only)
@@ -176,3 +177,4 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.4.5:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.4.5.dmg>
 * **v1.4.5.1:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.4.5.1.dmg>
 * **v1.4.5.2:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.4.5.2.dmg>
+* **v1.4.5.3:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.4.5.3.dmg>

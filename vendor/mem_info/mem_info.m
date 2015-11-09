@@ -165,7 +165,7 @@ get_percent_free(unsigned int* level)
     mach_msg_type_number_t size = sizeof(info);
     kern_return_t kerr = task_info(mach_task_self(), TASK_VM_INFO, (task_info_t)&info, &size);
     if( kerr == KERN_SUCCESS ) {
-        return info.resident_size;
+        return info.compressed + info.internal;
     } else {
         NSLog(@"Error with task_info()");
         return -1;
@@ -178,6 +178,42 @@ get_percent_free(unsigned int* level)
     kern_return_t kerr = task_info(mach_task_self(), TASK_VM_INFO, (task_info_t)&info, &size);
     if( kerr == KERN_SUCCESS ) {
         return info.compressed;
+    } else {
+        NSLog(@"Error with task_info()");
+        return -1;
+    }
+}
+
++ (long long) getMTDeviceMemory {
+    struct task_vm_info info;
+    mach_msg_type_number_t size = sizeof(info);
+    kern_return_t kerr = task_info(mach_task_self(), TASK_VM_INFO, (task_info_t)&info, &size);
+    if( kerr == KERN_SUCCESS ) {
+        return info.device;
+    } else {
+        NSLog(@"Error with task_info()");
+        return -1;
+    }
+}
+
++ (long long) getMTInternalMemory {
+    struct task_vm_info info;
+    mach_msg_type_number_t size = sizeof(info);
+    kern_return_t kerr = task_info(mach_task_self(), TASK_VM_INFO, (task_info_t)&info, &size);
+    if( kerr == KERN_SUCCESS ) {
+        return info.internal;
+    } else {
+        NSLog(@"Error with task_info()");
+        return -1;
+    }
+}
+
++ (long long) getMTExternalMemory {
+    struct task_vm_info info;
+    mach_msg_type_number_t size = sizeof(info);
+    kern_return_t kerr = task_info(mach_task_self(), TASK_VM_INFO, (task_info_t)&info, &size);
+    if( kerr == KERN_SUCCESS ) {
+        return info.external;
     } else {
         NSLog(@"Error with task_info()");
         return -1;

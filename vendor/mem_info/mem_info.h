@@ -13,6 +13,9 @@
 + (long long) getTotalMemory;
 + (long long) getMTMemory;
 + (long long) getMTCompressedMemory;
++ (long long) getMTDeviceMemory;
++ (long long) getMTInternalMemory;
++ (long long) getMTExternalMemory;
 + (NSString *) getOSVersion;
 + (int) getMemoryPressurePercent;
 @end
