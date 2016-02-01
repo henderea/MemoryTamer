@@ -29,8 +29,8 @@ end
 Motion::Project::App.setup do |app|
   app.icon                                  = 'Icon.icns'
   app.name                                  = 'MemoryTamer'
-  app.version                               = '1.4.5.3'
-  app.short_version                         = '1.4.5.3'
+  app.version                               = '1.4.5.4'
+  app.short_version                         = '1.4.5.4'
   app.identifier                            = 'us.myepg.MemoryTamer'
   app.info_plist['NSUIElement']             = true
   app.info_plist['SUFeedURL']               = 'https://rink.hockeyapp.net/api/2/apps/128ebd3240db358d4b1ea5f228269de6'
@@ -64,6 +64,10 @@ Motion::Project::App.setup do |app|
     pod 'CocoaLumberjack'
     pod 'HockeySDK-Mac'
     pod 'Sparkle'
+    # pod 'DevMateKit'
+    # post_install do |installer|
+    #     system("RUBY_SCRIPT='Pods/DevMateKit/copy_xpc_build_phase.rb'; if [ -f $RUBY_SCRIPT ]; then ruby $RUBY_SCRIPT '#{path}'; fi")
+    # end
     # pod 'FsprgEmbeddedStoreMac'
   end
 end
