@@ -48,7 +48,7 @@ GEM
     json (1.8.3)
     libxml-ruby (2.8.0)
     minitest (5.8.4)
-    molinillo (0.4.2)
+    molinillo (0.4.3)
     motion-cocoapods (1.7.8)
       cocoapods (>= 0.34)
     motion-paddle (1.2.2)
