@@ -1,7 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (4.2.5.1)
+    activesupport (4.2.5.2)
       i18n (~> 0.7)
       json (~> 1.7, >= 1.7.7)
       minitest (~> 5.1)
@@ -48,7 +48,7 @@ GEM
     json (1.8.3)
     libxml-ruby (2.8.0)
     minitest (5.8.4)
-    molinillo (0.4.3)
+    molinillo (0.4.4)
     motion-cocoapods (1.7.8)
       cocoapods (>= 0.34)
     motion-paddle (1.2.2)
