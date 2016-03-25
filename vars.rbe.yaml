@@ -1,2 +1,5 @@
 ---
 xcv: '6'
+dcname: mt
+appname: MemoryTamer
+lhname: MTLaunchHelper

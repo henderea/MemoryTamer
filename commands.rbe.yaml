@@ -1,30 +1,12 @@
 ---
-cdabdlh:
-  :command: cd
-  :sudo: 
-  :args:
-  - MTLaunchHelper/
-  - "&&"
-  - rake
-  - build:development
-  :vars: 
-cdablh:
-  :command: cd
-  :sudo: 
-  :args:
-  - MTLaunchHelper/
-  - "&&"
-  - rake
-  - build:release
-  :vars: 
 mtbr_sl:
   :command:
   - xc{{#xcv}}_nsl
   - bi_nsl
   - dt_sl
-  - cdabdlh_nsl
+  - rbdlh_nsl
   - dt_sl
-  - cdablh_nsl
+  - rbrlh_nsl
   - dt_sl
   - rpu_nsl
   - dt_sl
@@ -37,13 +19,4 @@ mtbr_sl:
   - cpdmg_nsl
   :sudo: 
   :args: 
-  :vars: 
-rcalh:
-  :command: cd
-  :sudo: 
-  :args:
-  - MTLaunchHelper/
-  - "&&"
-  - rake
-  - clean:all
   :vars: 
