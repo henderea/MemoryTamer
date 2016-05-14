@@ -151,11 +151,15 @@ module Info
     end
 
     def parts
-      @version.gsub(/^(\d+)([^.]*)$/, '\1.0.0\3').gsub(/^(\d+)\.(\d+)([^.]*)$/, '\1.\2.0\3').gsub(/\.(\d+)b(\d+)$/, '.-1.\1.\2').split(/\./).map(&:to_i)
+      @version.gsub(/^(\d+)([^.]*)$/, '\1.0.0\2').gsub(/^(\d+)\.(\d+)([^.]*)$/, '\1.\2.0\3').gsub(/\.(\d+)$/, '\.\1.0').gsub(/\.(\d+)b(\d+)$/, '.\1.-1.\2').split(/\./).map(&:to_i)
     end
 
     def to_s
       @version
+    end
+
+    def inspect
+      self.to_s
     end
   end
 
