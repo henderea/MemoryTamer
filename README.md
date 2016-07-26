@@ -100,6 +100,7 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.4.5.4:** Update multiple frameworks, including a security update to the Sparkle updater framework, bug fix and improvement updates to the Paddle purchasing framework, and bug fix and improvement updates to the RubyMotion build system.
 * **v1.4.5.5:** Update multiple dependencies
 * **v1.4.5.6:** Update multiple dependencies
+* **v1.4.5.6:** Update the Paddle selling framework
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.3.zip> (Mavericks-only)
@@ -184,3 +185,4 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.4.5.4:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.4.5.4.dmg>
 * **v1.4.5.5:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.4.5.5.dmg>
 * **v1.4.5.6:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.4.5.6.dmg>
+* **v1.4.5.7:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.4.5.7.dmg>
