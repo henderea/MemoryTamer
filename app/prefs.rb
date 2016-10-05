@@ -70,6 +70,7 @@ class Prefs < NSWindowController
     link :bool, :auto_escalate
     link :list, :display_what
     link :bool, :update_while
+    link :bool, :grayscale_icon
     link :slider, :mem_places_slider, :mem_places, :mem_places_field
     link :slider, :refresh_rate_slider, :refresh_rate, :refresh_rate_field
 
@@ -173,6 +174,7 @@ class Prefs < NSWindowController
   outlet :mem_places_field, NSTextField
   outlet :refresh_rate_slider, NSSlider
   outlet :refresh_rate_field, NSTextField
+  outlet :grayscale_icon, NSButton
   #endregion
 
 end

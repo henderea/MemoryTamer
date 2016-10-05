@@ -101,6 +101,10 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.4.5.5:** Update multiple dependencies
 * **v1.4.5.6:** Update multiple dependencies
 * **v1.4.5.6:** Update the Paddle selling framework
+* **v1.4.6:**
+    * Fix an issue on macOS Sierra that was causing the preferences dialog to pop up on app launch with default values.  You may still see some startup errors related to this issue, but from my testing, those don't actually affect anything, and the preferences dialog will still launch.
+    * Add an option to use a grayscale (well, single-color) menu bar icon.  This mono-color icon will switch colors when you enable dark mode (on Yosemite and up)
+    * Update some frameworks and dependencies, including the RubyMotion build framework and the Paddle licensing framework
 
 ###Versions (code-signed with developer ID):
 * **v0.3:** <http://memorytamer.s3.amazonaws.com/MemoryTamer-0.3.zip> (Mavericks-only)
@@ -186,3 +190,4 @@ A RubyMotion application for keeping memory usage in check.  Shows up in the men
 * **v1.4.5.5:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.4.5.5.dmg>
 * **v1.4.5.6:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.4.5.6.dmg>
 * **v1.4.5.7:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.4.5.7.dmg>
+* **v1.4.6:** <https://memorytamer.s3.amazonaws.com/MemoryTamer-1.4.6.dmg>

@@ -50,7 +50,7 @@ GEM
       tilt (~> 2.0.3)
       xcodeproj (~> 1.0)
     libxml-ruby (2.9.0)
-    minitest (5.9.0)
+    minitest (5.9.1)
     molinillo (0.4.5)
     motion-cocoapods (1.8.1)
       cocoapods (>= 1.0.0)
@@ -81,4 +81,4 @@ DEPENDENCIES
   rake
 
 BUNDLED WITH
-   1.13.1
+   1.13.2

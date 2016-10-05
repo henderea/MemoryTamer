@@ -1,7 +1,5 @@
 # noinspection RubyUnusedLocalVariable
 class AppDelegate
-  attr_accessor :prefs, :formatted_mt_mem
-
   def applicationDidFinishLaunching(notification)
     Util.setup_logging
     BITHockeyManager.sharedHockeyManager.configureWithIdentifier('128ebd3240db358d4b1ea5f228269de6', delegate: self)
@@ -18,7 +16,8 @@ class AppDelegate
     MainMenu[:statusbar].items[:status_login][:state]        = Util.login_item_enabled? ? NSOnState : NSOffState
     NSUserNotificationCenter.defaultUserNotificationCenter.setDelegate(self)
     GrowlApplicationBridge.setGrowlDelegate(self)
-    MainMenu.status_item.setImage(Persist.store.show_icon? ? NSImage.imageNamed('Status') : nil)
+    # MainMenu.status_item.setImage(Persist.store.show_icon? ? NSImage.imageNamed('Status') : nil)
+    Util.set_icon
     Util.time_loop
     Util.freeing_loop
   end

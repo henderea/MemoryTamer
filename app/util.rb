@@ -478,6 +478,19 @@ module Util
     end
   end
 
+  def set_icon
+    image = nil
+    if Persist.store.show_icon?
+      if Persist.store.grayscale_icon?
+        image = NSImage.imageNamed('StatusMono')
+        image.setTemplate true
+      else
+        image = NSImage.imageNamed('Status')
+      end
+    end
+    MainMenu.status_item.setImage(image)
+  end
+
   def open_link(link)
     NSWorkspace.sharedWorkspace.openURL(NSURL.URLWithString(link));
   end
