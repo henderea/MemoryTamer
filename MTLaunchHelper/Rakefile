@@ -9,7 +9,7 @@ rescue LoadError
   exit 1
 end
 
-SKIP_CODESIGN_TIMESTAMP = true
+SKIP_CODESIGN_TIMESTAMP = false
 
 module Motion::Project
   class Builder
