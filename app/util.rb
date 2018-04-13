@@ -150,7 +150,7 @@ module Util
     true
   end
 
-  def setup_licensing
+  def setup_licensing(&set_license_display)
     if self.verify_license
       # Util.log.info('Application is registered.')
       # self.shared_licensing_window_controller.isLicensed = true
@@ -162,11 +162,11 @@ module Util
     end
     MotionPaddle.will_show_licensing_window = !@licensed_cocoafob
     MotionPaddle.will_continue_at_trial_end = true
-    MotionPaddle.setup { |_, _| MainMenu.set_license_display }
+    MotionPaddle.setup(&set_license_display)
     MotionPaddle.listen(:deactivated) { |_, deactivated, deactivateMessage|
       if deactivated
         Util.log.info 'deactivated license'
-        MainMenu.set_license_display
+        set_license_display.call(nil, nil)
         MotionPaddle.show_licensing
       else
         Util.log.info "failed to deactivate license: #{deactivateMessage}"
@@ -293,12 +293,11 @@ module Util
     Util.log.level = :verbose
   end
 
-  def time_loop
+  def time_loop(&updates)
     Thread.start {
       Info.start_time ||= NSDate.date
       loop do
-        MainMenu[:license].items[:license_trial].updateDynamicTitle
-        MainMenu[:statusbar].items[:status_mt_time].updateDynamicTitle
+        updates.call
         sleep(0.5)
       end
     }
@@ -308,7 +307,7 @@ module Util
     NSApp.performSelectorOnMainThread('relaunchAfterDelay:', withObject: 1, waitUntilDone: true)
   end
 
-  def freeing_loop
+  def freeing_loop(&updates)
     Info.start_time ||= NSDate.date
     Thread.start {
       Info.last_free = NSDate.date - 30
@@ -324,21 +323,8 @@ module Util
           Util.log.warn "MemoryTamer is using #{Info.format_bytes(mtcm, true).to_weak} compressed; restarting".to_weak
           relaunch_app
         end
-        MainMenu[:statusbar].items[:status_mt_mem].updateDynamicTitle
-        MainMenu[:statusbar].items[:status_mtc_mem].updateDynamicTitle
-        MainMenu[:statusbar].items[:status_mtd_mem].updateDynamicTitle
-        MainMenu[:statusbar].items[:status_mti_mem].updateDynamicTitle
-        MainMenu[:statusbar].items[:status_mte_mem].updateDynamicTitle
-        MainMenu[:statusbar].items[:status_mem_used].updateDynamicTitle
-        MainMenu[:statusbar].items[:status_mem_virtual].updateDynamicTitle
-        MainMenu[:statusbar].items[:status_mem_swap].updateDynamicTitle
-        MainMenu[:statusbar].items[:status_mem_pressure_percent].updateDynamicTitle
-        MainMenu[:statusbar].items[:status_mem_app_mem].updateDynamicTitle
-        MainMenu[:statusbar].items[:status_mem_file_cache].updateDynamicTitle
-        MainMenu[:statusbar].items[:status_mem_wired].updateDynamicTitle
-        MainMenu[:statusbar].items[:status_mem_compressed].updateDynamicTitle
         cfm = Info.get_free_mem
-        MainMenu.status_item.setTitle(Persist.store.show_mem? ? Info.format_bytes(cfm).to_weak : ''.to_weak) if Persist.store.update_while? || !Info.freeing?
+        updates.call(cfm)
         if Util.licensed? || Util.check_trial > 0
           diff   = (NSDate.date - Info.last_free)
           diff_t = (NSDate.date - Info.last_trim)
@@ -450,19 +436,25 @@ module Util
           Util.log.warn "escalating freeing pressure from #{pressure} to #{np}".to_weak
           pressure = np
         end
-        IO.popen("'memory_pressure' -l #{pressure}") { |pipe|
-          pipe.sync = true
-          pipe.each { |l|
-            Util.log.verbose l
-            if l.include?('Stabilizing at')
-              Util.log.verbose 'Found stabilizing line; breaking'
-              break
-            end
-          }
-          Util.log.verbose 'Preparing to kill memory_pressure process'
-          Process.kill 'SIGINT', pipe.pid
-          Util.log.debug 'memory_pressure process ended'
+        task            = NSTask.alloc.init
+        task.launchPath = '/usr/bin/memory_pressure'
+        task.arguments  = ['-l', pressure]
+        pipe = NSPipe.pipe
+        task.standardOutput = pipe
+        task.standardError = pipe
+        task.launch
+        output = ''
+        handle = pipe.fileHandleForReading
+        loop {
+          output << handle.availableData
+          if output.include?('Stabilizing at')
+            Util.log.verbose 'Found stabilizing line; breaking'
+            break
+          end
         }
+        Util.log.verbose 'Preparing to kill memory_pressure process'
+        task.interrupt
+        Util.log.debug 'memory_pressure process ended'
       else
         free_mem_old
       end
@@ -478,40 +470,7 @@ module Util
     end
   end
 
-  def set_icon
-    image = nil
-    if Persist.store.show_icon?
-      if Persist.store.grayscale_icon?
-        image = NSImage.imageNamed('StatusMono')
-        image.setTemplate true
-      else
-        image = NSImage.imageNamed('Status')
-      end
-    end
-    MainMenu.status_item.setImage(image)
-  end
-
   def open_link(link)
     NSWorkspace.sharedWorkspace.openURL(NSURL.URLWithString(link));
-  end
-
-  def constrain_value_range(range, value, default)
-    value ? (value < range.min && range.min) || (value > range.max && range.max) : default
-  end
-
-  def constrain_value_list(list, old_value, new_value, default)
-    (list.include?(new_value)) ? new_value : (list.include?(old_value) ? old_value : default)
-  end
-
-  def constrain_value_list_enable_map(map, old_value, new_value, new_default, default)
-    map[new_value || new_default] ? (new_value || new_default) : ((map[old_value] && old_value) || default)
-  end
-
-  def constrain_value_boolean(value, default, enable = true, enable_is_true = true)
-    ((value.nil? ? default : value_to_bool(value)) ? (enable || !enable_is_true) : (!enable && !enable_is_true)) ? NSOnState : NSOffState
-  end
-
-  def value_to_bool(value)
-    value && value != 0 && value != NSOffState
   end
 end

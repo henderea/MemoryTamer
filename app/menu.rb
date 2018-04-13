@@ -161,5 +161,18 @@ class MainMenu
     def get_time_display(diff)
       "#{(diff / (86400.0)).floor}d #{((diff % (86400.0))/(3600.0)).floor}h #{((diff % (3600.0))/60.0).floor}m #{(diff % 60).floor}s".to_weak
     end
+
+    def set_icon
+      image = nil
+      if Persist.store.show_icon?
+        if Persist.store.grayscale_icon?
+          image = NSImage.imageNamed('StatusMono')
+          image.setTemplate true
+        else
+          image = NSImage.imageNamed('Status')
+        end
+      end
+      MainMenu.status_item.setImage(image)
+    end
   end
 end
