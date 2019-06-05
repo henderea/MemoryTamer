@@ -4,7 +4,7 @@ module MenuActions
   def setup
     setup_statusbar
     setup_license
-    setup_support
+    # setup_support
   end
 
   def setup_statusbar
@@ -34,8 +34,7 @@ module MenuActions
     MainMenu[:license_fastspring].subscribe(:license_fastspring_webstore) { |_, _| Util.open_link('http://sites.fastspring.com/memorytamer/product/memorytamer') }
   end
 
-  def setup_support
-    MainMenu[:support].subscribe(:support_feedback) { |_, _| BITHockeyManager.sharedHockeyManager.feedbackManager.showFeedbackWindow }
-    MainMenu[:support].subscribe(:support_twitter) { |_, _| Util.open_link('https://twitter.com/MemoryTamer') }
-  end
+  # def setup_support
+  #   MainMenu[:support].subscribe(:support_twitter) { |_, _| Util.open_link('https://twitter.com/MemoryTamer') }
+  # end
 end

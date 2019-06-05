@@ -54,9 +54,8 @@ class MainMenu
     menuItem :license_fastspring_change, 'Register'
     menuItem :license_fastspring_webstore, 'Web Store'
 
-    menuItem :status_support, 'Support', submenu: :support
-    menuItem :support_feedback, 'Provide Feedback'
-    menuItem :support_twitter, 'Twitter'
+    # menuItem :status_support, 'Support', submenu: :support
+    # menuItem :support_twitter, 'Twitter'
   end
 
   def self.def_menus
@@ -101,8 +100,8 @@ class MainMenu
       ___
       status_license
       ___
-      status_support
-      ___
+      # status_support
+      # ___
       status_update
       status_version
       ___
@@ -132,10 +131,9 @@ class MainMenu
       license_fastspring_webstore
     }
 
-    menu(:support, 'Support') {
-      support_feedback
-      support_twitter
-    }
+    # menu(:support, 'Support') {
+    #   support_twitter
+    # }
   end
 
   def_menus

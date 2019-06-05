@@ -397,6 +397,7 @@ module Util
         Info.freeing = true
         notify 'Beginning memory freeing', :free_start
         free_mem(Persist.store.pressure)
+        sleep(0.5)
         nfm = Info.get_free_mem
         Util.log.info "Freed #{Info.format_bytes(nfm - cfm, true)}".to_weak
         notify "Finished freeing #{Info.format_bytes(nfm - cfm)}".to_weak, :free_end
@@ -413,6 +414,7 @@ module Util
         Info.freeing = true
         notify 'Beginning memory trimming', :trim_start
         free_mem_old(true)
+        sleep(0.5)
         nfm = Info.get_free_mem
         Util.log.info "Freed #{Info.format_bytes(nfm - cfm, true)}".to_weak
         notify "Finished trimming #{Info.format_bytes(nfm - cfm)}".to_weak, :trim_end
@@ -436,25 +438,10 @@ module Util
           Util.log.warn "escalating freeing pressure from #{pressure} to #{np}".to_weak
           pressure = np
         end
-        task            = NSTask.alloc.init
-        task.launchPath = '/usr/bin/memory_pressure'
-        task.arguments  = ['-l', pressure]
-        pipe = NSPipe.pipe
-        task.standardOutput = pipe
-        task.standardError = pipe
-        task.launch
-        output = ''
-        handle = pipe.fileHandleForReading
-        loop {
-          output << handle.availableData
-          if output.include?('Stabilizing at')
-            Util.log.verbose 'Found stabilizing line; breaking'
-            break
-          end
-        }
-        Util.log.verbose 'Preparing to kill memory_pressure process'
-        task.interrupt
-        Util.log.debug 'memory_pressure process ended'
+        ep  = NSBundle.mainBundle.pathForResource('pressure', ofType: '')
+        pper = pressure == 'critical' ? 4 : 2
+        Util.log.debug "'#{ep}' '#{pper.to_s}'"
+        run_task(ep, pper.to_s)
       else
         free_mem_old
       end
